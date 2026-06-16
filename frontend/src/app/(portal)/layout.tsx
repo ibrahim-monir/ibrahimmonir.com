@@ -9,7 +9,7 @@ import {
 import { useState } from "react";
 import { useAuthStore } from "@/store/authStore";
 import BrandLogo from "@/components/BrandLogo";
-import ChatWidget from "@/components/ChatWidget";
+import { usePresence } from "@/hooks/usePresence";
 
 const navItems = [
   { href: "/portal", icon: LayoutDashboard, label: "Dashboard" },
@@ -22,6 +22,7 @@ const navItems = [
 
 export default function PortalLayout({ children }: { children: React.ReactNode }) {
   const { user, token, logout, fetchUser } = useAuthStore();
+  usePresence();
   const router = useRouter();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -133,7 +134,6 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
           {children}
         </main>
       </div>
-      <ChatWidget />
     </div>
   );
 }

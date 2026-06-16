@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\PresenceController;
+use App\Http\Controllers\Api\VisitorChatController;
 use App\Http\Controllers\Api\DirectMessageController;
 use App\Http\Controllers\Api\ExperienceController;
 use App\Http\Controllers\Api\ProfileController;
@@ -37,10 +39,18 @@ Route::get('/settings',         [SettingsController::class, 'index']);
 Route::get('/experiences',      [ExperienceController::class, 'index']);
 Route::get('/testimonials',     [TestimonialController::class, 'index']);
 
+// Public visitor chat (token-based, no auth)
+Route::post('/visitor/init',     [VisitorChatController::class, 'init']);
+Route::get('/visitor/messages',  [VisitorChatController::class, 'messages']);
+Route::post('/visitor/messages', [VisitorChatController::class, 'send']);
+Route::get('/visitor/unread',    [VisitorChatController::class, 'unread']);
+
 // Authenticated routes
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::get('/auth/me',      [AuthController::class, 'me']);
+    Route::post('/presence',    [PresenceController::class, 'ping']);
+    Route::post('/visitor/reply/{sessionId}', [VisitorChatController::class, 'adminReply']);
 
     Route::get('/dm',                         [DirectMessageController::class, 'index']);
     Route::post('/dm',                        [DirectMessageController::class, 'store']);
