@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'backend/**'
+      - '.github/workflows/deploy-backend.yml'
 
 jobs:
   deploy:
@@ -26,6 +27,7 @@ jobs:
             cd ~/domains/api.ibrahimmonir.com/laravel
             composer install --no-dev --optimize-autoloader --ignore-platform-reqs --no-scripts --quiet
             /opt/alt/php84/usr/bin/php artisan package:discover --ansi
+            /opt/alt/php84/usr/bin/php artisan filament:upgrade
             /opt/alt/php84/usr/bin/php artisan migrate --force
             /opt/alt/php84/usr/bin/php artisan config:cache
             /opt/alt/php84/usr/bin/php artisan route:cache
