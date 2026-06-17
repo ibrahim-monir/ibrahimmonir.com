@@ -1,0 +1,29 @@
+name: Deploy Backend to Hostinger
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            cd ~/domains/api.ibrahimmonir.com
+            git clone --depth=1 https://github.com/ibrahim-monir/ibrahimmonir.com.git /tmp/deploy_temp
+            cp -r /tmp/deploy_temp/backend/. ~/domains/api.ibrahimmonir.com/laravel/
+            rm -rf /tmp/deploy_temp
+            cd ~/domains/api.ibrahimmonir.com/laravel
+            composer install --no-dev --optimize-autoloader --quiet
+            php artisan migrate --force
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
