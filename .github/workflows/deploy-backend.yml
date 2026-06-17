@@ -19,12 +19,14 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd ~/domains/api.ibrahimmonir.com
+            rm -rf /tmp/deploy_temp
             git clone --depth=1 https://github.com/ibrahim-monir/ibrahimmonir.com.git /tmp/deploy_temp
             cp -r /tmp/deploy_temp/backend/. ~/domains/api.ibrahimmonir.com/laravel/
             rm -rf /tmp/deploy_temp
             cd ~/domains/api.ibrahimmonir.com/laravel
-            composer install --no-dev --optimize-autoloader --quiet
-            php artisan migrate --force
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
+            composer install --no-dev --optimize-autoloader --ignore-platform-reqs --no-scripts --quiet
+            /opt/alt/php84/usr/bin/php artisan package:discover --ansi
+            /opt/alt/php84/usr/bin/php artisan migrate --force
+            /opt/alt/php84/usr/bin/php artisan config:cache
+            /opt/alt/php84/usr/bin/php artisan route:cache
+            /opt/alt/php84/usr/bin/php artisan view:cache
