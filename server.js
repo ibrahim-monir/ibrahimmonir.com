@@ -1,17 +1,19 @@
-const { createServer } = require('http');
-const { parse } = require('url');
+const { spawn } = require('child_process');
 const path = require('path');
-const next = require('./frontend/node_modules/next');
 
-const port = parseInt(process.env.PORT || '3000', 10);
-const app = next({ dev: false, dir: path.join(__dirname, 'frontend') });
-const handle = app.getRequestHandler();
+const standaloneDir = path.join(__dirname, 'frontend', '.next', 'standalone');
+const serverFile = path.join(standaloneDir, 'server.js');
 
-app.prepare().then(() => {
-  createServer((req, res) => {
-    const parsedUrl = parse(req.url, true);
-    handle(req, res, parsedUrl);
-  }).listen(port, '0.0.0.0', () => {
-    console.log(`> Ready on port ${port}`);
-  });
+const child = spawn(process.execPath, [serverFile], {
+  cwd: standaloneDir,
+  env: { ...process.env, PORT: process.env.PORT || '3000', HOSTNAME: '0.0.0.0' },
+  stdio: 'inherit',
 });
+
+child.on('error', (err) => {
+  console.error('Failed to start Next.js:', err);
+  process.exit(1);
+});
+
+process.on('SIGTERM', () => child.kill('SIGTERM'));
+process.on('SIGINT', () => child.kill('SIGINT'));
