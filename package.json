@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "install": "cd frontend && npm install",
-    "build": "cd frontend && npm install && npm run build",
+    "build": "cd frontend && npm install && npm run build && cp -r frontend/.next .next",
     "start": "cd frontend && npm start"
   }
 }
