@@ -18,13 +18,20 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
+          script_stop: true
           script: |
-            cd ~/domains/api.ibrahimmonir.com
+            DOMAIN=~/domains/api.ibrahimmonir.com
+            cd $DOMAIN
             rm -rf /tmp/deploy_temp
             git clone --depth=1 https://github.com/ibrahim-monir/ibrahimmonir.com.git /tmp/deploy_temp
-            cp -r /tmp/deploy_temp/backend/. ~/domains/api.ibrahimmonir.com/laravel/
+            cp -r /tmp/deploy_temp/backend/. $DOMAIN/laravel/
+            # Set up the public_html docroot (front controller + rewrite rules)
+            mkdir -p $DOMAIN/public_html
+            cp /tmp/deploy_temp/backend/public_html_index.php $DOMAIN/public_html/index.php
+            cp /tmp/deploy_temp/backend/public_html.htaccess $DOMAIN/public_html/.htaccess
+            ln -sfn $DOMAIN/laravel/storage/app/public $DOMAIN/public_html/storage
             rm -rf /tmp/deploy_temp
-            cd ~/domains/api.ibrahimmonir.com/laravel
+            cd $DOMAIN/laravel
             composer install --no-dev --optimize-autoloader --ignore-platform-reqs --no-scripts --quiet
             /opt/alt/php84/usr/bin/php artisan package:discover --ansi
             /opt/alt/php84/usr/bin/php artisan filament:upgrade
