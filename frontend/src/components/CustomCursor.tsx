@@ -1,16 +1,16 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 export default function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+  // only on non-touch (pointer: fine) devices
+  const finePointer = useMediaQuery('(pointer: fine)');
 
   useEffect(() => {
-    // only on non-touch (pointer: fine) devices
-    if (!window.matchMedia('(pointer: fine)').matches) return;
+    if (!finePointer) return;
 
-    setVisible(true);
     document.body.style.cursor = 'none';
 
     let mouseX = 0, mouseY = 0;
@@ -101,9 +101,9 @@ export default function CustomCursor() {
       document.body.style.cursor = '';
       observer.disconnect();
     };
-  }, []);
+  }, [finePointer]);
 
-  if (!visible) return null;
+  if (!finePointer) return null;
 
   return (
     <>

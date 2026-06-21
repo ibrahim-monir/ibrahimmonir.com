@@ -64,7 +64,6 @@ export default function ChatWidget() {
   const [showEmoji, setShowEmoji] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string | null>(null);
-  const [visitorToken, setVisitorToken] = useState<string>('');
   const [visitorName, setVisitorName] = useState<string>('');
   const bottomRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -72,17 +71,16 @@ export default function ChatWidget() {
 
   const isVisitor = !user;
 
-  // Initialize visitor token on mount
+  // Stable per-session visitor token, generated lazily on the client.
+  const [visitorToken] = useState<string>(() => (isVisitor ? getVisitorToken() : ''));
+
+  // Init session to get the visitor's display name.
   useEffect(() => {
-    if (isVisitor) {
-      const token = getVisitorToken();
-      setVisitorToken(token);
-      // Init session to get visitor name
-      api.post('/visitor/init', { token }).then((r) => {
-        setVisitorName(r.data.name ?? 'You');
-      }).catch(() => {});
-    }
-  }, [isVisitor]);
+    if (!isVisitor || !visitorToken) return;
+    api.post('/visitor/init', { token: visitorToken })
+      .then((r) => setVisitorName(r.data.name ?? 'You'))
+      .catch(() => {});
+  }, [isVisitor, visitorToken]);
 
   // ── Unread count ──────────────────────────────────────────
   const { data: clientUnread = 0 } = useQuery<number>({

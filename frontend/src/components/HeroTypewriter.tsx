@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const DEFAULT_ROLES = [
   "Full-Stack Web Developer",
@@ -10,10 +10,10 @@ const DEFAULT_ROLES = [
 ];
 
 export default function HeroTypewriter({ initial, roles }: { initial?: string; roles?: string[] }) {
-  const base  = roles && roles.length > 0 ? roles : DEFAULT_ROLES;
-  const texts = initial && !base.includes(initial)
-    ? [initial, ...base]
-    : base;
+  const texts = useMemo(() => {
+    const base = roles && roles.length > 0 ? roles : DEFAULT_ROLES;
+    return initial && !base.includes(initial) ? [initial, ...base] : base;
+  }, [initial, roles]);
 
   const [idx, setIdx]           = useState(0);
   const [displayed, setDisplayed] = useState("");

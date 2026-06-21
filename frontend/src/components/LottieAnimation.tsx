@@ -15,14 +15,15 @@ export default function LottieAnimation({ src, className, style, loop = true, au
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    setError(false);
+    let active = true;
     fetch(src)
       .then((r) => {
         if (!r.ok) throw new Error('fetch failed');
         return r.json();
       })
-      .then(setData)
-      .catch(() => setError(true));
+      .then((json) => { if (active) { setData(json); setError(false); } })
+      .catch(() => { if (active) setError(true); });
+    return () => { active = false; };
   }, [src]);
 
   if (error || !data) return null;

@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, UserPlus } from "lucide-react";
+import type { AxiosError } from "axios";
 import BrandLogo from "@/components/BrandLogo";
 import toast from "react-hot-toast";
 import { useAuthStore } from "@/store/authStore";
@@ -23,8 +24,9 @@ export default function RegisterPage() {
       await register(form.name, form.email, form.password, form.password_confirmation, form.company, form.phone);
       toast.success("Account created! Welcome aboard.");
       router.push("/portal");
-    } catch (err: any) {
-      const msg = err?.response?.data?.errors?.email?.[0] ?? err?.response?.data?.message ?? "Registration failed. Please try again.";
+    } catch (err) {
+      const e = err as AxiosError<{ message?: string; errors?: Record<string, string[]> }>;
+      const msg = e?.response?.data?.errors?.email?.[0] ?? e?.response?.data?.message ?? "Registration failed. Please try again.";
       toast.error(msg);
     }
   };

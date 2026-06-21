@@ -10,6 +10,7 @@ import { useState } from "react";
 import { useAuthStore } from "@/store/authStore";
 import BrandLogo from "@/components/BrandLogo";
 import { usePresence } from "@/hooks/usePresence";
+import { useHydrated } from "@/hooks/useHydrated";
 
 const navItems = [
   { href: "/portal", icon: LayoutDashboard, label: "Dashboard" },
@@ -20,15 +21,71 @@ const navItems = [
   { href: "/portal/profile", icon: User, label: "Profile" },
 ];
 
+type SidebarUser = { name: string; email: string } | null;
+
+function Sidebar({ mobile = false, pathname, user, onNavigate, onLogout }: {
+  mobile?: boolean;
+  pathname: string;
+  user: SidebarUser;
+  onNavigate: () => void;
+  onLogout: () => void;
+}) {
+  return (
+    <aside className={`flex flex-col h-full ${mobile ? "w-72" : "w-64"}`}
+      style={{ background: "var(--bg-card)", borderRight: "1px solid var(--border)" }}>
+      <div className="p-6 border-b" style={{ borderColor: "var(--border)" }}>
+        <Link href="/" className="flex items-center gap-2">
+          <BrandLogo fontSize="1.1rem" />
+        </Link>
+      </div>
+
+      <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+        {navItems.map((item) => {
+          const active = pathname === item.href || (item.href !== "/portal" && pathname.startsWith(item.href));
+          return (
+            <Link key={item.href} href={item.href}
+              onClick={onNavigate}
+              className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${active ? "text-white" : "hover:bg-white/5"}`}
+              style={active ? { background: "var(--primary)", color: "#fff" } : { color: "var(--text-muted)" }}>
+              <item.icon size={18} />
+              {item.label}
+            </Link>
+          );
+        })}
+      </nav>
+
+      <div className="p-4 border-t" style={{ borderColor: "var(--border)" }}>
+        <Link href="/portal/profile"
+          onClick={onNavigate}
+          className="flex items-center gap-3 px-4 py-3 rounded-lg mb-2 transition-all hover:opacity-80"
+          style={{ background: "var(--bg-muted)" }}>
+          <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
+            style={{ background: "var(--primary)" }}>
+            <User size={16} className="text-white" />
+          </div>
+          <div className="min-w-0">
+            <div className="text-sm font-medium truncate">{user?.name ?? "Loading..."}</div>
+            <div className="text-xs truncate" style={{ color: "var(--text-muted)" }}>{user?.email}</div>
+          </div>
+        </Link>
+        <button onClick={onLogout}
+          className="flex items-center gap-3 w-full px-4 py-2.5 rounded-lg text-sm transition-all hover:bg-red-500/10"
+          style={{ color: "#f87171" }}>
+          <LogOut size={18} />
+          Sign Out
+        </button>
+      </div>
+    </aside>
+  );
+}
+
 export default function PortalLayout({ children }: { children: React.ReactNode }) {
   const { user, token, logout, fetchUser } = useAuthStore();
   usePresence();
   const router = useRouter();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [hydrated, setHydrated] = useState(false);
-
-  useEffect(() => { setHydrated(true); }, []);
+  const hydrated = useHydrated();
 
   useEffect(() => {
     if (!hydrated) return;
@@ -49,67 +106,21 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
     router.push("/");
   };
 
-  const Sidebar = ({ mobile = false }: { mobile?: boolean }) => (
-    <aside className={`flex flex-col h-full ${mobile ? "w-72" : "w-64"}`}
-      style={{ background: "var(--bg-card)", borderRight: "1px solid var(--border)" }}>
-      <div className="p-6 border-b" style={{ borderColor: "var(--border)" }}>
-        <Link href="/" className="flex items-center gap-2">
-          <BrandLogo fontSize="1.1rem" />
-        </Link>
-      </div>
-
-      <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-        {navItems.map((item) => {
-          const active = pathname === item.href || (item.href !== "/portal" && pathname.startsWith(item.href));
-          return (
-            <Link key={item.href} href={item.href}
-              onClick={() => setSidebarOpen(false)}
-              className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${active ? "text-white" : "hover:bg-white/5"}`}
-              style={active ? { background: "var(--primary)", color: "#fff" } : { color: "var(--text-muted)" }}>
-              <item.icon size={18} />
-              {item.label}
-            </Link>
-          );
-        })}
-      </nav>
-
-      <div className="p-4 border-t" style={{ borderColor: "var(--border)" }}>
-        <Link href="/portal/profile"
-          onClick={() => setSidebarOpen(false)}
-          className="flex items-center gap-3 px-4 py-3 rounded-lg mb-2 transition-all hover:opacity-80"
-          style={{ background: "var(--bg-muted)" }}>
-          <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
-            style={{ background: "var(--primary)" }}>
-            <User size={16} className="text-white" />
-          </div>
-          <div className="min-w-0">
-            <div className="text-sm font-medium truncate">{user?.name ?? "Loading..."}</div>
-            <div className="text-xs truncate" style={{ color: "var(--text-muted)" }}>{user?.email}</div>
-          </div>
-        </Link>
-        <button onClick={handleLogout}
-          className="flex items-center gap-3 w-full px-4 py-2.5 rounded-lg text-sm transition-all hover:bg-red-500/10"
-          style={{ color: "#f87171" }}>
-          <LogOut size={18} />
-          Sign Out
-        </button>
-      </div>
-    </aside>
-  );
+  const closeSidebar = () => setSidebarOpen(false);
 
   return (
     <div className="flex h-screen overflow-hidden" style={{ background: "var(--bg)" }}>
       {/* Desktop sidebar */}
       <div className="hidden md:flex">
-        <Sidebar />
+        <Sidebar pathname={pathname} user={user} onNavigate={closeSidebar} onLogout={handleLogout} />
       </div>
 
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-50 flex md:hidden">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={closeSidebar} />
           <div className="relative z-10">
-            <Sidebar mobile />
+            <Sidebar mobile pathname={pathname} user={user} onNavigate={closeSidebar} onLogout={handleLogout} />
           </div>
         </div>
       )}

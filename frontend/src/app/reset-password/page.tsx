@@ -3,6 +3,7 @@ import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Eye, EyeOff, KeyRound } from "lucide-react";
+import type { AxiosError } from "axios";
 import BrandLogo from "@/components/BrandLogo";
 import toast from "react-hot-toast";
 import api from "@/lib/api";
@@ -34,8 +35,9 @@ function ResetPasswordForm() {
       });
       toast.success("Password reset! Please log in.");
       router.push("/login");
-    } catch (err: any) {
-      const msg = err?.response?.data?.message ?? "Reset failed. The link may have expired.";
+    } catch (err) {
+      const e = err as AxiosError<{ message?: string }>;
+      const msg = e?.response?.data?.message ?? "Reset failed. The link may have expired.";
       toast.error(msg);
     } finally {
       setLoading(false);

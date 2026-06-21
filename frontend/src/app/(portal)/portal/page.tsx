@@ -320,7 +320,7 @@ export default function PortalDashboard() {
             <Activity size={16} style={{ color: "var(--primary)" }} /> Recent Activity
           </h2>
           <div className="card divide-y" style={{ borderColor: "var(--border)" }}>
-            {activity.map((a, i) => (
+            {activity.map((a) => (
               <div key={a.id} className="flex items-center gap-4 px-5 py-3.5"
                 style={{ borderColor: "var(--border)" }}>
                 <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"

@@ -1,11 +1,14 @@
 'use client';
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { User, Lock, Save, Eye, EyeOff, Camera, Upload } from "lucide-react";
 import Image from "next/image";
 import toast from "react-hot-toast";
+import type { AxiosError } from "axios";
 import api from "@/lib/api";
 import { useAuthStore } from "@/store/authStore";
+
+type ApiError = AxiosError<{ message?: string; errors?: Record<string, string[]> }>;
 
 interface Profile {
   id: number;
@@ -63,7 +66,7 @@ function AvatarForm({ profile }: { profile: Profile }) {
       setPreview(null);
       toast.success("Profile photo updated.");
     },
-    onError: (err: any) => {
+    onError: (err: ApiError) => {
       const msg = err?.response?.data?.message ?? "Upload failed.";
       toast.error(msg);
     },
@@ -163,15 +166,6 @@ function InfoForm({ profile }: { profile: Profile }) {
     phone: profile.client?.phone ?? "",
   });
 
-  useEffect(() => {
-    setForm({
-      name: profile.name ?? "",
-      email: profile.email ?? "",
-      company: profile.client?.company ?? "",
-      phone: profile.client?.phone ?? "",
-    });
-  }, [profile]);
-
   const mutation = useMutation({
     mutationFn: (data: typeof form) => api.put("/profile", data).then((r) => r.data),
     onSuccess: (updated) => {
@@ -179,7 +173,7 @@ function InfoForm({ profile }: { profile: Profile }) {
       useAuthStore.setState({ user: { id: updated.id, name: updated.name, email: updated.email, role: updated.role } });
       toast.success("Profile updated successfully.");
     },
-    onError: (err: any) => {
+    onError: (err: ApiError) => {
       const msg = err?.response?.data?.errors?.email?.[0] ?? err?.response?.data?.message ?? "Update failed.";
       toast.error(msg);
     },
@@ -240,7 +234,7 @@ function PasswordForm() {
       toast.success("Password changed successfully.");
       setForm({ current_password: "", password: "", password_confirmation: "" });
     },
-    onError: (err: any) => {
+    onError: (err: ApiError) => {
       const msg = err?.response?.data?.errors?.current_password?.[0]
         ?? err?.response?.data?.message
         ?? "Password change failed.";
