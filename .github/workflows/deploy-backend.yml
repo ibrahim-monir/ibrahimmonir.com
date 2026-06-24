@@ -39,6 +39,7 @@ jobs:
             /opt/alt/php84/usr/bin/php artisan migrate --force
             /opt/alt/php84/usr/bin/php artisan storage:link --force
             /opt/alt/php84/usr/bin/php artisan db:seed --class=AdminUserSeeder --force
+            /opt/alt/php84/usr/bin/php artisan optimize:clear
             /opt/alt/php84/usr/bin/php artisan config:cache
             /opt/alt/php84/usr/bin/php artisan route:cache
             /opt/alt/php84/usr/bin/php artisan view:cache
