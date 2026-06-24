@@ -12,7 +12,24 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy via SSH
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Sync backend files via rsync
+        run: |
+          rsync -az --delete \
+            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no" \
+            ./backend/ \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/domains/api.ibrahimmonir.com/laravel/
+
+      - name: Run deploy commands via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -22,16 +39,10 @@ jobs:
           script_stop: true
           script: |
             DOMAIN=~/domains/api.ibrahimmonir.com
-            cd $DOMAIN
-            rm -rf /tmp/deploy_temp
-            git clone --depth=1 https://github.com/ibrahim-monir/ibrahimmonir.com.git /tmp/deploy_temp
-            cp -r /tmp/deploy_temp/backend/. $DOMAIN/laravel/
-            # Set up the public_html docroot (front controller + rewrite rules)
             mkdir -p $DOMAIN/public_html
-            cp /tmp/deploy_temp/backend/public_html_index.php $DOMAIN/public_html/index.php
-            cp /tmp/deploy_temp/backend/public_html.htaccess $DOMAIN/public_html/.htaccess
+            cp $DOMAIN/laravel/public_html_index.php $DOMAIN/public_html/index.php
+            cp $DOMAIN/laravel/public_html.htaccess $DOMAIN/public_html/.htaccess
             ln -sfn $DOMAIN/laravel/storage/app/public $DOMAIN/public_html/storage
-            rm -rf /tmp/deploy_temp
             cd $DOMAIN/laravel
             composer install --no-dev --optimize-autoloader --ignore-platform-reqs --no-scripts --quiet
             /opt/alt/php84/usr/bin/php artisan package:discover --ansi
