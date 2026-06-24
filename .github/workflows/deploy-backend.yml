@@ -43,3 +43,7 @@ jobs:
             /opt/alt/php84/usr/bin/php artisan config:cache
             /opt/alt/php84/usr/bin/php artisan route:cache
             /opt/alt/php84/usr/bin/php artisan view:cache
+            /opt/alt/php84/usr/bin/php artisan vendor:publish --tag=filament-assets --force
+            cp -r $DOMAIN/laravel/public/. $DOMAIN/public_html/
+            cp $DOMAIN/laravel/public_html_index.php $DOMAIN/public_html/index.php
+            cp $DOMAIN/laravel/public_html.htaccess $DOMAIN/public_html/.htaccess
