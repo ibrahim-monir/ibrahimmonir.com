@@ -12,28 +12,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup SSH key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
-
-      - name: Package backend files
-        run: tar -czf /tmp/backend.tar.gz -C backend .
-
-      - name: Upload backend archive via SCP
-        run: |
-          scp -i ~/.ssh/deploy_key \
-            -P ${{ secrets.SSH_PORT }} \
-            -o StrictHostKeyChecking=no \
-            /tmp/backend.tar.gz \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/backend.tar.gz
-
-      - name: Extract and run deploy commands via SSH
+      - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -43,9 +22,12 @@ jobs:
           script_stop: true
           script: |
             DOMAIN=~/domains/api.ibrahimmonir.com
-            mkdir -p $DOMAIN/laravel
-            tar -xzf ~/backend.tar.gz -C $DOMAIN/laravel/
-            rm ~/backend.tar.gz
+            # Download repo archive via curl (no fork needed, avoids git clone fork limit)
+            curl -sL "https://github.com/ibrahim-monir/ibrahimmonir.com/archive/refs/heads/main.tar.gz" -o /tmp/repo.tar.gz
+            mkdir -p /tmp/repo_extract
+            tar -xzf /tmp/repo.tar.gz -C /tmp/repo_extract/
+            cp -r /tmp/repo_extract/ibrahimmonir.com-main/backend/. $DOMAIN/laravel/
+            rm -rf /tmp/repo_extract /tmp/repo.tar.gz
             mkdir -p $DOMAIN/public_html
             cp $DOMAIN/laravel/public_html_index.php $DOMAIN/public_html/index.php
             cp $DOMAIN/laravel/public_html.htaccess $DOMAIN/public_html/.htaccess
