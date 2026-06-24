@@ -2,7 +2,7 @@
   "name": "ibrahimmonir-portfolio",
   "version": "1.0.0",
   "scripts": {
-    "build": "cd frontend && npm install && npm run build",
+    "build": "cd frontend && npm install && npm run build && mkdir -p ../public_html/_next && cp -r .next/static ../public_html/_next/static && cp -r public/. ../public_html/",
     "start": "node server.js"
   }
 }
