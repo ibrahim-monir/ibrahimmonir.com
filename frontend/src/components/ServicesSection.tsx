@@ -1,6 +1,6 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
-import { ArrowRight, Check, Shield, FileText, Headphones, RefreshCw, Code2 } from "lucide-react";
+import type { CSSProperties, ReactNode } from "react";
+import { ArrowRight, Shield, FileText, Headphones, RefreshCw, Code2 } from "lucide-react";
 
 type Service = {
   num: string;
@@ -196,32 +196,43 @@ export default function ServicesSection() {
           </p>
         </div>
 
-        {/* Service cards */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
-          {services.map((s) => (
-            <div key={s.title}
-              className="card group flex flex-col relative overflow-hidden transition-all hover:-translate-y-1"
-              style={{ borderColor: s.popular ? s.color + "60" : undefined }}>
+        {/* Service bento grid — varied tile sizes, glass + hover glow */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+          {services.map((s, i) => {
+            // Column-span pattern that tiles perfectly: [2,1,1, 2,1,1, 2,2] = 12 cells (3 rows × 4 cols)
+            const span =
+              i === 0 || i === 3 || i === 6 || i === 7
+                ? "sm:col-span-2 lg:col-span-2"
+                : "";
+            const wide = span !== "";
 
-              {/* Top accent bar */}
-              <div style={{ height: 3, background: `linear-gradient(90deg, ${s.color}, ${s.color}44)` }} />
+            return (
+              <div
+                key={s.title}
+                className={`group relative overflow-hidden rounded-2xl border [border-color:var(--border)] hover:[border-color:var(--svc)] p-6 flex flex-col min-h-[200px] transition-all duration-300 hover:-translate-y-1 ${span}`}
+                style={{ background: "var(--bg-muted)", ["--svc" as string]: s.color + "80" } as CSSProperties}
+              >
+                {/* Soft color glow on hover */}
+                <div
+                  className="pointer-events-none absolute -top-16 -right-16 w-44 h-44 rounded-full blur-3xl opacity-0 group-hover:opacity-25 transition-opacity duration-500"
+                  style={{ background: s.color }}
+                />
 
-              <div className="p-5 flex flex-col flex-1">
-
-                {/* Number + Popular badge */}
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-xs font-bold" style={{ color: s.color }}>{s.num}</span>
-                  {s.popular && (
-                    <span className="text-xs font-bold px-2 py-0.5 rounded-full"
-                      style={{ background: s.color + "20", color: s.color }}>
-                      Most Popular
-                    </span>
-                  )}
-                </div>
+                {/* Popular badge */}
+                {s.popular && (
+                  <span
+                    className="absolute top-4 right-4 text-[10px] font-bold px-2.5 py-1 rounded-full"
+                    style={{ background: s.color + "22", color: s.color }}
+                  >
+                    Most Popular
+                  </span>
+                )}
 
                 {/* Icon (or image, if provided) */}
-                <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-4 overflow-hidden"
-                  style={{ background: s.color + "18", color: s.color }}>
+                <div
+                  className="relative w-12 h-12 rounded-xl flex items-center justify-center mb-4 overflow-hidden transition-transform duration-300 group-hover:scale-110"
+                  style={{ background: s.color + "1a", color: s.color }}
+                >
                   {s.image ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={s.image} alt={s.title} className="w-full h-full object-cover" />
@@ -230,30 +241,30 @@ export default function ServicesSection() {
                   )}
                 </div>
 
-                {/* Title + desc */}
-                <h3 className="font-bold text-base mb-2 leading-snug">{s.title}</h3>
-                <p className="text-xs leading-relaxed mb-4" style={{ color: "var(--text-muted)" }}>{s.desc}</p>
+                {/* Title */}
+                <h3 className={`relative font-bold leading-snug mb-2 ${wide ? "text-xl" : "text-base"}`}>
+                  {s.title}
+                </h3>
 
-                {/* Features */}
-                <ul className="flex flex-col gap-2 mb-5 flex-1">
-                  {s.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-xs" style={{ color: "var(--text-muted)" }}>
-                      <Check size={12} className="mt-0.5 shrink-0" style={{ color: s.color }} />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
+                {/* Description — full on wide tiles, clamped on small ones */}
+                <p
+                  className={`relative leading-relaxed mb-4 ${wide ? "text-sm max-w-md" : "text-xs line-clamp-2"}`}
+                  style={{ color: "var(--text-muted)" }}
+                >
+                  {s.desc}
+                </p>
 
-                {/* Link */}
-                <Link href="/services"
-                  className="inline-flex items-center gap-1 text-xs font-semibold mt-auto transition-all group-hover:gap-2"
-                  style={{ color: s.color }}>
+                {/* Learn more */}
+                <Link
+                  href="/services"
+                  className="relative mt-auto inline-flex items-center gap-1 text-xs font-semibold transition-all group-hover:gap-2"
+                  style={{ color: s.color }}
+                >
                   Learn more <ArrowRight size={12} />
                 </Link>
-
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Included in every project */}

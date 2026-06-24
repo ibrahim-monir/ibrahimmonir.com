@@ -11,8 +11,8 @@ import TechStackSlider from "@/components/TechStackSlider";
 import StatsCounter from "@/components/StatsCounter";
 import Testimonials, { type TestimonialItem } from "@/components/Testimonials";
 import BlogPreview from "@/components/BlogPreview";
-import ToolsSection from "@/components/ToolsSection";
 import ServicesSection from "@/components/ServicesSection";
+import ProcessSection from "@/components/ProcessSection";
 import {
   ArrowRight, CheckCircle,
   MapPin, Mail, Download,
@@ -196,11 +196,11 @@ export default async function HomePage() {
         </section>
 
 
-        <Testimonials reviews={testimonials} />
-
         <ServicesSection />
 
-        <ToolsSection />
+        <ProcessSection />
+
+        <Testimonials reviews={testimonials} />
 
         <BlogPreview />
 
