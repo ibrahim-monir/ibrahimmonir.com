@@ -1,13 +1,28 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { ArrowRight, Check, Shield, FileText, Headphones, RefreshCw, Code2 } from "lucide-react";
 
-const services = [
+type Service = {
+  num: string;
+  title: string;
+  desc: string;
+  color: string;
+  popular: boolean;
+  features: string[];
+  icon: ReactNode;
+  // Optional: path to an image inside /public (e.g. "/services/wordpress.png").
+  // If set, this image is shown instead of the SVG icon.
+  image?: string;
+};
+
+const services: Service[] = [
   {
     num: "01",
     title: "WordPress Development",
     desc: "End-to-end WordPress solutions — from custom themes and plugins to full business websites.",
     color: "#21759B",
     popular: true,
+    // image: "/services/wordpress.png",
     features: [
       "Custom theme development from scratch",
       "Plugin development & modification",
@@ -182,7 +197,7 @@ export default function ServicesSection() {
         </div>
 
         {/* Service cards */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-12">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
           {services.map((s) => (
             <div key={s.title}
               className="card group flex flex-col relative overflow-hidden transition-all hover:-translate-y-1"
@@ -204,10 +219,15 @@ export default function ServicesSection() {
                   )}
                 </div>
 
-                {/* Icon */}
-                <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
+                {/* Icon (or image, if provided) */}
+                <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-4 overflow-hidden"
                   style={{ background: s.color + "18", color: s.color }}>
-                  {s.icon}
+                  {s.image ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={s.image} alt={s.title} className="w-full h-full object-cover" />
+                  ) : (
+                    s.icon
+                  )}
                 </div>
 
                 {/* Title + desc */}
