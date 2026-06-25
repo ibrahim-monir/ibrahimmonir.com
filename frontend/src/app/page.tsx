@@ -13,6 +13,7 @@ import Testimonials, { type TestimonialItem } from "@/components/Testimonials";
 import BlogPreview from "@/components/BlogPreview";
 import ServicesSection from "@/components/ServicesSection";
 import ProcessSection from "@/components/ProcessSection";
+import RecentWork, { type WorkItem } from "@/components/RecentWork";
 import {
   ArrowRight, CheckCircle,
   MapPin, Mail, Download,
@@ -24,18 +25,30 @@ export const metadata: Metadata = {
   description: "Building premium web experiences with Laravel, Next.js, and modern technologies.",
 };
 
+// Shown when no works exist in the backend yet, so the section always looks complete.
+const FALLBACK_WORKS: WorkItem[] = [
+  { title: "Multi-vendor E-commerce Platform", category: "E-commerce", technologies: ["Laravel", "React", "MySQL", "Redis"], url: "/works" },
+  { title: "SaaS Project Management Tool", category: "SaaS", technologies: ["Laravel", "Next.js", "PostgreSQL"], url: "/works" },
+  { title: "Healthcare Appointment System", category: "Web App", technologies: ["Laravel", "Vue.js", "MySQL"], url: "/works" },
+  { title: "Real Estate Listing Portal", category: "Web App", technologies: ["Next.js", "Laravel API", "MySQL"], url: "/works" },
+  { title: "Restaurant POS System", category: "Web App", technologies: ["Laravel", "React", "MySQL"], url: "/works" },
+  { title: "Learning Management System", category: "SaaS", technologies: ["Laravel", "Next.js", "PostgreSQL"], url: "/works" },
+];
+
 
 
 
 export default async function HomePage() {
   const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api";
-  const [settings, experiencesRaw, testimonialsRaw] = await Promise.all([
+  const [settings, experiencesRaw, testimonialsRaw, worksRaw] = await Promise.all([
     fetchSettings(),
     fetch(`${API}/experiences`,   { cache: 'no-store' }).then(r => r.ok ? r.json() : []).catch(() => []),
     fetch(`${API}/testimonials`,  { cache: 'no-store' }).then(r => r.ok ? r.json() : []).catch(() => []),
+    fetch(`${API}/works`,         { cache: 'no-store' }).then(r => r.ok ? r.json() : []).catch(() => []),
   ]);
   const timeline: { role: string; company: string; year_label: string; description: string }[] = experiencesRaw;
   const testimonials: TestimonialItem[] = testimonialsRaw;
+  const recentWorks: WorkItem[] = Array.isArray(worksRaw) && worksRaw.length ? worksRaw.slice(0, 8) : FALLBACK_WORKS;
   const socialLinks = {
     social_github:    str(settings.social_github),
     social_linkedin:  str(settings.social_linkedin),
@@ -195,6 +208,9 @@ export default async function HomePage() {
           </div>
         </section>
 
+
+        {/* ── My Recent Work — 3D sliding showcase ── */}
+        <RecentWork works={recentWorks} />
 
         <ServicesSection />
 
