@@ -4,84 +4,132 @@ namespace App\Filament\Resources\Invoices\Schemas;
 
 use App\Models\Client;
 use App\Models\Project;
+use App\Models\SiteSetting;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Support\HtmlString;
 
 class InvoiceForm
 {
     public static function configure(Schema $schema): Schema
     {
         return $schema
-            ->columns(1)
+            ->columns(3)
             ->components([
-                Grid::make(2)->schema([
-                    Section::make('Invoice Details')->schema([
-                        TextInput::make('invoice_number')
-                            ->label('Invoice #')
-                            ->required()
-                            ->unique(ignoreRecord: true)
-                            ->default(fn () => 'INV-' . strtoupper(substr(uniqid(), -6))),
+                // ---- Left: form fields (2/3) ----
+                Group::make()
+                    ->columnSpan(2)
+                    ->schema([
+                        Grid::make(2)->schema([
+                            Section::make('Invoice Details')->schema([
+                                TextInput::make('invoice_number')
+                                    ->label('Invoice #')
+                                    ->required()
+                                    ->unique(ignoreRecord: true)
+                                    ->default(fn () => 'INV-' . strtoupper(substr(uniqid(), -6)))
+                                    ->live(onBlur: true),
 
-                        Select::make('client_id')
-                            ->label('Client')
-                            ->options(
-                                Client::with('user')
-                                    ->get()
-                                    ->mapWithKeys(fn ($c) => [$c->id => $c->user?->name . ($c->company ? " ({$c->company})" : '')])
-                            )
-                            ->searchable()
-                            ->required()
-                            ->reactive()
-                            ->afterStateUpdated(fn (callable $set) => $set('project_id', null)),
+                                Select::make('client_id')
+                                    ->label('Client')
+                                    ->options(
+                                        Client::with('user')
+                                            ->get()
+                                            ->mapWithKeys(fn ($c) => [$c->id => $c->user?->name . ($c->company ? " ({$c->company})" : '')])
+                                    )
+                                    ->searchable()
+                                    ->required()
+                                    ->live()
+                                    ->afterStateUpdated(fn (callable $set) => $set('project_id', null)),
 
-                        Select::make('project_id')
-                            ->label('Project')
-                            ->options(fn (callable $get) =>
-                                Project::where('client_id', $get('client_id'))->pluck('title', 'id')
-                            )
-                            ->searchable()
-                            ->required(),
+                                Select::make('project_id')
+                                    ->label('Project')
+                                    ->options(fn (callable $get) =>
+                                        Project::where('client_id', $get('client_id'))->pluck('title', 'id')
+                                    )
+                                    ->searchable()
+                                    ->required()
+                                    ->live(),
 
-                        Select::make('status')
-                            ->options([
-                                'pending'   => 'Pending',
-                                'partial'   => 'Partial Payment',
-                                'paid'      => 'Paid',
-                                'overdue'   => 'Overdue',
-                                'cancelled' => 'Cancelled',
-                            ])
-                            ->default('pending')
-                            ->required(),
+                                Select::make('status')
+                                    ->options([
+                                        'pending'   => 'Pending',
+                                        'partial'   => 'Partial Payment',
+                                        'paid'      => 'Paid',
+                                        'overdue'   => 'Overdue',
+                                        'cancelled' => 'Cancelled',
+                                    ])
+                                    ->default('pending')
+                                    ->required()
+                                    ->live(),
+                            ]),
+
+                            Section::make('Amount & Dates')->schema([
+                                TextInput::make('amount')
+                                    ->label('Total Amount')
+                                    ->numeric()
+                                    ->prefix('$')
+                                    ->required()
+                                    ->minValue(0)
+                                    ->live(onBlur: true),
+
+                                TextInput::make('paid_amount')
+                                    ->label('Amount Paid')
+                                    ->numeric()
+                                    ->prefix('$')
+                                    ->default(0)
+                                    ->minValue(0)
+                                    ->live(onBlur: true),
+
+                                DatePicker::make('due_date')->native(false)->live(),
+
+                                DateTimePicker::make('paid_at')->label('Paid At')->native(false)->nullable(),
+
+                                Textarea::make('notes')->rows(3)->nullable()->live(onBlur: true),
+                            ]),
+                        ]),
                     ]),
 
-                    Section::make('Amount & Dates')->schema([
-                        TextInput::make('amount')
-                            ->label('Total Amount')
-                            ->numeric()
-                            ->prefix('$')
-                            ->required()
-                            ->minValue(0),
-
-                        TextInput::make('paid_amount')
-                            ->label('Amount Paid')
-                            ->numeric()
-                            ->prefix('$')
-                            ->default(0)
-                            ->minValue(0),
-
-                        DatePicker::make('due_date')->native(false),
-
-                        DateTimePicker::make('paid_at')->label('Paid At')->native(false)->nullable(),
-
-                        Textarea::make('notes')->rows(3)->nullable(),
+                // ---- Right: live preview (1/3) ----
+                Section::make('Live Preview')
+                    ->columnSpan(1)
+                    ->icon('heroicon-o-eye')
+                    ->schema([
+                        Placeholder::make('preview')
+                            ->hiddenLabel()
+                            ->content(fn (callable $get) => new HtmlString(self::previewHtml($get))),
                     ]),
-                ]),
             ]);
+    }
+
+    protected static function previewHtml(callable $get): string
+    {
+        $client  = $get('client_id') ? Client::with('user')->find($get('client_id')) : null;
+        $project = $get('project_id') ? Project::find($get('project_id')) : null;
+        $s = SiteSetting::getAll();
+
+        return view('invoices._preview', [
+            'invoiceNumber' => $get('invoice_number'),
+            'clientName'    => $client?->user?->name,
+            'clientCompany' => $client?->company,
+            'clientEmail'   => $client?->user?->email,
+            'projectTitle'  => $project?->title,
+            'status'        => $get('status') ?: 'pending',
+            'amount'        => (float) $get('amount'),
+            'paid'          => (float) $get('paid_amount'),
+            'dueDate'       => $get('due_date'),
+            'notes'         => $get('notes'),
+            'business'      => [
+                'name'    => $s['site_name']    ?? config('app.name', 'Ibrahim Monir'),
+                'tagline' => $s['site_tagline'] ?? null,
+            ],
+        ])->render();
     }
 }
