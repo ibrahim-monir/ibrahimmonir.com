@@ -81,6 +81,7 @@ export default function HeroPhoto() {
               priority
               quality={95}
               sizes="(max-width: 1280px) 480px, 1000px"
+              unoptimized
             />
           </div>
         </div>

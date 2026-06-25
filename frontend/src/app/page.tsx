@@ -106,7 +106,7 @@ export default async function HomePage() {
                   roles={arr(settings.hero_typewriter_roles)}
                 />
                 <p className="text-base leading-relaxed mb-8" style={{ color: "var(--text-muted)" }}>
-                  {str(settings.hero_bio, "Passionate developer building scalable web applications with WordPress, Laravel & Next.js.")}
+                  {str(settings.hero_bio, "Passionate full-stack developer crafting fast, scalable and reliable web applications with WordPress, Laravel & Next.js. From pixel-perfect frontends to robust APIs, I turn ideas into polished products that help businesses grow.")}
                 </p>
 
                 {/* Contact info */}
