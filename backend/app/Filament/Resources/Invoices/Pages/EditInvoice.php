@@ -23,6 +23,20 @@ class EditInvoice extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('preview')
+                ->label('Preview')
+                ->icon('heroicon-o-eye')
+                ->color('gray')
+                ->url(fn (Invoice $record) => route('invoices.preview', $record))
+                ->openUrlInNewTab(),
+
+            Action::make('downloadPdf')
+                ->label('Download PDF')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->color('gray')
+                ->url(fn (Invoice $record) => route('invoices.pdf', $record))
+                ->openUrlInNewTab(),
+
             Action::make('splitInvoice')
                 ->label('Split Invoice')
                 ->icon('heroicon-o-scissors')

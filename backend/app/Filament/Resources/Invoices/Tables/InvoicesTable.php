@@ -55,6 +55,18 @@ class InvoicesTable
             ->defaultSort('created_at', 'desc')
             ->recordActions([
                 EditAction::make(),
+                Action::make('preview')
+                    ->label('Preview')
+                    ->icon('heroicon-o-eye')
+                    ->color('gray')
+                    ->url(fn (Invoice $record) => route('invoices.preview', $record))
+                    ->openUrlInNewTab(),
+                Action::make('downloadPdf')
+                    ->label('PDF')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('gray')
+                    ->url(fn (Invoice $record) => route('invoices.pdf', $record))
+                    ->openUrlInNewTab(),
                 Action::make('sendEmail')
                     ->label('Send')
                     ->icon('heroicon-o-envelope')

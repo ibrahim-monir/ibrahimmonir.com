@@ -14,6 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->appendToGroup('api', \App\Http\Middleware\UpdateLastSeen::class);
+
+        // Send unauthenticated visitors of admin-guarded web routes to the panel login.
+        $middleware->redirectGuestsTo(fn () => '/admin/login');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
