@@ -23,9 +23,16 @@ class PackageForm
                         TextInput::make('title')->required()->maxLength(255),
 
                         TextInput::make('price')
+                            ->label('Price (USD)')
                             ->numeric()
                             ->prefix('$')
                             ->required()
+                            ->minValue(0),
+
+                        TextInput::make('bdt_price')
+                            ->label('Price (BDT)')
+                            ->numeric()
+                            ->prefix('৳')
                             ->minValue(0),
 
                         Select::make('billing_cycle')

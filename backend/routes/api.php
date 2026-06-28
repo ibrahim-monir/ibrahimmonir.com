@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\ServiceController;
+use App\Http\Controllers\Api\PackageController;
 use App\Http\Controllers\Api\WorkController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +33,7 @@ Route::get('/products',         [ProductController::class, 'index']);
 Route::get('/products/{slug}',  [ProductController::class, 'show']);
 
 Route::get('/works',            [WorkController::class, 'index']);
+Route::get('/packages',         [PackageController::class, 'index']);
 
 Route::get('/blog',             [BlogController::class, 'index']);
 Route::get('/blog/{slug}',      [BlogController::class, 'show']);

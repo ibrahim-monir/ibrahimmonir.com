@@ -18,7 +18,8 @@ class PackagesTable
             ->columns([
                 TextColumn::make('order')->sortable()->label('#'),
                 TextColumn::make('title')->searchable()->sortable(),
-                TextColumn::make('price')->money('USD')->sortable(),
+                TextColumn::make('price')->label('USD')->money('USD')->sortable(),
+                TextColumn::make('bdt_price')->label('BDT')->money('BDT')->sortable(),
                 TextColumn::make('billing_cycle')
                     ->badge()
                     ->formatStateUsing(fn ($state) => match($state) {
