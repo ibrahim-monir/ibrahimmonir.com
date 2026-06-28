@@ -12,18 +12,24 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
+
       - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          port: ${{ secrets.SSH_PORT }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          request_pty: true
-          script_stop: true
-          script: |
+        run: |
+          ssh -i ~/.ssh/deploy_key \
+              -p ${{ secrets.SSH_PORT }} \
+              -o StrictHostKeyChecking=no \
+              -o ConnectTimeout=30 \
+              -o ServerAliveInterval=60 \
+              -o ServerAliveCountMax=10 \
+              ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'ENDSSH'
+            set -e
             DOMAIN=~/domains/api.ibrahimmonir.com
-            # Download repo archive via curl (no fork needed, avoids git clone fork limit)
             curl -sL "https://github.com/ibrahim-monir/ibrahimmonir.com/archive/refs/heads/main.tar.gz" -o /tmp/repo.tar.gz
             mkdir -p /tmp/repo_extract
             tar -xzf /tmp/repo.tar.gz -C /tmp/repo_extract/
@@ -49,3 +55,4 @@ jobs:
             cp -r $DOMAIN/laravel/public/. $DOMAIN/public_html/
             cp $DOMAIN/laravel/public_html_index.php $DOMAIN/public_html/index.php
             cp $DOMAIN/laravel/public_html.htaccess $DOMAIN/public_html/.htaccess
+          ENDSSH
