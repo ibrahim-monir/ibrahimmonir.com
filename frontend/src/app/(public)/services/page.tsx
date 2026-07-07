@@ -262,7 +262,7 @@ export default function ServicesPage() {
       <section className="py-20" style={{ borderTop: "1px solid var(--border)" }}>
         <div className="container max-w-2xl text-center">
           <h2 className="section-title mb-4">Have a project in mind?</h2>
-          <p className="section-subtitle mb-8">
+          <p className="section-subtitle mx-auto mb-8">
             Tell me what you&apos;re building. I&apos;ll reply within 24 hours with a clear plan and price.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
