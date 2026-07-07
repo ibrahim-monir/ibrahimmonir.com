@@ -38,6 +38,16 @@ class InvoiceDocument
                 'address' => $s['contact_address'] ?? null,
                 'logo'    => $this->logoDataUri($s['site_logo'] ?? null),
             ],
+            'bank' => [
+                'name'           => $s['bank_name'] ?? null,
+                'account_name'   => $s['bank_account_name'] ?? null,
+                'account_number' => $s['bank_account_number'] ?? null,
+                'branch'         => $s['bank_branch'] ?? null,
+            ],
+            'signature' => [
+                'name'  => $s['invoice_signature_name'] ?? ($s['site_name'] ?? config('app.name', 'Ibrahim Monir')),
+                'image' => $this->logoDataUri($s['invoice_signature_image'] ?? null),
+            ],
         ];
     }
 

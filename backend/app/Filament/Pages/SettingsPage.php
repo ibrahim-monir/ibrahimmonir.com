@@ -165,6 +165,36 @@ class SettingsPage extends Page implements HasSchemas
                         ])->columns(2),
                     ]),
 
+                    Tab::make('Invoicing')->icon('heroicon-o-banknotes')->schema([
+                        Section::make('Bank / Payment Details')->schema([
+                            TextInput::make('bank_name')
+                                ->label('Bank Name')
+                                ->placeholder('Dutch-Bangla Bank Ltd.'),
+                            TextInput::make('bank_account_name')
+                                ->label('Account Name')
+                                ->placeholder('Ibrahim Monir'),
+                            TextInput::make('bank_account_number')
+                                ->label('Account Number')
+                                ->placeholder('1234 5678 9012'),
+                            TextInput::make('bank_branch')
+                                ->label('Branch')
+                                ->placeholder('Gulshan, Dhaka'),
+                        ])->columns(2),
+
+                        Section::make('Signature')->schema([
+                            TextInput::make('invoice_signature_name')
+                                ->label('Signature Name')
+                                ->placeholder('Ibrahim Monir')
+                                ->helperText('Printed under the signature line on invoices.'),
+                            FileUpload::make('invoice_signature_image')
+                                ->label('Signature Image (optional)')
+                                ->image()
+                                ->disk('public')
+                                ->directory('settings')
+                                ->helperText('A transparent PNG of your signature, shown above the printed name.'),
+                        ])->columns(2),
+                    ]),
+
                     Tab::make('About & Stats')->icon('heroicon-o-user')->schema([
                         Section::make('About Text')->schema([
                             Textarea::make('about_bio')
