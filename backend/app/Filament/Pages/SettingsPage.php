@@ -230,6 +230,19 @@ class SettingsPage extends Page implements HasSchemas
                         ])->columns(2),
                     ]),
 
+                    Tab::make('Analytics')->icon('heroicon-o-chart-bar')->schema([
+                        Section::make('Google Analytics / Tag Manager')->schema([
+                            TextInput::make('ga4_measurement_id')
+                                ->label('GA4 Measurement ID')
+                                ->placeholder('G-XXXXXXXXXX')
+                                ->helperText('From Google Analytics 4 → Admin → Data Streams. Leave blank to disable.'),
+                            TextInput::make('gtm_container_id')
+                                ->label('GTM Container ID')
+                                ->placeholder('GTM-XXXXXXX')
+                                ->helperText('From Google Tag Manager → your container ID. Leave blank to disable.'),
+                        ])->columns(2),
+                    ]),
+
                     Tab::make('SEO')->icon('heroicon-o-magnifying-glass')->schema([
                         Section::make('Search Engine Optimization')->schema([
                             TextInput::make('seo_title_suffix')
