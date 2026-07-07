@@ -112,5 +112,27 @@
         </div>
     </div>
 
+    {{-- Signature --}}
+    <div style="display:flex;justify-content:flex-end;margin-top:28px;">
+        <div style="text-align:center;">
+            @if(!empty($signature['image']))
+                <img src="{{ $signature['image'] }}" alt="signature" style="max-height:34px;max-width:120px;display:block;margin:0 auto 4px;">
+            @endif
+            <div style="border-top:1px solid #9ca3af;padding-top:4px;min-width:140px;">
+                <div style="font-size:11px;font-weight:700;color:#111827;">{{ $signature['name'] ?? $business['name'] }}</div>
+                <div style="font-size:8px;text-transform:uppercase;letter-spacing:.8px;color:#9ca3af;margin-top:1px;">Authorized Signature</div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Footer --}}
+    <div style="margin-top:20px;padding-top:12px;border-top:1px solid #e5e7eb;text-align:center;">
+        <div style="font-size:11px;font-weight:700;color:#111827;">Thank you for your business!</div>
+        <div style="font-size:9px;color:#9ca3af;margin-top:3px;">
+            {{ $business['name'] }}@if(!empty($business['email'])) &middot; {{ $business['email'] }}@endif
+            @if(!empty($business['phone'])) &middot; {{ $business['phone'] }}@endif
+        </div>
+    </div>
+
     </div>
 </div>

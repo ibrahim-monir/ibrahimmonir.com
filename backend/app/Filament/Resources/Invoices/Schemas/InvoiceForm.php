@@ -15,6 +15,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\HtmlString;
 
 class InvoiceForm
@@ -168,6 +169,12 @@ class InvoiceForm
             'business'      => [
                 'name'    => $s['site_name']    ?? config('app.name', 'Ibrahim Monir'),
                 'tagline' => $s['site_tagline'] ?? null,
+                'email'   => $s['contact_email'] ?? ($s['site_email'] ?? null),
+                'phone'   => $s['contact_phone'] ?? null,
+            ],
+            'signature' => [
+                'name'  => $s['invoice_signature_name'] ?? ($s['site_name'] ?? config('app.name', 'Ibrahim Monir')),
+                'image' => !empty($s['invoice_signature_image']) ? Storage::disk('public')->url($s['invoice_signature_image']) : null,
             ],
         ])->render();
     }
