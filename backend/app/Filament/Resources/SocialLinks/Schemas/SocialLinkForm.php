@@ -29,10 +29,10 @@ class SocialLinkForm
                     ]),
 
                 TextInput::make('url')
-                    ->label('Profile URL')
-                    ->url()
+                    ->label('Profile URL or Handle')
                     ->required()
-                    ->placeholder('https://...'),
+                    ->placeholder('https://... or @yourhandle')
+                    ->helperText('Paste the full profile URL, or just your @handle and it will be expanded automatically.'),
 
                 TextInput::make('order')->numeric()->default(0),
 

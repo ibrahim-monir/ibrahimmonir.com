@@ -48,4 +48,38 @@ class SocialLinkResource extends Resource
             'edit' => EditSocialLink::route('/{record}/edit'),
         ];
     }
+
+    /**
+     * Accept a bare @handle (or handle without @) instead of requiring a full URL,
+     * expanding it to the platform's profile URL. Left untouched if already a URL.
+     */
+    public static function normalizeUrl(array $data): array
+    {
+        $value = trim($data['url'] ?? '');
+
+        if ($value === '' || str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+            $data['url'] = $value;
+
+            return $data;
+        }
+
+        $handle = ltrim($value, '@/');
+
+        $bases = [
+            'github'    => 'https://github.com/',
+            'linkedin'  => 'https://linkedin.com/in/',
+            'facebook'  => 'https://facebook.com/',
+            'twitter'   => 'https://twitter.com/',
+            'instagram' => 'https://instagram.com/',
+            'youtube'   => 'https://youtube.com/@',
+            'tiktok'    => 'https://tiktok.com/@',
+            'dribbble'  => 'https://dribbble.com/',
+            'behance'   => 'https://behance.net/',
+        ];
+
+        $base = $bases[$data['platform'] ?? ''] ?? null;
+        $data['url'] = $base ? $base.$handle : $value;
+
+        return $data;
+    }
 }

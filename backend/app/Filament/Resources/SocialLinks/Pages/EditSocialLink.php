@@ -16,4 +16,9 @@ class EditSocialLink extends EditRecord
             DeleteAction::make(),
         ];
     }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        return SocialLinkResource::normalizeUrl($data);
+    }
 }

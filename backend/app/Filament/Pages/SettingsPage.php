@@ -165,37 +165,6 @@ class SettingsPage extends Page implements HasSchemas
                         ])->columns(2),
                     ]),
 
-                    Tab::make('Social Links')->icon('heroicon-o-link')->schema([
-                        Section::make('Social Media Profiles')->schema([
-                            TextInput::make('social_github')
-                                ->label('GitHub URL')
-                                ->url()
-                                ->placeholder('https://github.com/ibrahim-monir')
-                                ->prefixIcon('heroicon-o-code-bracket'),
-                            TextInput::make('social_linkedin')
-                                ->label('LinkedIn URL')
-                                ->url()
-                                ->placeholder('https://linkedin.com/in/ibrahimkhalilmp')
-                                ->prefixIcon('heroicon-o-briefcase'),
-                            TextInput::make('social_facebook')
-                                ->label('Facebook URL')
-                                ->url()
-                                ->placeholder('https://facebook.com/ibrahimmonir'),
-                            TextInput::make('social_twitter')
-                                ->label('X / Twitter URL')
-                                ->url()
-                                ->placeholder('https://twitter.com/ibrahimmonir'),
-                            TextInput::make('social_instagram')
-                                ->label('Instagram URL')
-                                ->url()
-                                ->placeholder('https://instagram.com/ibrahimmonir'),
-                            TextInput::make('social_youtube')
-                                ->label('YouTube URL')
-                                ->url()
-                                ->placeholder('https://youtube.com/@ibrahimmonir'),
-                        ])->columns(2),
-                    ]),
-
                     Tab::make('About & Stats')->icon('heroicon-o-user')->schema([
                         Section::make('About Text')->schema([
                             Textarea::make('about_bio')
