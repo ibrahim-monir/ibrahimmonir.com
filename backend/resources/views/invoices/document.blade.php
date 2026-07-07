@@ -109,6 +109,7 @@
     $paid    = (float) $invoice->paid_amount;
     $balance = max(0, $amount - $paid);
     $isOverdue = $invoice->due_date && $invoice->due_date->isPast() && $invoice->status !== 'paid';
+    $symbol = ($invoice->currency ?? 'USD') === 'BDT' ? '৳' : '$';
 @endphp
 
 @if($invoice->status === 'paid')
@@ -198,7 +199,7 @@
                         {{ $invoice->notes ?: 'Project milestone payment' }}
                     </div>
                 </td>
-                <td class="r"><strong>${{ number_format($amount, 2) }}</strong></td>
+                <td class="r"><strong>{{ $symbol }}{{ number_format($amount, 2) }}</strong></td>
             </tr>
         </tbody>
     </table>
@@ -211,19 +212,19 @@
                 <table class="tot-row">
                     <tr>
                         <td class="k">Subtotal</td>
-                        <td class="v">${{ number_format($amount, 2) }}</td>
+                        <td class="v">{{ $symbol }}{{ number_format($amount, 2) }}</td>
                     </tr>
                     @if($paid > 0)
                     <tr>
                         <td class="k">Amount Paid</td>
-                        <td class="v" style="color:#10b981;">&minus; ${{ number_format($paid, 2) }}</td>
+                        <td class="v" style="color:#10b981;">&minus; {{ $symbol }}{{ number_format($paid, 2) }}</td>
                     </tr>
                     @endif
                 </table>
                 <table class="grand" style="margin-top:8px;">
                     <tr>
                         <td class="gk">{{ $balance > 0 ? 'Balance Due' : 'Total' }}</td>
-                        <td class="gv">${{ number_format($balance > 0 ? $balance : $amount, 2) }}</td>
+                        <td class="gv">{{ $symbol }}{{ number_format($balance > 0 ? $balance : $amount, 2) }}</td>
                     </tr>
                 </table>
             </td>

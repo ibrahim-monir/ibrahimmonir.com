@@ -7,11 +7,28 @@ interface Invoice {
   id: number;
   invoice_number: string;
   amount: number;
+  currency?: string;
   status: string;
   due_date: string;
   paid_at?: string;
   notes?: string;
   project?: { title: string };
+}
+
+const symbolFor = (currency?: string) => (currency === "BDT" ? "৳" : "$");
+
+function sumByCurrency(list: Invoice[]): Record<string, number> {
+  return list.reduce((acc, i) => {
+    const c = i.currency ?? "USD";
+    acc[c] = (acc[c] ?? 0) + Number(i.amount);
+    return acc;
+  }, {} as Record<string, number>);
+}
+
+function formatSums(sums: Record<string, number>): string {
+  const entries = Object.entries(sums);
+  if (entries.length === 0) return "$0";
+  return entries.map(([c, v]) => `${symbolFor(c)}${v.toLocaleString()}`).join(" + ");
 }
 
 const statusConfig: Record<string, { icon: typeof CheckCircle; color: string; label: string }> = {
@@ -27,9 +44,9 @@ export default function InvoicesPage() {
     queryFn: () => api.get("/invoices").then((r) => r.data.invoices ?? []),
   });
 
-  const totalPaid = invoices.filter((i) => i.status === "paid").reduce((s, i) => s + Number(i.amount), 0);
-  const totalPending = invoices.filter((i) => i.status === "pending").reduce((s, i) => s + Number(i.amount), 0);
-  const totalOverdue = invoices.filter((i) => i.status === "overdue").reduce((s, i) => s + Number(i.amount), 0);
+  const totalPaid = sumByCurrency(invoices.filter((i) => i.status === "paid"));
+  const totalPending = sumByCurrency(invoices.filter((i) => i.status === "pending"));
+  const totalOverdue = sumByCurrency(invoices.filter((i) => i.status === "overdue"));
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -50,7 +67,7 @@ export default function InvoicesPage() {
               <DollarSign size={16} style={{ color: s.color }} />
               <span className="text-xs" style={{ color: "var(--text-muted)" }}>{s.label}</span>
             </div>
-            <div className="text-xl font-bold">${s.value.toLocaleString()}</div>
+            <div className="text-xl font-bold">{formatSums(s.value)}</div>
           </div>
         ))}
       </div>
@@ -92,7 +109,7 @@ export default function InvoicesPage() {
                   </div>
                 </div>
                 <div className="text-right shrink-0">
-                  <div className="font-bold text-lg">${Number(inv.amount).toLocaleString()}</div>
+                  <div className="font-bold text-lg">{symbolFor(inv.currency)}{Number(inv.amount).toLocaleString()}</div>
                   {inv.notes && (
                     <div className="text-xs mt-0.5 max-w-[180px] truncate" style={{ color: "var(--text-muted)" }}>
                       {inv.notes}

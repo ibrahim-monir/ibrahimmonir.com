@@ -8,7 +8,7 @@ class Invoice extends Model
 {
     protected $fillable = [
         'project_id', 'client_id', 'invoice_number',
-        'amount', 'paid_amount', 'status',
+        'amount', 'currency', 'paid_amount', 'status',
         'due_date', 'paid_at', 'sent_at', 'notes',
     ];
 

@@ -13,6 +13,7 @@
     $st = $status ?: 'pending';
     [$badgeBg, $badgeFg] = $statusColors[$st] ?? $statusColors['pending'];
     $balance = max(0, $amount - $paid);
+    $symbol = ($currency ?? 'USD') === 'BDT' ? '৳' : '$';
     $due = null;
     if (!empty($dueDate)) { try { $due = \Illuminate\Support\Carbon::parse($dueDate); } catch (\Throwable $e) {} }
 @endphp
@@ -73,7 +74,7 @@
                     <div style="font-size:12px;font-weight:700;color:#111827;">{{ $projectTitle ?: 'Project Milestone' }}</div>
                     <div style="font-size:11px;color:#6b7280;margin-top:2px;">{{ $notes ?: 'Project milestone payment' }}</div>
                 </td>
-                <td style="padding:11px 10px;border-bottom:1px solid #eef0f3;text-align:right;font-weight:700;white-space:nowrap;">${{ number_format($amount, 2) }}</td>
+                <td style="padding:11px 10px;border-bottom:1px solid #eef0f3;text-align:right;font-weight:700;white-space:nowrap;">{{ $symbol }}{{ number_format($amount, 2) }}</td>
             </tr>
         </tbody>
     </table>
@@ -82,17 +83,17 @@
     <div style="margin-top:14px;">
         <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:12px;">
             <span style="color:#6b7280;">Subtotal</span>
-            <span style="font-weight:700;">${{ number_format($amount, 2) }}</span>
+            <span style="font-weight:700;">{{ $symbol }}{{ number_format($amount, 2) }}</span>
         </div>
         @if($paid > 0)
         <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:12px;">
             <span style="color:#6b7280;">Amount Paid</span>
-            <span style="font-weight:700;color:#10b981;">&minus; ${{ number_format($paid, 2) }}</span>
+            <span style="font-weight:700;color:#10b981;">&minus; {{ $symbol }}{{ number_format($paid, 2) }}</span>
         </div>
         @endif
         <div style="display:flex;justify-content:space-between;align-items:center;background:#111827;border-radius:6px;padding:11px 14px;margin-top:8px;">
             <span style="font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:#d1d5db;">{{ $balance > 0 ? 'Balance Due' : 'Total' }}</span>
-            <span style="font-size:16px;font-weight:800;color:#f59e0b;">${{ number_format($balance > 0 ? $balance : $amount, 2) }}</span>
+            <span style="font-size:16px;font-weight:800;color:#f59e0b;">{{ $symbol }}{{ number_format($balance > 0 ? $balance : $amount, 2) }}</span>
         </div>
     </div>
 

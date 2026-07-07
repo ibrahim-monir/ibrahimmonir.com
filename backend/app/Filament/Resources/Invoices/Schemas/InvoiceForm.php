@@ -72,10 +72,19 @@ class InvoiceForm
                             ]),
 
                             Section::make('Amount & Dates')->schema([
+                                Select::make('currency')
+                                    ->options([
+                                        'USD' => 'USD ($)',
+                                        'BDT' => 'BDT (৳)',
+                                    ])
+                                    ->default('USD')
+                                    ->required()
+                                    ->live(),
+
                                 TextInput::make('amount')
                                     ->label('Total Amount')
                                     ->numeric()
-                                    ->prefix('$')
+                                    ->prefix(fn (callable $get) => $get('currency') === 'BDT' ? '৳' : '$')
                                     ->required()
                                     ->minValue(0)
                                     ->live(onBlur: true),
@@ -83,7 +92,7 @@ class InvoiceForm
                                 TextInput::make('paid_amount')
                                     ->label('Amount Paid')
                                     ->numeric()
-                                    ->prefix('$')
+                                    ->prefix(fn (callable $get) => $get('currency') === 'BDT' ? '৳' : '$')
                                     ->default(0)
                                     ->minValue(0)
                                     ->live(onBlur: true),
@@ -122,6 +131,7 @@ class InvoiceForm
             'clientEmail'   => $client?->user?->email,
             'projectTitle'  => $project?->title,
             'status'        => $get('status') ?: 'pending',
+            'currency'      => $get('currency') ?: 'USD',
             'amount'        => (float) $get('amount'),
             'paid'          => (float) $get('paid_amount'),
             'dueDate'       => $get('due_date'),

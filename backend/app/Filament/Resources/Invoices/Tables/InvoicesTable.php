@@ -24,8 +24,8 @@ class InvoicesTable
                 TextColumn::make('invoice_number')->label('Invoice #')->searchable()->sortable()->copyable(),
                 TextColumn::make('client.user.name')->label('Client')->searchable()->sortable(),
                 TextColumn::make('project.title')->label('Project')->searchable()->limit(30),
-                TextColumn::make('amount')->money('USD')->sortable(),
-                TextColumn::make('paid_amount')->label('Paid')->money('USD')->sortable()
+                TextColumn::make('amount')->money(fn ($record) => $record->currency ?? 'USD')->sortable(),
+                TextColumn::make('paid_amount')->label('Paid')->money(fn ($record) => $record->currency ?? 'USD')->sortable()
                     ->color(fn ($record) => (float)$record->paid_amount > 0 ? 'success' : null),
                 TextColumn::make('status')
                     ->badge()
