@@ -77,7 +77,12 @@
             <tr>
                 <td style="padding:11px 10px;border-bottom:1px solid #eef0f3;vertical-align:top;">
                     <div style="font-size:12px;font-weight:700;color:#111827;">
-                        {{ $projectTitle ?: 'Project Milestone' }}@if(!empty($milestoneNo)) &mdash; Milestone {{ $milestoneNo }}@if(!empty($totalMilestones)) of {{ $totalMilestones }}@endif@endif
+                        {{ $projectTitle ?: 'Project Milestone' }}
+                        @if(!empty($milestoneNo))
+                            &mdash; Milestone {{ $milestoneNo }}@if(!empty($totalMilestones)) of {{ $totalMilestones }}@endif
+                        @elseif(!empty($totalMilestones))
+                            &mdash; {{ $totalMilestones }} Milestones Total
+                        @endif
                     </div>
                     <div style="font-size:11px;color:#6b7280;margin-top:2px;">{{ $notes ?: 'Project milestone payment' }}</div>
                     @if(!empty($totalBudget))

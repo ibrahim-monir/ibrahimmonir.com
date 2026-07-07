@@ -221,7 +221,12 @@
             <tr>
                 <td>
                     <div class="item-title">
-                        {{ $invoice->project?->title ?? 'Project Milestone' }}@if(!empty($invoice->milestone_no)) &mdash; Milestone {{ $invoice->milestone_no }}@if(!empty($invoice->total_milestones)) of {{ $invoice->total_milestones }}@endif@endif
+                        {{ $invoice->project?->title ?? 'Project Milestone' }}
+                        @if(!empty($invoice->milestone_no))
+                            &mdash; Milestone {{ $invoice->milestone_no }}@if(!empty($invoice->total_milestones)) of {{ $invoice->total_milestones }}@endif
+                        @elseif(!empty($invoice->total_milestones))
+                            &mdash; {{ $invoice->total_milestones }} Milestones Total
+                        @endif
                     </div>
                     <div class="item-desc">
                         {{ $invoice->notes ?: 'Project milestone payment' }}
