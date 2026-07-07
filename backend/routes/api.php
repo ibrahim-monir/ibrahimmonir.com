@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\PricingController;
+use App\Http\Controllers\Api\SocialLinkController;
 use App\Http\Controllers\Api\WorkController;
 use Illuminate\Support\Facades\Route;
 
@@ -41,6 +42,7 @@ Route::get('/blog/{slug}',      [BlogController::class, 'show']);
 Route::post('/contact',         [ContactController::class, 'store']);
 
 Route::get('/settings',         [SettingsController::class, 'index']);
+Route::get('/social-links',     [SocialLinkController::class, 'index']);
 Route::get('/experiences',      [ExperienceController::class, 'index']);
 Route::get('/testimonials',     [TestimonialController::class, 'index']);
 

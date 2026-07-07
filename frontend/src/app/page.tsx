@@ -49,14 +49,6 @@ export default async function HomePage() {
   const timeline: { role: string; company: string; year_label: string; description: string }[] = experiencesRaw;
   const testimonials: TestimonialItem[] = testimonialsRaw;
   const recentWorks: WorkItem[] = Array.isArray(worksRaw) && worksRaw.length ? worksRaw.slice(0, 8) : FALLBACK_WORKS;
-  const socialLinks = {
-    social_github:    str(settings.social_github),
-    social_linkedin:  str(settings.social_linkedin),
-    social_facebook:  str(settings.social_facebook),
-    social_twitter:   str(settings.social_twitter),
-    social_instagram: str(settings.social_instagram),
-    social_youtube:   str(settings.social_youtube),
-  };
 
   const statsData = [
     { num: parseInt(str(settings.stat_projects_completed, "80")),  suffix: "+", label: "Projects Delivered" },
@@ -67,7 +59,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <TopBar phone={str(settings.contact_phone)} socialLinks={socialLinks} />
+      <TopBar phone={str(settings.contact_phone)} />
       <Navbar />
       <main className="pt-[100px] flex-1">
 
