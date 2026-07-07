@@ -2,7 +2,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Mail, ArrowRight } from "lucide-react";
-import BrandLogo from "@/components/BrandLogo";
 import toast from "react-hot-toast";
 import api from "@/lib/api";
 
@@ -25,12 +24,9 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: "var(--bg)" }}>
+    <div className="py-16 flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Link href="/" className="inline-block mb-6">
-            <BrandLogo fontSize="1.7rem" />
-          </Link>
           <h1 className="text-2xl font-bold mb-2">Forgot Password?</h1>
           <p className="text-sm" style={{ color: "var(--text-muted)" }}>
             Enter your email and we&apos;ll send you a reset link.
@@ -77,10 +73,6 @@ export default function ForgotPasswordPage() {
             </div>
           )}
         </div>
-
-        <p className="text-center mt-6 text-sm" style={{ color: "var(--text-muted)" }}>
-          <Link href="/" className="hover:text-white transition-colors">← Back to website</Link>
-        </p>
       </div>
     </div>
   );

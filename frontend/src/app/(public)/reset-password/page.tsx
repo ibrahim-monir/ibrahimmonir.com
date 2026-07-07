@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Eye, EyeOff, KeyRound } from "lucide-react";
 import type { AxiosError } from "axios";
-import BrandLogo from "@/components/BrandLogo";
 import toast from "react-hot-toast";
 import api from "@/lib/api";
 
@@ -100,12 +99,9 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: "var(--bg)" }}>
+    <div className="py-16 flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Link href="/" className="inline-block mb-6">
-            <BrandLogo fontSize="1.7rem" />
-          </Link>
           <h1 className="text-2xl font-bold mb-2">Reset Your Password</h1>
           <p className="text-sm" style={{ color: "var(--text-muted)" }}>
             Enter your new password below.
@@ -114,9 +110,6 @@ export default function ResetPasswordPage() {
         <Suspense fallback={<div className="card p-8 text-center text-sm" style={{ color: "var(--text-muted)" }}>Loading...</div>}>
           <ResetPasswordForm />
         </Suspense>
-        <p className="text-center mt-6 text-sm" style={{ color: "var(--text-muted)" }}>
-          <Link href="/" className="hover:text-white transition-colors">← Back to website</Link>
-        </p>
       </div>
     </div>
   );
