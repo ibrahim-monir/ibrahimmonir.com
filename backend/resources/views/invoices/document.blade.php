@@ -113,9 +113,6 @@
     .footer { margin-top: 30px; padding: 16px 44px 0; text-align: center; }
     .footer .thanks { font-size: 13px; font-weight: bold; color: #111827; }
     .footer .sub { font-size: 10px; color: #9ca3af; margin-top: 4px; }
-    .footer-stripe { height: 8px; background: #0f172a; margin-top: 20px; font-size: 0; line-height: 0; }
-    .footer-stripe-accent { height: 8px; background: #f97316; width: 35%; font-size: 0; line-height: 0; }
-
     .watermark-paid {
         position: absolute; top: 340px; left: 0; right: 0; text-align: center;
         font-size: 90px; font-weight: bold; color: #10b981; opacity: 0.08;
@@ -320,6 +317,5 @@
 
 </div>
 
-<div class="footer-stripe"></div>
 </body>
 </html>

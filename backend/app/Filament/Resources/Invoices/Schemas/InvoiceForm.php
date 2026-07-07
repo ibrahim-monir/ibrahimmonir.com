@@ -156,6 +156,8 @@ class InvoiceForm
             'clientName'    => $client?->user?->name,
             'clientCompany' => $client?->company,
             'clientEmail'   => $client?->user?->email,
+            'clientPhone'   => $client?->phone,
+            'clientAddress' => $client?->address,
             'projectTitle'  => $project?->title,
             'milestoneNo'      => $get('milestone_no'),
             'totalMilestones'  => $get('total_milestones'),
@@ -171,6 +173,13 @@ class InvoiceForm
                 'tagline' => $s['site_tagline'] ?? null,
                 'email'   => $s['contact_email'] ?? ($s['site_email'] ?? null),
                 'phone'   => $s['contact_phone'] ?? null,
+                'address' => $s['contact_address'] ?? null,
+            ],
+            'bank' => [
+                'name'           => $s['bank_name'] ?? null,
+                'account_name'   => $s['bank_account_name'] ?? null,
+                'account_number' => $s['bank_account_number'] ?? null,
+                'branch'         => $s['bank_branch'] ?? null,
             ],
             'signature' => [
                 'name'  => $s['invoice_signature_name'] ?? ($s['site_name'] ?? config('app.name', 'Ibrahim Monir')),

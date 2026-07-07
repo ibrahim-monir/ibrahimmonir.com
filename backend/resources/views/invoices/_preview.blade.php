@@ -16,6 +16,7 @@
     $symbol = ($currency ?? 'USD') === 'BDT' ? '৳' : '$';
     $due = null;
     if (!empty($dueDate)) { try { $due = \Illuminate\Support\Carbon::parse($dueDate); } catch (\Throwable $e) {} }
+    $hasBank = !empty($bank['name']) || !empty($bank['account_number']) || !empty($bank['account_name']);
 @endphp
 
 <div style="background:#ffffff;border-radius:12px;overflow:hidden;color:#1f2937;font-family:'Segoe UI',Arial,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.35);font-size:13px;line-height:1.5;">
@@ -39,12 +40,23 @@
 
     <div style="padding:18px;">
 
-    {{-- Invoice To --}}
-    <div style="margin-bottom:16px;">
-        <span style="display:inline-block;background:#0f172a;color:#fff;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:4px 10px;border-radius:3px;margin-bottom:6px;">Invoice To</span>
-        <div style="font-size:13px;font-weight:700;color:#111827;margin-top:2px;">{{ $clientName ?: 'No client selected' }}</div>
-        @if(!empty($clientCompany))<div style="font-size:11px;color:#6b7280;">{{ $clientCompany }}</div>@endif
-        @if(!empty($clientEmail))<div style="font-size:11px;color:#6b7280;">{{ $clientEmail }}</div>@endif
+    {{-- Invoice From / To --}}
+    <div style="display:flex;gap:12px;margin-bottom:16px;">
+        <div style="flex:1;">
+            <span style="display:inline-block;background:#0f172a;color:#fff;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:4px 10px;border-radius:3px;margin-bottom:6px;">Invoice From</span>
+            <div style="font-size:12px;font-weight:700;color:#111827;margin-top:2px;">{{ $business['name'] }}</div>
+            @if(!empty($business['email']))<div style="font-size:10.5px;color:#6b7280;">{{ $business['email'] }}</div>@endif
+            @if(!empty($business['phone']))<div style="font-size:10.5px;color:#6b7280;">{{ $business['phone'] }}</div>@endif
+            @if(!empty($business['address']))<div style="font-size:10.5px;color:#6b7280;">{{ $business['address'] }}</div>@endif
+        </div>
+        <div style="flex:1;">
+            <span style="display:inline-block;background:#0f172a;color:#fff;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:4px 10px;border-radius:3px;margin-bottom:6px;">Invoice To</span>
+            <div style="font-size:12px;font-weight:700;color:#111827;margin-top:2px;">{{ $clientName ?: 'No client selected' }}</div>
+            @if(!empty($clientCompany))<div style="font-size:10.5px;color:#6b7280;">{{ $clientCompany }}</div>@endif
+            @if(!empty($clientEmail))<div style="font-size:10.5px;color:#6b7280;">{{ $clientEmail }}</div>@endif
+            @if(!empty($clientPhone))<div style="font-size:10.5px;color:#6b7280;">{{ $clientPhone }}</div>@endif
+            @if(!empty($clientAddress))<div style="font-size:10.5px;color:#6b7280;">{{ $clientAddress }}</div>@endif
+        </div>
     </div>
 
     {{-- Meta --}}
@@ -93,6 +105,26 @@
             </tr>
         </tbody>
     </table>
+
+    {{-- Payment Method / Contact Info --}}
+    @if($hasBank || !empty($business['phone']) || !empty($business['email']))
+    <div style="display:flex;gap:12px;margin-top:16px;">
+        @if($hasBank)
+        <div style="flex:1;">
+            <span style="display:inline-block;background:#0f172a;color:#fff;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:3px 8px;border-radius:3px;margin-bottom:5px;">Payment Method</span>
+            @if(!empty($bank['account_number']))<div style="font-size:9.5px;color:#4b5563;">A/C No: <strong style="color:#111827;">{{ $bank['account_number'] }}</strong></div>@endif
+            @if(!empty($bank['account_name']))<div style="font-size:9.5px;color:#4b5563;">A/C Name: <strong style="color:#111827;">{{ $bank['account_name'] }}</strong></div>@endif
+            @if(!empty($bank['name']))<div style="font-size:9.5px;color:#4b5563;">Bank: <strong style="color:#111827;">{{ $bank['name'] }}</strong></div>@endif
+            @if(!empty($bank['branch']))<div style="font-size:9.5px;color:#4b5563;">Branch: <strong style="color:#111827;">{{ $bank['branch'] }}</strong></div>@endif
+        </div>
+        @endif
+        <div style="flex:1;">
+            <span style="display:inline-block;background:#0f172a;color:#fff;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:3px 8px;border-radius:3px;margin-bottom:5px;">Contact Info</span>
+            @if(!empty($business['phone']))<div style="font-size:9.5px;color:#4b5563;">Phone: <strong style="color:#111827;">{{ $business['phone'] }}</strong></div>@endif
+            @if(!empty($business['email']))<div style="font-size:9.5px;color:#4b5563;">Email: <strong style="color:#111827;">{{ $business['email'] }}</strong></div>@endif
+        </div>
+    </div>
+    @endif
 
     {{-- Totals --}}
     <div style="margin-top:14px;">
