@@ -26,6 +26,7 @@ class WorkController extends Controller
                 'url'          => $w->url,
                 'is_featured'  => (bool) $w->is_featured,
                 'thumbnail'    => $this->fileUrl($w->thumbnail),
+                'images'       => collect($w->images ?? [])->map(fn (string $path) => $this->fileUrl($path))->values()->all(),
             ]);
 
         return response()->json($works);

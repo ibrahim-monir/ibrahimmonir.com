@@ -87,7 +87,11 @@ class WorkSeeder extends Seeder
                 'description'  => $p['description'],
                 'technologies' => $p['technologies'],
                 'thumbnail'    => "https://picsum.photos/seed/{$slug}/900/560",
-                'images'       => null,
+                'images'       => [
+                    "https://picsum.photos/seed/{$slug}-1/1200/800",
+                    "https://picsum.photos/seed/{$slug}-2/1200/800",
+                    "https://picsum.photos/seed/{$slug}-3/1200/800",
+                ],
                 'url'          => null,
                 'is_featured'  => $p['is_featured'],
                 'is_active'    => true,

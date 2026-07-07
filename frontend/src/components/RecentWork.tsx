@@ -1,7 +1,9 @@
 'use client';
 
+import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, ExternalLink } from "lucide-react";
+import { ArrowRight, ExternalLink, Images } from "lucide-react";
+import WorkGalleryLightbox from "./WorkGalleryLightbox";
 
 export type WorkItem = {
   id?: number | string;
@@ -10,6 +12,7 @@ export type WorkItem = {
   technologies?: string[];
   url?: string | null;
   thumbnail?: string | null;
+  images?: string[] | null;
 };
 
 const GRADIENTS = [
@@ -31,186 +34,126 @@ function initials(title: string): string {
 }
 
 export default function RecentWork({ works }: { works: WorkItem[] }) {
+  const [gallery, setGallery] = useState<{ title: string; images: string[]; index: number } | null>(null);
+
   if (!works.length) return null;
 
-  // Duplicate the list so the marquee can loop seamlessly.
-  const loop = [...works, ...works];
+  const items = works.slice(0, 6);
 
   return (
-    <section className="py-20 overflow-hidden">
-      <style>{`
-        @keyframes rw-slide {
-          from { transform: translateX(0); }
-          to   { transform: translateX(-50%); }
-        }
-        .rw-scene {
-          perspective: 1800px;
-          perspective-origin: 50% 38%;
-          -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
-                  mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
-        }
-        .rw-tilt {
-          width: max-content;
-          transform: rotateX(14deg) rotateY(-18deg) rotate(2deg);
-          transform-style: preserve-3d;
-          transition: transform .7s cubic-bezier(.2,.7,.2,1);
-          will-change: transform;
-        }
-        .rw-scene:hover .rw-tilt {
-          transform: rotateX(0deg) rotateY(0deg) rotate(0deg);
-        }
-        .rw-track {
-          display: flex;
-          gap: 30px;
-          padding: 30px 0;
-          animation: rw-slide 40s linear infinite;
-          will-change: transform;
-        }
-        .rw-scene:hover .rw-track { animation-play-state: paused; }
-        .rw-card {
-          position: relative;
-          flex: 0 0 auto;
-          width: 360px;
-          border-radius: 16px;
-          overflow: hidden;
-          background: var(--bg-card, #111);
-          border: 1px solid var(--border, rgba(255,255,255,.08));
-          box-shadow: 0 24px 50px -20px rgba(0,0,0,.7);
-          text-decoration: none;
-          color: inherit;
-          transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
-          transform-style: preserve-3d;
-        }
-        .rw-card:hover {
-          transform: translateZ(50px) scale(1.03);
-          border-color: rgba(249,115,22,.55);
-          box-shadow: 0 36px 70px -22px rgba(249,115,22,.45);
-        }
-        .rw-shot {
-          position: relative;
-          height: 200px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          overflow: hidden;
-        }
-        .rw-shot img {
-          width: 100%; height: 100%;
-          object-fit: cover;
-          display: block;
-        }
-        .rw-bar {
-          position: absolute; top: 0; left: 0; right: 0;
-          height: 30px;
-          display: flex; align-items: center; gap: 6px;
-          padding: 0 12px;
-          background: rgba(0,0,0,.35);
-          backdrop-filter: blur(4px);
-          z-index: 2;
-        }
-        .rw-dot { width: 9px; height: 9px; border-radius: 50%; }
-        .rw-mono {
-          font-size: 3rem; font-weight: 800; letter-spacing: -1px;
-          color: rgba(255,255,255,.92);
-          text-shadow: 0 4px 18px rgba(0,0,0,.45);
-        }
-        .rw-cat {
-          position: absolute; left: 12px; bottom: 12px; z-index: 2;
-          font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .5px;
-          padding: 4px 10px; border-radius: 999px;
-          background: rgba(10,10,10,.78); color: #fb923c;
-          border: 1px solid rgba(249,115,22,.4);
-        }
-        .rw-body { padding: 18px 18px 20px; }
-        .rw-title {
-          font-size: 1.05rem; font-weight: 700; line-height: 1.3;
-          margin-bottom: 12px;
-          display: flex; align-items: center; gap: 8px; justify-content: space-between;
-        }
-        .rw-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-        .rw-tag {
-          font-size: .68rem; padding: 3px 9px; border-radius: 6px;
-          background: rgba(249,115,22,.1); color: #fb923c;
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .rw-track { animation: none; }
-          .rw-tilt { transform: none; }
-        }
-        @media (max-width: 768px) {
-          .rw-tilt { transform: rotateX(8deg) rotateY(-10deg); }
-          .rw-card { width: 290px; }
-          .rw-shot { height: 165px; }
-        }
-      `}</style>
-
+    <section className="py-20">
       <div className="container">
-        <div className="text-center mb-4">
+        <div className="text-center mb-12">
           <span className="badge mb-4 inline-flex">Portfolio</span>
           <h2 className="section-title mb-4">My Recent Work</h2>
           <p className="section-subtitle mx-auto">
             A glimpse of recently completed projects — crafted with care, shipped with confidence.
           </p>
         </div>
-      </div>
 
-      <div className="rw-scene">
-        <div className="rw-tilt">
-          <div className="rw-track">
-            {loop.map((w, i) => {
-              const grad = GRADIENTS[i % GRADIENTS.length];
-              const href = w.url && w.url !== "#" ? w.url : "/works";
-              const external = href.startsWith("http");
-              const inner = (
-                <>
-                  <div className="rw-shot" style={{ background: grad }}>
-                    <div className="rw-bar">
-                      <span className="rw-dot" style={{ background: "#ff5f56" }} />
-                      <span className="rw-dot" style={{ background: "#ffbd2e" }} />
-                      <span className="rw-dot" style={{ background: "#27c93f" }} />
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {items.map((w, i) => {
+            const grad = GRADIENTS[i % GRADIENTS.length];
+            const href = w.url && w.url !== "#" ? w.url : "/works";
+            const external = href.startsWith("http");
+            const galleryImages = [w.thumbnail, ...(w.images ?? [])].filter(
+              (src, idx, arr): src is string => !!src && arr.indexOf(src) === idx
+            );
+
+            return (
+              <div key={`${w.id ?? w.title}-${i}`} className="card overflow-hidden hover:border-orange-500/50 transition-all group">
+                <button
+                  type="button"
+                  onClick={() => galleryImages.length && setGallery({ title: w.title, images: galleryImages, index: 0 })}
+                  disabled={!galleryImages.length}
+                  aria-label={`View ${w.title} gallery`}
+                  className="relative h-48 w-full overflow-hidden block text-left"
+                  style={{ background: grad, cursor: galleryImages.length ? "zoom-in" : "default" }}
+                >
+                  {w.thumbnail ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={w.thumbnail}
+                      alt={w.title}
+                      loading="lazy"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <span style={{ fontSize: "2.6rem", fontWeight: 800, color: "rgba(255,255,255,.9)" }}>
+                        {initials(w.title)}
+                      </span>
                     </div>
-                    {w.thumbnail ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={w.thumbnail} alt={w.title} loading="lazy" />
-                    ) : (
-                      <span className="rw-mono">{initials(w.title)}</span>
-                    )}
-                    {w.category && <span className="rw-cat">{w.category}</span>}
+                  )}
+                  {w.category && (
+                    <span className="badge" style={{ position: "absolute", left: 12, bottom: 12 }}>
+                      {w.category}
+                    </span>
+                  )}
+                  {galleryImages.length > 1 && (
+                    <span
+                      className="absolute right-3 top-3 flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full"
+                      style={{ background: "rgba(0,0,0,.6)", color: "#fff" }}
+                    >
+                      <Images size={13} /> {galleryImages.length}
+                    </span>
+                  )}
+                  {!!galleryImages.length && (
+                    <div
+                      className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                      style={{ background: "rgba(0,0,0,.35)" }}
+                    >
+                      <span
+                        className="flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-full"
+                        style={{ background: "rgba(255,255,255,.95)", color: "#111" }}
+                      >
+                        <Images size={15} /> View Gallery
+                      </span>
+                    </div>
+                  )}
+                </button>
+                <div className="p-6">
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <h3 className="font-bold text-lg group-hover:text-orange-400 transition-colors">{w.title}</h3>
+                    <a
+                      href={href}
+                      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                      aria-label={`Open ${w.title}`}
+                      style={{ color: "var(--primary)", flexShrink: 0 }}
+                    >
+                      <ExternalLink size={15} />
+                    </a>
                   </div>
-                  <div className="rw-body">
-                    <div className="rw-title">
-                      <span>{w.title}</span>
-                      <ExternalLink size={15} style={{ color: "var(--primary)", flexShrink: 0 }} />
-                    </div>
-                    <div className="rw-tags">
-                      {(w.technologies ?? []).slice(0, 4).map((t) => (
-                        <span key={t} className="rw-tag">{t}</span>
+                  {!!(w.technologies && w.technologies.length) && (
+                    <div className="flex flex-wrap gap-2">
+                      {w.technologies.slice(0, 4).map((t) => (
+                        <span key={t} className="text-xs px-2 py-1 rounded-md" style={{ background: "rgba(249,115,22,0.1)", color: "#fb923c" }}>
+                          {t}
+                        </span>
                       ))}
                     </div>
-                  </div>
-                </>
-              );
-
-              return external ? (
-                <a key={`${w.id ?? w.title}-${i}`} className="rw-card" href={href} target="_blank" rel="noopener noreferrer" aria-hidden={i >= works.length}>
-                  {inner}
-                </a>
-              ) : (
-                <Link key={`${w.id ?? w.title}-${i}`} className="rw-card" href={href} aria-hidden={i >= works.length}>
-                  {inner}
-                </Link>
-              );
-            })}
-          </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
-      </div>
 
-      <div className="container">
-        <div className="text-center mt-6">
+        <div className="text-center mt-12">
           <Link href="/works" className="btn-primary text-base py-3 px-8">
             View All Work <ArrowRight size={18} />
           </Link>
         </div>
       </div>
+
+      {gallery && (
+        <WorkGalleryLightbox
+          title={gallery.title}
+          images={gallery.images}
+          initialIndex={gallery.index}
+          onClose={() => setGallery(null)}
+        />
+      )}
     </section>
   );
 }
