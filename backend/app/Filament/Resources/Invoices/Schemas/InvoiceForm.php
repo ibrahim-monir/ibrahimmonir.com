@@ -74,6 +74,15 @@ class InvoiceForm
                                         ->live(onBlur: true),
                                 ])->columnSpanFull(),
 
+                                TextInput::make('total_budget')
+                                    ->label('Total Project Budget')
+                                    ->numeric()
+                                    ->prefix(fn (callable $get) => $get('currency') === 'BDT' ? '৳' : '$')
+                                    ->minValue(0)
+                                    ->placeholder('e.g. 42000')
+                                    ->helperText('Reference only — the whole project\'s budget across all milestones. Does not affect this invoice\'s total.')
+                                    ->live(onBlur: true),
+
                                 Select::make('status')
                                     ->options([
                                         'pending'   => 'Pending',
@@ -98,7 +107,8 @@ class InvoiceForm
                                     ->live(),
 
                                 TextInput::make('amount')
-                                    ->label('Total Amount')
+                                    ->label('Invoice Amount')
+                                    ->helperText('The amount due for this invoice (e.g. this milestone), not the whole project.')
                                     ->numeric()
                                     ->prefix(fn (callable $get) => $get('currency') === 'BDT' ? '৳' : '$')
                                     ->required()
@@ -148,6 +158,7 @@ class InvoiceForm
             'projectTitle'  => $project?->title,
             'milestoneNo'      => $get('milestone_no'),
             'totalMilestones'  => $get('total_milestones'),
+            'totalBudget'      => $get('total_budget'),
             'status'        => $get('status') ?: 'pending',
             'currency'      => $get('currency') ?: 'USD',
             'amount'        => (float) $get('amount'),

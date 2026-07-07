@@ -8,6 +8,7 @@ interface Invoice {
   invoice_number: string;
   milestone_no?: number | null;
   total_milestones?: number | null;
+  total_budget?: number | null;
   amount: number;
   currency?: string;
   status: string;
@@ -115,6 +116,11 @@ export default function InvoicesPage() {
                 </div>
                 <div className="text-right shrink-0">
                   <div className="font-bold text-lg">{symbolFor(inv.currency)}{Number(inv.amount).toLocaleString()}</div>
+                  {inv.total_budget ? (
+                    <div className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
+                      of {symbolFor(inv.currency)}{Number(inv.total_budget).toLocaleString()} total
+                    </div>
+                  ) : null}
                   {inv.notes && (
                     <div className="text-xs mt-0.5 max-w-[180px] truncate" style={{ color: "var(--text-muted)" }}>
                       {inv.notes}

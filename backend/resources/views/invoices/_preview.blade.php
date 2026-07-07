@@ -80,6 +80,9 @@
                         {{ $projectTitle ?: 'Project Milestone' }}@if(!empty($milestoneNo)) &mdash; Milestone {{ $milestoneNo }}@if(!empty($totalMilestones)) of {{ $totalMilestones }}@endif@endif
                     </div>
                     <div style="font-size:11px;color:#6b7280;margin-top:2px;">{{ $notes ?: 'Project milestone payment' }}</div>
+                    @if(!empty($totalBudget))
+                    <div style="font-size:10px;color:#9ca3af;margin-top:3px;">Total project budget: {{ $symbol }}{{ number_format((float) $totalBudget, 2) }}</div>
+                    @endif
                 </td>
                 <td style="padding:11px 10px;border-bottom:1px solid #eef0f3;text-align:right;font-weight:700;white-space:nowrap;">{{ $symbol }}{{ number_format($amount, 2) }}</td>
             </tr>

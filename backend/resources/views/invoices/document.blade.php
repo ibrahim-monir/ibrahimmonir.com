@@ -226,6 +226,11 @@
                     <div class="item-desc">
                         {{ $invoice->notes ?: 'Project milestone payment' }}
                     </div>
+                    @if(!empty($invoice->total_budget))
+                    <div class="item-desc" style="margin-top:4px;color:#9ca3af;">
+                        Total project budget: {{ $symbol }}{{ number_format((float) $invoice->total_budget, 2) }}
+                    </div>
+                    @endif
                 </td>
                 <td class="r"><strong>{{ $symbol }}{{ number_format($amount, 2) }}</strong></td>
             </tr>

@@ -7,16 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 class Invoice extends Model
 {
     protected $fillable = [
-        'project_id', 'client_id', 'invoice_number', 'milestone_no', 'total_milestones',
+        'project_id', 'client_id', 'invoice_number', 'milestone_no', 'total_milestones', 'total_budget',
         'amount', 'currency', 'paid_amount', 'status',
         'due_date', 'paid_at', 'sent_at', 'notes',
     ];
 
     protected $casts = [
-        'due_date'    => 'date',
-        'paid_at'     => 'datetime',
-        'amount'      => 'decimal:2',
-        'paid_amount' => 'decimal:2',
+        'due_date'     => 'date',
+        'paid_at'      => 'datetime',
+        'amount'       => 'decimal:2',
+        'paid_amount'  => 'decimal:2',
+        'total_budget' => 'decimal:2',
     ];
 
     public function project() { return $this->belongsTo(Project::class); }

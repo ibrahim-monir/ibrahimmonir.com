@@ -27,7 +27,9 @@ class InvoicesTable
                 TextColumn::make('milestone_no')->label('Milestone')->placeholder('—')->sortable()
                     ->formatStateUsing(fn ($state, $record) => $record->total_milestones ? "{$state} of {$record->total_milestones}" : $state)
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('amount')->money(fn ($record) => $record->currency ?? 'USD')->sortable(),
+                TextColumn::make('amount')->label('Invoice Amount')->money(fn ($record) => $record->currency ?? 'USD')->sortable(),
+                TextColumn::make('total_budget')->label('Project Budget')->money(fn ($record) => $record->currency ?? 'USD')
+                    ->placeholder('—')->sortable()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('paid_amount')->label('Paid')->money(fn ($record) => $record->currency ?? 'USD')->sortable()
                     ->color(fn ($record) => (float)$record->paid_amount > 0 ? 'success' : null),
                 TextColumn::make('status')
