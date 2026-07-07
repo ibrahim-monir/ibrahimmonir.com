@@ -44,7 +44,9 @@ export default function Navbar() {
         </ul>
 
         <div className="hidden md:flex items-center gap-3">
-          <Link href="/login" className="btn-outline text-base py-2">
+          <Link href="/login"
+            className="text-sm font-semibold py-1.5 px-4 rounded-lg transition-all hover:brightness-110"
+            style={{ background: "var(--primary)", color: "#fff" }}>
             Client Login
           </Link>
         </div>
@@ -68,7 +70,9 @@ export default function Navbar() {
                 {l.label}
               </Link>
             ))}
-            <Link href="/login" className="btn-primary mt-2 justify-center text-base">
+            <Link href="/login"
+              className="flex mt-2 justify-center text-sm font-semibold py-2 px-4 rounded-lg"
+              style={{ background: "var(--primary)", color: "#fff" }}>
               Client Login
             </Link>
           </div>
