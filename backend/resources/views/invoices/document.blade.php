@@ -110,9 +110,9 @@
     .sig-label { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: #9ca3af; margin-top: 2px; }
 
     /* ---------- Footer ---------- */
-    .footer { margin-top: 30px; padding: 16px 44px 0; text-align: center; }
-    .footer .thanks { font-size: 13px; font-weight: bold; color: #111827; }
-    .footer .sub { font-size: 10px; color: #9ca3af; margin-top: 4px; }
+    .footer { margin-top: 30px; padding: 18px 44px; text-align: center; background: #0f172a; }
+    .footer .thanks { font-size: 13px; font-weight: bold; color: #ffffff; }
+    .footer .sub { font-size: 10px; color: #94a3b8; margin-top: 4px; }
     .watermark-paid {
         position: absolute; top: 340px; left: 0; right: 0; text-align: center;
         font-size: 90px; font-weight: bold; color: #10b981; opacity: 0.08;
@@ -130,7 +130,7 @@
     $paid    = (float) $invoice->paid_amount;
     $balance = max(0, $amount - $paid);
     $isOverdue = $invoice->due_date && $invoice->due_date->isPast() && $invoice->status !== 'paid';
-    $symbol = ($invoice->currency ?? 'USD') === 'BDT' ? '৳' : '$';
+    $symbol = ($invoice->currency ?? 'USD') === 'BDT' ? 'Tk ' : '$';
     $hasBank = !empty($bank['name']) || !empty($bank['account_number']) || !empty($bank['account_name']);
 @endphp
 
@@ -304,6 +304,8 @@
         </tr>
     </table>
 
+    </div>
+
     {{-- Footer --}}
     <div class="footer">
         <div class="thanks">Thank you for your business!</div>
@@ -311,8 +313,6 @@
             {{ $business['name'] }}@if(!empty($business['email'])) &middot; {{ $business['email'] }}@endif
             @if(!empty($business['phone'])) &middot; {{ $business['phone'] }}@endif
         </div>
-    </div>
-
     </div>
 
 </div>

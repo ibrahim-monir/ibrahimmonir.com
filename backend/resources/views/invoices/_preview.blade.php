@@ -13,7 +13,7 @@
     $st = $status ?: 'pending';
     [$badgeBg, $badgeFg] = $statusColors[$st] ?? $statusColors['pending'];
     $balance = max(0, $amount - $paid);
-    $symbol = ($currency ?? 'USD') === 'BDT' ? '৳' : '$';
+    $symbol = ($currency ?? 'USD') === 'BDT' ? 'Tk ' : '$';
     $due = null;
     if (!empty($dueDate)) { try { $due = \Illuminate\Support\Carbon::parse($dueDate); } catch (\Throwable $e) {} }
     $hasBank = !empty($bank['name']) || !empty($bank['account_number']) || !empty($bank['account_name']);
@@ -157,14 +157,14 @@
         </div>
     </div>
 
+    </div>
+
     {{-- Footer --}}
-    <div style="margin-top:20px;padding-top:12px;border-top:1px solid #e5e7eb;text-align:center;">
-        <div style="font-size:11px;font-weight:700;color:#111827;">Thank you for your business!</div>
-        <div style="font-size:9px;color:#9ca3af;margin-top:3px;">
+    <div style="margin-top:20px;padding:16px 18px;text-align:center;background:#0f172a;">
+        <div style="font-size:11px;font-weight:700;color:#ffffff;">Thank you for your business!</div>
+        <div style="font-size:9px;color:#94a3b8;margin-top:3px;">
             {{ $business['name'] }}@if(!empty($business['email'])) &middot; {{ $business['email'] }}@endif
             @if(!empty($business['phone'])) &middot; {{ $business['phone'] }}@endif
         </div>
-    </div>
-
     </div>
 </div>
