@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Package extends Model
+class Pricing extends Model
 {
     protected $fillable = ['title', 'description', 'price', 'bdt_price', 'billing_cycle', 'features', 'is_popular', 'is_active', 'order'];
 

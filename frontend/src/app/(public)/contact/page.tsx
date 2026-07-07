@@ -1,5 +1,5 @@
 'use client';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Mail, MapPin, MessageCircle, Send } from "lucide-react";
 import toast from "react-hot-toast";
 import api from "@/lib/api";
@@ -38,6 +38,14 @@ const socials = [
 export default function ContactPage() {
   const [form, setForm] = useState({ name: "", email: "", phone: "", subject: "", message: "" });
   const [loading, setLoading] = useState(false);
+
+  // Pre-fill the subject when arriving from a "Get Started" link on the Pricing page.
+  useEffect(() => {
+    const pkg = new URLSearchParams(window.location.search).get("package");
+    if (pkg) {
+      setForm((prev) => ({ ...prev, subject: `Pricing Inquiry — ${pkg}` }));
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

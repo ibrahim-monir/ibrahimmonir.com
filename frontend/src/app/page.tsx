@@ -241,8 +241,8 @@ export default async function HomePage() {
                   <Link href="/contact" className="btn-primary text-base py-3 px-8">
                     Start a Project <ArrowRight size={18} />
                   </Link>
-                  <Link href="/packages" className="btn-outline text-base py-3 px-8">
-                    View Packages
+                  <Link href="/pricing" className="btn-outline text-base py-3 px-8">
+                    View Pricing
                   </Link>
                 </div>
               </div>

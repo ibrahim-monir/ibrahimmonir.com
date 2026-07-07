@@ -224,8 +224,8 @@ export default function ServicesPage() {
             <Link href="/contact" className="btn-primary py-3 px-7">
               Get a Free Quote <ArrowRight size={16} />
             </Link>
-            <Link href="/packages" className="btn-outline py-3 px-7">
-              View Packages
+            <Link href="/pricing" className="btn-outline py-3 px-7">
+              View Pricing
             </Link>
           </div>
         </div>
@@ -269,7 +269,7 @@ export default function ServicesPage() {
             <Link href="/contact" className="btn-primary py-3 px-8">
               Start a Conversation <ArrowRight size={16} />
             </Link>
-            <Link href="/packages" className="btn-outline py-3 px-8">
+            <Link href="/pricing" className="btn-outline py-3 px-8">
               See Pricing
             </Link>
           </div>

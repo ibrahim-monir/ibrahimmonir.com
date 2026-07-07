@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Filament\Resources\Packages\Pages;
+namespace App\Filament\Resources\Pricings\Pages;
 
-use App\Filament\Resources\Packages\PackageResource;
+use App\Filament\Resources\Pricings\PricingResource;
 use Filament\Resources\Pages\CreateRecord;
 
-class CreatePackage extends CreateRecord
+class CreatePricing extends CreateRecord
 {
-    protected static string $resource = PackageResource::class;
+    protected static string $resource = PricingResource::class;
 }

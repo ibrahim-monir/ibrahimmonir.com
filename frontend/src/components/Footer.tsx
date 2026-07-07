@@ -49,7 +49,7 @@ const productCol = [
   { href: "/products",  label: "Themes"   },
   { href: "/products",  label: "Plugins"  },
   { href: "/products",  label: "Systems"  },
-  { href: "/packages",  label: "Packages" },
+  { href: "/pricing",   label: "Pricing"  },
 ];
 
 export default function Footer() {

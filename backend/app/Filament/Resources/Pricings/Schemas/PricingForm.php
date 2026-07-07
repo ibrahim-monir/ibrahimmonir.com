@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Packages\Schemas;
+namespace App\Filament\Resources\Pricings\Schemas;
 
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
@@ -11,7 +11,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
-class PackageForm
+class PricingForm
 {
     public static function configure(Schema $schema): Schema
     {
@@ -19,7 +19,7 @@ class PackageForm
             ->columns(1)
             ->components([
                 Grid::make(2)->schema([
-                    Section::make('Package Details')->schema([
+                    Section::make('Pricing Details')->schema([
                         TextInput::make('title')->required()->maxLength(255),
 
                         TextInput::make('price')

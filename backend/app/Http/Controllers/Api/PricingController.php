@@ -3,16 +3,16 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Package;
+use App\Models\Pricing;
 
-class PackageController extends Controller
+class PricingController extends Controller
 {
     public function index()
     {
-        $packages = Package::where('is_active', true)
+        $plans = Pricing::where('is_active', true)
             ->orderBy('order')
             ->get(['id', 'title', 'description', 'price', 'bdt_price', 'billing_cycle', 'features', 'is_popular']);
 
-        return response()->json($packages);
+        return response()->json($plans);
     }
 }
