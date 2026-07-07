@@ -5,6 +5,8 @@ import { MessageCircle, X, Send, Paperclip, Smile, Download, FileText, XCircle }
 import Image from "next/image";
 import api from "@/lib/api";
 import { useAuthStore } from "@/store/authStore";
+import { fetchSettings, str } from "@/lib/settings";
+import WhatsappIcon from "@/components/WhatsappIcon";
 
 const EMOJIS = ["😊","😂","🙏","👍","❤️","🔥","✅","⚡","🎉","💯","😍","🤔","👋","💪","🚀","😅","🙌","💡","📌","⭐"];
 
@@ -65,9 +67,14 @@ export default function ChatWidget() {
   const [file, setFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string | null>(null);
   const [visitorName, setVisitorName] = useState<string>('');
+  const [whatsapp, setWhatsapp] = useState('');
   const bottomRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const textRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    fetchSettings().then((s) => setWhatsapp(str(s.contact_whatsapp)));
+  }, []);
 
   const isVisitor = !user;
 
@@ -232,10 +239,22 @@ export default function ChatWidget() {
 
   return (
     <>
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+        {!open && whatsapp && (
+          <a
+            href={`https://wa.me/${whatsapp.replace(/\D/g, '')}`}
+            target="_blank" rel="noopener noreferrer"
+            aria-label="Chat on WhatsApp"
+            className="w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all hover:scale-110 active:scale-95 text-white"
+            style={{ background: '#25D366' }}>
+            <WhatsappIcon size={26} />
+          </a>
+        )}
+
         {!open && (
           <button
             onClick={() => setOpen(true)}
+            aria-label="Open live chat"
             className="relative w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all hover:scale-110 active:scale-95"
             style={{ background: 'var(--primary)' }}>
             <MessageCircle size={26} className="text-white" />
