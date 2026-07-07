@@ -58,6 +58,22 @@ class InvoiceForm
                                     ->required()
                                     ->live(),
 
+                                Grid::make(2)->schema([
+                                    TextInput::make('milestone_no')
+                                        ->label('Current Milestone')
+                                        ->numeric()
+                                        ->minValue(1)
+                                        ->placeholder('e.g. 2')
+                                        ->live(onBlur: true),
+
+                                    TextInput::make('total_milestones')
+                                        ->label('Total Milestones')
+                                        ->numeric()
+                                        ->minValue(1)
+                                        ->placeholder('e.g. 5')
+                                        ->live(onBlur: true),
+                                ])->columnSpanFull(),
+
                                 Select::make('status')
                                     ->options([
                                         'pending'   => 'Pending',
@@ -130,6 +146,8 @@ class InvoiceForm
             'clientCompany' => $client?->company,
             'clientEmail'   => $client?->user?->email,
             'projectTitle'  => $project?->title,
+            'milestoneNo'      => $get('milestone_no'),
+            'totalMilestones'  => $get('total_milestones'),
             'status'        => $get('status') ?: 'pending',
             'currency'      => $get('currency') ?: 'USD',
             'amount'        => (float) $get('amount'),

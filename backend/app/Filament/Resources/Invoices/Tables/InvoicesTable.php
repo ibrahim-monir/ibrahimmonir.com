@@ -24,6 +24,9 @@ class InvoicesTable
                 TextColumn::make('invoice_number')->label('Invoice #')->searchable()->sortable()->copyable(),
                 TextColumn::make('client.user.name')->label('Client')->searchable()->sortable(),
                 TextColumn::make('project.title')->label('Project')->searchable()->limit(30),
+                TextColumn::make('milestone_no')->label('Milestone')->placeholder('—')->sortable()
+                    ->formatStateUsing(fn ($state, $record) => $record->total_milestones ? "{$state} of {$record->total_milestones}" : $state)
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('amount')->money(fn ($record) => $record->currency ?? 'USD')->sortable(),
                 TextColumn::make('paid_amount')->label('Paid')->money(fn ($record) => $record->currency ?? 'USD')->sortable()
                     ->color(fn ($record) => (float)$record->paid_amount > 0 ? 'success' : null),

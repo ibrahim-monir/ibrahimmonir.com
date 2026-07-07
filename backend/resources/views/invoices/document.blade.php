@@ -220,7 +220,9 @@
         <tbody>
             <tr>
                 <td>
-                    <div class="item-title">{{ $invoice->project?->title ?? 'Project Milestone' }}</div>
+                    <div class="item-title">
+                        {{ $invoice->project?->title ?? 'Project Milestone' }}@if(!empty($invoice->milestone_no)) &mdash; Milestone {{ $invoice->milestone_no }}@if(!empty($invoice->total_milestones)) of {{ $invoice->total_milestones }}@endif@endif
+                    </div>
                     <div class="item-desc">
                         {{ $invoice->notes ?: 'Project milestone payment' }}
                     </div>

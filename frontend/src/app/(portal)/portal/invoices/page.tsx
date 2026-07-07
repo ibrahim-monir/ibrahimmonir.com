@@ -6,6 +6,8 @@ import api from "@/lib/api";
 interface Invoice {
   id: number;
   invoice_number: string;
+  milestone_no?: number | null;
+  total_milestones?: number | null;
   amount: number;
   currency?: string;
   status: string;
@@ -104,7 +106,10 @@ export default function InvoicesPage() {
                     </span>
                   </div>
                   <div className="text-xs" style={{ color: "var(--text-muted)" }}>
-                    {inv.project?.title ?? "Project"} · Due {inv.due_date}
+                    {inv.project?.title ?? "Project"}
+                    {inv.milestone_no
+                      ? ` · Milestone ${inv.milestone_no}${inv.total_milestones ? ` of ${inv.total_milestones}` : ""}`
+                      : ""} · Due {inv.due_date}
                     {inv.paid_at && ` · Paid ${inv.paid_at}`}
                   </div>
                 </div>
