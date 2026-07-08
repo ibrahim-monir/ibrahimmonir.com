@@ -51,7 +51,6 @@ jobs:
             /opt/alt/php84/usr/bin/php artisan db:seed --class=ImportExistingMediaSeeder --force
             /opt/alt/php84/usr/bin/php artisan db:seed --class=PricingSeeder --force
             /opt/alt/php84/usr/bin/php artisan db:seed --class=SocialLinkSeeder --force
-            /opt/alt/php84/usr/bin/php artisan content:import
             /opt/alt/php84/usr/bin/php artisan optimize:clear
             /opt/alt/php84/usr/bin/php artisan config:cache
             /opt/alt/php84/usr/bin/php artisan route:cache
@@ -60,4 +59,7 @@ jobs:
             cp -r $DOMAIN/laravel/public/. $DOMAIN/public_html/
             cp $DOMAIN/laravel/public_html_index.php $DOMAIN/public_html/index.php
             cp $DOMAIN/laravel/public_html.htaccess $DOMAIN/public_html/.htaccess
+            # Sync git-tracked content LAST and non-fatally, so an import error can
+            # never abort the deploy before caches/assets are in place.
+            /opt/alt/php84/usr/bin/php artisan content:import || echo "content:import failed (non-fatal)"
           ENDSSH
