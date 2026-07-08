@@ -76,7 +76,7 @@ export default function RecentWork({ works }: { works: WorkItem[] }) {
                       src={w.thumbnail}
                       alt={w.title}
                       loading="lazy"
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
@@ -88,14 +88,6 @@ export default function RecentWork({ works }: { works: WorkItem[] }) {
                   {w.category && (
                     <span className="badge" style={{ position: "absolute", left: 12, bottom: 12 }}>
                       {w.category}
-                    </span>
-                  )}
-                  {galleryImages.length > 1 && (
-                    <span
-                      className="absolute right-3 top-3 flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full"
-                      style={{ background: "rgba(0,0,0,.6)", color: "#fff" }}
-                    >
-                      <Images size={13} /> {galleryImages.length}
                     </span>
                   )}
                   {!!galleryImages.length && (

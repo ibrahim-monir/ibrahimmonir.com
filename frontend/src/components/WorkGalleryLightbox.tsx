@@ -20,6 +20,7 @@ const slideVariants = {
 export default function WorkGalleryLightbox({ title, images, initialIndex, onClose }: Props) {
   const [[index, direction], setIndex] = useState<[number, number]>([initialIndex, 0]);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const rafRef = useRef<number | null>(null);
 
   const go = (delta: number) => {
     setIndex(([current]) => {
@@ -28,10 +29,46 @@ export default function WorkGalleryLightbox({ title, images, initialIndex, onClo
     });
   };
 
+  const stopAutoScroll = () => {
+    if (rafRef.current !== null) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+  };
+
+  const animateScrollTo = (target: number, duration: number) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    stopAutoScroll();
+    const start = el.scrollTop;
+    const distance = target - start;
+    if (distance === 0) return;
+    const startTime = performance.now();
+    const step = (now: number) => {
+      const t = Math.min((now - startTime) / duration, 1);
+      el.scrollTop = start + distance * t;
+      rafRef.current = t < 1 ? requestAnimationFrame(step) : null;
+    };
+    rafRef.current = requestAnimationFrame(step);
+  };
+
+  const handleImageMouseEnter = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const maxScroll = el.scrollHeight - el.clientHeight;
+    if (maxScroll <= 0) return;
+    animateScrollTo(maxScroll, Math.max(maxScroll * 6, 1800));
+  };
+
+  const handleImageMouseLeave = () => animateScrollTo(0, 500);
+
   // Every time the visible screenshot changes, scroll back to its top.
   useEffect(() => {
+    stopAutoScroll();
     scrollRef.current?.scrollTo({ top: 0 });
   }, [index]);
+
+  useEffect(() => stopAutoScroll, []);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -84,6 +121,8 @@ export default function WorkGalleryLightbox({ title, images, initialIndex, onClo
                 ref={scrollRef}
                 className="overflow-y-auto overscroll-contain"
                 style={{ background: "#0a0a0a", height: "72vh" }}
+                onMouseEnter={handleImageMouseEnter}
+                onMouseLeave={handleImageMouseLeave}
               >
                 <AnimatePresence initial={false} custom={direction} mode="wait">
                   <motion.img

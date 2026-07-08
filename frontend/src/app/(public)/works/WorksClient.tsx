@@ -71,7 +71,7 @@ export default function WorksClient({ works }: { works: WorkItem[] }) {
                     src={w.thumbnail}
                     alt={w.title}
                     loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">

@@ -14,7 +14,7 @@ class BlogController extends Controller
             ->published()
             ->when($request->category, fn($q, $c) => $q->whereHas('category', fn($q) => $q->where('slug', $c)))
             ->latest('published_at')
-            ->paginate(9);
+            ->paginate(min((int) $request->input('per_page', 9), 50));
 
         return response()->json($posts);
     }

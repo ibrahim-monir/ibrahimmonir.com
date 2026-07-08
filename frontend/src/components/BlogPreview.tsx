@@ -23,7 +23,7 @@ function readTime(excerpt: string | null) {
 
 async function getLatestPosts(): Promise<Post[]> {
   try {
-    const res = await fetch(`${API}/blog?per_page=3`, { next: { revalidate: 60 } });
+    const res = await fetch(`${API}/blog?per_page=6`, { next: { revalidate: 60 } });
     if (!res.ok) return [];
     const data = await res.json();
     return data.data ?? [];
