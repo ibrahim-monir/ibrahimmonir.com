@@ -23,7 +23,9 @@ async function getPosts(): Promise<Post[]> {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/blog?per_page=50`,
-      { next: { revalidate: 60 } }
+      // Short revalidate so the list self-heals quickly if a build happened
+      // while the API was briefly unavailable (empty snapshot recovers fast).
+      { next: { revalidate: 30 } }
     );
     if (!res.ok) return [];
     const data = await res.json();
