@@ -15,7 +15,7 @@ interface Post {
 }
 
 const API      = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api";
-const STORAGE  = API.replace("/api", "/storage");
+const STORAGE  = API.replace(/\/api\/?$/, "") + "/storage";
 
 function img(path: string | null) {
   return path ? `${STORAGE}/${path}` : null;

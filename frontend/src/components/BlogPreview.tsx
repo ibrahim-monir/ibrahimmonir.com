@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight, Clock, Calendar } from "lucide-react";
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api";
-const STORAGE = API.replace("/api", "/storage");
+const STORAGE = API.replace(/\/api\/?$/, "") + "/storage";
 
 interface Category { id: number; name: string; slug: string }
 interface Post {

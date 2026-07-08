@@ -54,7 +54,7 @@ function AvatarForm({ profile }: { profile: Profile }) {
 
   const avatarPath = profile.client?.avatar;
   const avatarUrl = avatarPath
-    ? `${process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") ?? "http://localhost:8000"}/storage/${avatarPath}`
+    ? `${process.env.NEXT_PUBLIC_API_URL?.replace(/\/api\/?$/, "") ?? "http://localhost:8000"}/storage/${avatarPath}`
     : null;
 
   const mutation = useMutation({

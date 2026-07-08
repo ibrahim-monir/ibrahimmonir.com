@@ -16,7 +16,7 @@ interface Post {
   category: Category | null;
 }
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") ?? "http://localhost:8000";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace(/\/api\/?$/, "") ?? "http://localhost:8000";
 
 function imageUrl(path: string | null) {
   if (!path) return null;
