@@ -1,0 +1,14 @@
+#!/bin/sh
+# After every `git pull` / merge: apply new migrations, then import synced content.
+# Non-fatal by design — a failure here must never break your pull.
+ROOT=$(git rev-parse --show-toplevel)
+. "$ROOT/.githooks/_php.sh"
+PHP=$(resolve_php)
+
+echo "[content-sync] post-merge: migrating + importing content…"
+( cd "$ROOT/backend" \
+  && "$PHP" artisan migrate --force \
+  && "$PHP" artisan content:import ) \
+  || echo "[content-sync] skipped/failed (run '$PHP artisan content:import' manually)."
+
+exit 0

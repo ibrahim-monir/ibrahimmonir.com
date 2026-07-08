@@ -1,0 +1,15 @@
+#!/bin/sh
+# Before each commit: re-export DB content + stage it (and any new uploaded media)
+# so `git push` always carries the latest data. Non-fatal if the DB is offline.
+ROOT=$(git rev-parse --show-toplevel)
+. "$ROOT/.githooks/_php.sh"
+PHP=$(resolve_php)
+
+if ( cd "$ROOT/backend" && "$PHP" artisan content:export ); then
+  git add "$ROOT/backend/database/content.json" 2>/dev/null
+  git add "$ROOT/backend/storage/app/public" 2>/dev/null
+else
+  echo "[content-sync] export skipped (DB offline?) — committing without a content refresh."
+fi
+
+exit 0

@@ -1,2 +1,6 @@
 *
 !.gitignore
+# Keep uploaded media (any subfolder) so it syncs across environments via git.
+# Loose files at the public root stay ignored; only upload folders are tracked.
+!*/
+!*/**
