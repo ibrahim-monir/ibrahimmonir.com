@@ -21,6 +21,7 @@ class ContactForm
             ]),
             TextInput::make('subject')->required()->columnSpanFull(),
             Textarea::make('message')->rows(5)->required()->columnSpanFull(),
+            Textarea::make('notes')->rows(3)->nullable()->columnSpanFull()->helperText('Internal notes, not visible to the contact.'),
         ]);
     }
 }
