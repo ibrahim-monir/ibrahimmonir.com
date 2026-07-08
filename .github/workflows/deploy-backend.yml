@@ -47,6 +47,8 @@ jobs:
             /opt/alt/php84/usr/bin/php artisan storage:link --force
             /opt/alt/php84/usr/bin/php artisan db:seed --class=AdminUserSeeder --force
             /opt/alt/php84/usr/bin/php artisan db:seed --class=WorkSeeder --force
+            /opt/alt/php84/usr/bin/php artisan db:seed --class=ArnaFashionWorkSeeder --force
+            /opt/alt/php84/usr/bin/php artisan db:seed --class=ImportExistingMediaSeeder --force
             /opt/alt/php84/usr/bin/php artisan db:seed --class=PricingSeeder --force
             /opt/alt/php84/usr/bin/php artisan db:seed --class=SocialLinkSeeder --force
             /opt/alt/php84/usr/bin/php artisan optimize:clear

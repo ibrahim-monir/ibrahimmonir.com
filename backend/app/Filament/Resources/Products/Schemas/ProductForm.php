@@ -2,7 +2,8 @@
 
 namespace App\Filament\Resources\Products\Schemas;
 
-use Filament\Forms\Components\FileUpload;
+use App\Filament\Support\MediaSelect;
+use App\Models\Media;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -47,7 +48,7 @@ class ProductForm
                     ]),
 
                     Section::make('Media')->schema([
-                        FileUpload::make('image')->image()->disk('public')->directory('products')->imageEditor(),
+                        MediaSelect::make('image')->label('Image'),
                         Textarea::make('short_desc')->label('Short Description')->rows(3),
                     ]),
                 ]),
@@ -55,6 +56,9 @@ class ProductForm
                 Section::make('Full Description')->schema([
                     RichEditor::make('description')
                         ->toolbarButtons(['bold', 'italic', 'underline', 'h2', 'h3', 'bulletList', 'orderedList', 'link', 'redo', 'undo'])
+                        ->fileAttachmentsDisk('public')
+                        ->fileAttachmentsVisibility('public')
+                        ->saveUploadedFileAttachmentUsing(fn ($file) => Media::storeUploadedFile($file)->path)
                         ->columnSpanFull(),
                 ]),
             ]);

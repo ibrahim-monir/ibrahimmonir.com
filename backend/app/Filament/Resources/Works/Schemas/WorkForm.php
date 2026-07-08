@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Works\Schemas;
 
-use Filament\Forms\Components\FileUpload;
+use App\Filament\Support\MediaSelect;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
@@ -57,18 +57,12 @@ class WorkForm
                     ]),
 
                     Section::make('Media')->schema([
-                        FileUpload::make('thumbnail')
-                            ->image()
-                            ->disk('public')->directory('works')
-                            ->imageEditor()
+                        MediaSelect::make('thumbnail')
                             ->label('Thumbnail'),
 
-                        FileUpload::make('images')
-                            ->image()
-                            ->disk('public')->directory('works/gallery')
-                            ->multiple()
-                            ->reorderable()
-                            ->label('Gallery Images'),
+                        MediaSelect::make('images', multiple: true)
+                            ->label('Gallery Images')
+                            ->helperText('Adds one image at a time — click "Add Image" again for more.'),
                     ]),
                 ]),
 

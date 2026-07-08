@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Clients\Schemas;
 
+use App\Filament\Support\MediaSelect;
 use App\Models\User;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -40,11 +40,7 @@ class ClientForm
                             })
                             ->required(),
 
-                        FileUpload::make('avatar')
-                            ->image()
-                            ->disk('public')->directory('avatars')
-                            ->avatar()
-                            ->imageEditor(),
+                        MediaSelect::make('avatar')->label('Avatar'),
 
                         Select::make('status')
                             ->options([

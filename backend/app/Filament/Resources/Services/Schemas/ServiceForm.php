@@ -2,7 +2,8 @@
 
 namespace App\Filament\Resources\Services\Schemas;
 
-use Filament\Forms\Components\FileUpload;
+use App\Filament\Support\MediaSelect;
+use App\Models\Media;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -55,14 +56,14 @@ class ServiceForm
                                     'h2', 'h3', 'bulletList', 'orderedList',
                                     'blockquote', 'link', 'redo', 'undo',
                                 ])
+                                ->fileAttachmentsDisk('public')
+                                ->fileAttachmentsVisibility('public')
+                                ->saveUploadedFileAttachmentUsing(fn ($file) => Media::storeUploadedFile($file)->path)
                                 ->extraInputAttributes(['style' => 'min-height: 320px']),
                         ]),
 
                         Section::make('Image')->schema([
-                            FileUpload::make('image')
-                                ->image()
-                                ->disk('public')->directory('services')
-                                ->imageEditor(),
+                            MediaSelect::make('image')->label('Image'),
                         ]),
                     ]),
 

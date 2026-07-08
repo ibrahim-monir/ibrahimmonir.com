@@ -7,10 +7,10 @@ type BlogPost = { slug: string; updated_at?: string };
 
 async function fetchBlogSlugs(): Promise<BlogPost[]> {
   try {
-    const res = await fetch(`${API}/blog`, { cache: "no-store" });
+    const res = await fetch(`${API}/blog?per_page=100`, { cache: "no-store" });
     if (!res.ok) return [];
     const data = await res.json();
-    return Array.isArray(data) ? data : [];
+    return Array.isArray(data.data) ? data.data : [];
   } catch {
     return [];
   }

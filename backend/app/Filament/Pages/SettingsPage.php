@@ -2,9 +2,11 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Support\MediaSelect;
 use App\Models\SiteSetting;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -17,6 +19,7 @@ use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
+use Illuminate\Support\HtmlString;
 
 class SettingsPage extends Page implements HasSchemas
 {
@@ -69,17 +72,8 @@ class SettingsPage extends Page implements HasSchemas
                                 ->label('Site Email')
                                 ->email()
                                 ->placeholder('hello@ibrahimmonir.com'),
-                            FileUpload::make('site_logo')
-                                ->label('Logo')
-                                ->image()
-                                ->disk('public')
-                                ->directory('settings')
-                                ->imageEditor(),
-                            FileUpload::make('site_favicon')
-                                ->label('Favicon')
-                                ->image()
-                                ->disk('public')
-                                ->directory('settings'),
+                            MediaSelect::make('site_logo')->label('Logo'),
+                            MediaSelect::make('site_favicon')->label('Favicon'),
                         ])->columns(2),
                     ]),
 
@@ -121,13 +115,7 @@ class SettingsPage extends Page implements HasSchemas
                         ])->columns(2),
 
                         Section::make('Profile Photo')->schema([
-                            FileUpload::make('hero_photo')
-                                ->label('Profile Photo')
-                                ->image()
-                                ->disk('public')
-                                ->directory('settings')
-                                ->imageEditor()
-                                ->columnSpanFull(),
+                            MediaSelect::make('hero_photo')->label('Profile Photo')->columnSpanFull(),
                         ]),
 
                         Section::make('CV / Resume')->schema([
@@ -186,11 +174,8 @@ class SettingsPage extends Page implements HasSchemas
                                 ->label('Signature Name')
                                 ->placeholder('Ibrahim Monir')
                                 ->helperText('Printed under the signature line on invoices.'),
-                            FileUpload::make('invoice_signature_image')
+                            MediaSelect::make('invoice_signature_image')
                                 ->label('Signature Image (optional)')
-                                ->image()
-                                ->disk('public')
-                                ->directory('settings')
                                 ->helperText('A transparent PNG of your signature, shown above the printed name.'),
                         ])->columns(2),
                     ]),
@@ -243,6 +228,15 @@ class SettingsPage extends Page implements HasSchemas
                     ]),
 
                     Tab::make('SEO')->icon('heroicon-o-magnifying-glass')->schema([
+                        Section::make('Sitemap')->schema([
+                            Placeholder::make('sitemap_url')
+                                ->hiddenLabel()
+                                ->content(new HtmlString(
+                                    '<a href="https://ibrahimmonir.com/sitemap.xml" target="_blank" rel="noopener" class="text-primary-600 underline">https://ibrahimmonir.com/sitemap.xml</a>'
+                                    .'<p class="text-sm text-gray-500 mt-1">Auto-generated from published pages and blog posts. Paste this URL into Google Search Console → Sitemaps → Add a new sitemap.</p>'
+                                )),
+                        ]),
+
                         Section::make('Search Engine Optimization')->schema([
                             TextInput::make('seo_title_suffix')
                                 ->label('Page Title Suffix')
@@ -259,11 +253,8 @@ class SettingsPage extends Page implements HasSchemas
                                 ->label('Meta Keywords')
                                 ->placeholder('web developer, laravel, nextjs, wordpress, bangladesh')
                                 ->columnSpanFull(),
-                            FileUpload::make('seo_og_image')
+                            MediaSelect::make('seo_og_image')
                                 ->label('Default OG Image (Social Share)')
-                                ->image()
-                                ->disk('public')
-                                ->directory('settings')
                                 ->columnSpanFull(),
                         ]),
                     ]),

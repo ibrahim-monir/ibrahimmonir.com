@@ -2,9 +2,10 @@
 
 namespace App\Filament\Resources\BlogPosts\Schemas;
 
+use App\Filament\Support\MediaSelect;
 use App\Models\BlogCategory;
+use App\Models\Media;
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -49,9 +50,7 @@ class BlogPostForm
 
                         Section::make('Media & Publishing')
                             ->schema([
-                                FileUpload::make('image')
-                                    ->image()
-                                    ->disk('public')->directory('publications'),
+                                MediaSelect::make('image')->label('Image'),
 
                                 Select::make('status')
                                     ->options([
@@ -75,7 +74,10 @@ class BlogPostForm
                                 'bold', 'italic', 'underline', 'strike',
                                 'h2', 'h3', 'bulletList', 'orderedList',
                                 'blockquote', 'codeBlock', 'link', 'redo', 'undo',
-                            ]),
+                            ])
+                            ->fileAttachmentsDisk('public')
+                            ->fileAttachmentsVisibility('public')
+                            ->saveUploadedFileAttachmentUsing(fn ($file) => Media::storeUploadedFile($file)->path),
 
                         Textarea::make('excerpt')
                             ->label('Excerpt (Short Summary)')
