@@ -168,8 +168,14 @@ class ServiceSeeder extends Seeder
             // Only backfill fields the admin left blank — never touch a
             // value that was already set by hand. The RichEditor leaves an
             // empty "<p></p>" behind instead of null, so treat that as blank too.
+            // A record counts as "untouched" if every optional text field is
+            // still blank — used below to decide whether to backfill
+            // is_popular, since blank() can't tell a real `false` apart from
+            // the migration's unset default.
+            $untouched = blank($existing->short_desc) && blank($existing->color) && blank($existing->features);
+
             $fill = [];
-            foreach (['short_desc', 'color', 'features', 'is_popular'] as $field) {
+            foreach (['short_desc', 'color', 'features'] as $field) {
                 if (blank($existing->$field)) {
                     $fill[$field] = $s[$field];
                 }
@@ -179,6 +185,9 @@ class ServiceSeeder extends Seeder
             }
             if (blank($existing->price)) {
                 $fill['price'] = $s['price'];
+            }
+            if ($untouched && $s['is_popular']) {
+                $fill['is_popular'] = true;
             }
             if ($fill) {
                 $existing->update($fill);
