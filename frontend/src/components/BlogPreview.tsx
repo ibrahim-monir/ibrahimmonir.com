@@ -42,18 +42,11 @@ export default async function BlogPreview() {
       <div className="container">
 
         {/* Header */}
-        <div className="flex items-end justify-between gap-4 mb-12">
-          <div>
-            <span className="badge mb-4 inline-flex">Blog</span>
-            <h2 className="section-title">
-              Latest <span className="gradient-text">Articles</span>
-            </h2>
-          </div>
-          <Link href="/blog"
-            className="hidden sm:flex items-center gap-2 text-sm font-medium transition-all hover:gap-3 shrink-0"
-            style={{ color: "var(--primary)" }}>
-            View all posts <ArrowRight size={16} />
-          </Link>
+        <div className="text-center mb-12">
+          <span className="badge mb-4 inline-flex">Blog</span>
+          <h2 className="section-title">
+            Latest <span className="gradient-text">Articles</span>
+          </h2>
         </div>
 
         {/* Cards */}
@@ -132,10 +125,10 @@ export default async function BlogPreview() {
           })}
         </div>
 
-        {/* Mobile view all */}
-        <div className="text-center mt-8 sm:hidden">
-          <Link href="/blog" className="btn-outline">
-            View all posts <ArrowRight size={16} />
+        {/* CTA */}
+        <div className="text-center mt-12">
+          <Link href="/blog" className="btn-primary text-base py-3 px-8">
+            View All Articles <ArrowRight size={18} />
           </Link>
         </div>
 

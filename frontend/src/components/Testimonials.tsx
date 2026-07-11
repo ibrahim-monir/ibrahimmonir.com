@@ -1,5 +1,15 @@
 'use client';
-import { Star, Quote } from "lucide-react";
+import { useState } from "react";
+import { Star, Quote, X } from "lucide-react";
+
+function LinkedinIcon({ size = 11 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z" />
+      <circle cx="4" cy="4" r="2" />
+    </svg>
+  );
+}
 
 export type TestimonialItem = {
   id: number;
@@ -11,6 +21,8 @@ export type TestimonialItem = {
   review_text: string;
   avatar_color: string;
   initials: string;
+  is_linkedin: boolean;
+  linkedin_url: string | null;
 };
 
 function Stars({ count, size = 14 }: { count: number; size?: number }) {
@@ -23,7 +35,110 @@ function Stars({ count, size = 14 }: { count: number; size?: number }) {
   );
 }
 
+function LinkedinBadge({ r }: { r: TestimonialItem }) {
+  if (!r.is_linkedin) return null;
+  const badgeStyle: React.CSSProperties = {
+    display: "inline-flex", alignItems: "center", gap: 5, fontSize: "0.7rem", fontWeight: 600,
+    padding: "4px 9px", borderRadius: 999,
+    background: "rgba(249,115,22,0.12)", color: "var(--primary)", border: "1px solid rgba(249,115,22,0.3)",
+    flexShrink: 0,
+  };
+  return r.linkedin_url ? (
+    <a href={r.linkedin_url} target="_blank" rel="noopener noreferrer" style={badgeStyle}>
+      <LinkedinIcon size={11} /> via LinkedIn
+    </a>
+  ) : (
+    <span style={badgeStyle}>
+      <LinkedinIcon size={11} /> via LinkedIn
+    </span>
+  );
+}
+
+function ReviewerInfo({ r, avatarSize = 46 }: { r: TestimonialItem; avatarSize?: number }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+      <div
+        style={{
+          width: avatarSize, height: avatarSize, borderRadius: "50%", flexShrink: 0,
+          background: r.avatar_color + "22",
+          border: `2px solid ${r.avatar_color}55`,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: "0.82rem", fontWeight: 700, color: r.avatar_color,
+        }}
+      >
+        {r.initials}
+      </div>
+      <div>
+        <div style={{ fontWeight: 600, fontSize: "0.92rem", display: "flex", alignItems: "center", gap: 6 }}>
+          {r.name} {r.country && <span style={{ fontSize: "1rem" }}>{r.country}</span>}
+        </div>
+        <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+          {[r.job_title, r.company].filter(Boolean).join(" · ")}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Roughly how many characters fit in the clamped 6-line text block — past
+// this, the review is truncated and needs the "Read more" modal.
+const CLAMP_THRESHOLD = 280;
+
+function ReviewModal({ r, onClose }: { r: TestimonialItem; onClose: () => void }) {
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: "fixed", inset: 0, zIndex: 100,
+        background: "rgba(0,0,0,0.65)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        padding: 20,
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          position: "relative", width: 480, maxWidth: "100%", maxHeight: "85vh", overflowY: "auto",
+          display: "flex", flexDirection: "column", gap: 16,
+          padding: 28, borderRadius: 18,
+          background: "var(--bg-muted)", border: "1px solid var(--border)",
+        }}
+      >
+        <button
+          onClick={onClose}
+          aria-label="Close"
+          style={{
+            position: "absolute", top: 16, right: 16, width: 28, height: 28, borderRadius: "50%",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-muted)",
+          }}
+        >
+          <X size={15} />
+        </button>
+
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8 }}>
+          <Quote size={30} style={{ color: r.avatar_color, opacity: 0.35 }} fill="currentColor" />
+          <div style={{ marginRight: 36 }}><LinkedinBadge r={r} /></div>
+        </div>
+
+        <Stars count={r.rating} />
+
+        <p style={{ fontSize: "0.95rem", lineHeight: 1.75, color: "var(--text)", whiteSpace: "pre-line" }}>
+          {r.review_text}
+        </p>
+
+        <div style={{ paddingTop: 16, borderTop: "1px solid var(--border)" }}>
+          <ReviewerInfo r={r} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ReviewCard({ r }: { r: TestimonialItem }) {
+  const [open, setOpen] = useState(false);
+  const needsMore = r.review_text.length > CLAMP_THRESHOLD;
+
   return (
     <div
       className="group t-card"
@@ -51,39 +166,53 @@ function ReviewCard({ r }: { r: TestimonialItem }) {
         style={{ background: r.avatar_color }}
       />
 
-      {/* Quote icon */}
-      <Quote size={30} style={{ color: r.avatar_color, opacity: 0.35 }} fill="currentColor" />
+      {/* Quote icon + LinkedIn badge */}
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8 }}>
+        <Quote size={30} style={{ color: r.avatar_color, opacity: 0.35 }} fill="currentColor" />
+        <LinkedinBadge r={r} />
+      </div>
 
       {/* Stars */}
       <Stars count={r.rating} />
 
-      {/* Text */}
-      <p style={{ fontSize: "0.92rem", lineHeight: 1.7, color: "var(--text)", flex: 1, position: "relative" }}>
-        {r.review_text}
-      </p>
-
-      {/* Reviewer */}
-      <div style={{ display: "flex", alignItems: "center", gap: 12, paddingTop: 16, borderTop: "1px solid var(--border)" }}>
-        <div
+      {/* Text — fixed height + line-clamp so every card matches regardless of review length */}
+      <div style={{ position: "relative" }}>
+        <p
           style={{
-            width: 46, height: 46, borderRadius: "50%", flexShrink: 0,
-            background: r.avatar_color + "22",
-            border: `2px solid ${r.avatar_color}55`,
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: "0.82rem", fontWeight: 700, color: r.avatar_color,
+            fontSize: "0.92rem",
+            lineHeight: 1.7,
+            color: "var(--text)",
+            height: "9.4rem",
+            display: "-webkit-box",
+            WebkitLineClamp: 6,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
           }}
         >
-          {r.initials}
-        </div>
-        <div>
-          <div style={{ fontWeight: 600, fontSize: "0.92rem", display: "flex", alignItems: "center", gap: 6 }}>
-            {r.name} {r.country && <span style={{ fontSize: "1rem" }}>{r.country}</span>}
-          </div>
-          <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-            {[r.job_title, r.company].filter(Boolean).join(" · ")}
-          </div>
+          {r.review_text}
+        </p>
+        {/* Always reserve the row's height so every card stays the same size, whether a card needs it or not */}
+        <div style={{ height: 20, marginTop: 4 }}>
+          {needsMore && (
+            <button
+              onClick={() => setOpen(true)}
+              style={{
+                position: "relative", zIndex: 1, fontSize: "0.78rem", fontWeight: 600,
+                color: "var(--primary)", background: "var(--bg-muted)",
+              }}
+            >
+              Read more
+            </button>
+          )}
         </div>
       </div>
+
+      {/* Reviewer */}
+      <div style={{ paddingTop: 16, borderTop: "1px solid var(--border)" }}>
+        <ReviewerInfo r={r} />
+      </div>
+
+      {open && <ReviewModal r={r} onClose={() => setOpen(false)} />}
     </div>
   );
 }

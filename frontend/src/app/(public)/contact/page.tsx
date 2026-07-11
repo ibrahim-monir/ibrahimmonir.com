@@ -55,15 +55,28 @@ export default function ContactPage() {
 
   return (
     <div className="py-20">
-      <div className="container">
-        <div className="text-center mb-16">
-          <span className="badge mb-4 inline-flex">Contact</span>
-          <h1 className="section-title mb-4">Let&apos;s Work Together</h1>
-          <p className="section-subtitle mx-auto">
-            Have a project in mind? Let&apos;s discuss how I can help you build it.
-          </p>
-        </div>
 
+      {/* ── Hero — full-bleed image with centered content overlaid ── */}
+      <section className="relative overflow-hidden mb-20" style={{ minHeight: 420 }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/contact-hero.jpg" alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0"
+          style={{ background: "linear-gradient(0deg, rgba(0,0,0,.88) 0%, rgba(0,0,0,.6) 55%, rgba(0,0,0,.35) 100%)" }} />
+
+        <div className="relative container flex flex-col items-center justify-center text-center" style={{ minHeight: 420, paddingTop: 60, paddingBottom: 60 }}>
+          <div className="max-w-2xl">
+            <span className="badge mb-4 inline-flex">Contact</span>
+            <h1 style={{ fontSize: "clamp(2rem, 4.5vw, 3rem)", fontWeight: 800, lineHeight: 1.15, marginBottom: "1rem", color: "#fff" }}>
+              Let&apos;s Work Together
+            </h1>
+            <p className="text-base leading-relaxed" style={{ color: "rgba(255,255,255,0.85)" }}>
+              Have a project in mind? Let&apos;s discuss how I can help you build it.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <div className="container">
         <div className="grid lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
           {/* Info */}
           <div>

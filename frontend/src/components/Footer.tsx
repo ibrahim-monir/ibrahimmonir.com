@@ -166,6 +166,7 @@ export default function Footer() {
             </p>
             <div className="flex items-center gap-5">
               {[
+                { href: "/faq",     label: "FAQ"             },
                 { href: "/privacy", label: "Privacy Policy" },
                 { href: "/terms",   label: "Terms of Service" },
                 { href: "/contact", label: "Contact"        },

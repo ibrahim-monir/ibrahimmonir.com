@@ -45,6 +45,18 @@ export default function PricingClient() {
       .finally(() => setLoading(false));
   }, []);
 
+  // Default to BDT for visitors in Bangladesh's timezone — no IP lookup needed.
+  useEffect(() => {
+    Promise.resolve()
+      .then(() => Intl.DateTimeFormat().resolvedOptions().timeZone)
+      .then((tz) => {
+        if (tz === "Asia/Dhaka") setCurrency("bdt");
+      })
+      .catch(() => {
+        // Intl unsupported — keep the USD default.
+      });
+  }, []);
+
   if (loading) {
     return (
       <div className="flex justify-center py-20">

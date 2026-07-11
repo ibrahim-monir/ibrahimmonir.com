@@ -50,6 +50,7 @@ jobs:
             /opt/alt/php84/usr/bin/php artisan db:seed --class=ArnaFashionWorkSeeder --force
             /opt/alt/php84/usr/bin/php artisan db:seed --class=ImportExistingMediaSeeder --force
             /opt/alt/php84/usr/bin/php artisan db:seed --class=PricingSeeder --force
+            /opt/alt/php84/usr/bin/php artisan db:seed --class=ServiceSeeder --force
             /opt/alt/php84/usr/bin/php artisan db:seed --class=SocialLinkSeeder --force
             /opt/alt/php84/usr/bin/php artisan optimize:clear
             /opt/alt/php84/usr/bin/php artisan config:cache

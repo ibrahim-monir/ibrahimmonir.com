@@ -20,6 +20,8 @@ class TestimonialController extends Controller
             'review_text'  => $t->review_text,
             'avatar_color' => $t->avatar_color,
             'initials'     => $t->initials,
+            'is_linkedin'  => $t->is_linkedin,
+            'linkedin_url' => $t->linkedin_url,
         ]);
 
         return response()->json($testimonials);

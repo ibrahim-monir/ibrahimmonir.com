@@ -9,12 +9,14 @@ class Testimonial extends Model
     protected $fillable = [
         'name', 'job_title', 'company', 'country',
         'rating', 'review_text', 'avatar_color', 'order', 'is_active',
+        'is_linkedin', 'linkedin_url',
     ];
 
     protected $casts = [
-        'is_active' => 'boolean',
-        'rating'    => 'integer',
-        'order'     => 'integer',
+        'is_active'   => 'boolean',
+        'is_linkedin' => 'boolean',
+        'rating'      => 'integer',
+        'order'       => 'integer',
     ];
 
     public function scopeActive($query)

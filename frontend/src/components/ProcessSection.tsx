@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { Search, ClipboardList, Palette, Code2, ShieldCheck, Rocket, type LucideIcon } from "lucide-react";
+import { Search, ClipboardList, Palette, Code2, ShieldCheck, Rocket, Workflow, type LucideIcon } from "lucide-react";
 
 type Step = {
   num: string;
@@ -18,6 +18,10 @@ const steps: Step[] = [
   { num: "06", title: "Launch", desc: "I deploy to production and provide ongoing maintenance, updates and dedicated support.", icon: Rocket },
 ];
 
+// Brand-orange family only — varying shades give each card its own identity,
+// echoing the reference infographic's per-card colors without leaving the palette.
+const SHADES = ["#f97316", "#fb923c", "#ea580c", "#f59e0b", "#ff8c42", "#c2410c"];
+
 function FlowArrow({ down = false, delay = 0 }: { down?: boolean; delay?: number }) {
   const base: CSSProperties = { width: 0, height: 0, animationDelay: `${delay}s` };
   const style: CSSProperties = down
@@ -26,42 +30,32 @@ function FlowArrow({ down = false, delay = 0 }: { down?: boolean; delay?: number
   return <span className={down ? "proc-arrow-y" : "proc-arrow"} style={style} aria-hidden />;
 }
 
-function StepCard({ s }: { s: Step }) {
+function StepCard({ s, shade }: { s: Step; shade: string }) {
   const Icon = s.icon;
   return (
     <div className="proc-wrap group relative h-full">
-      {/* accent bracket frame — peeks around the top-right corner */}
+      {/* stacked-paper shadow card, offset behind */}
       <div
-        className="proc-tab absolute -top-2 -right-2 left-2 bottom-2 rounded-[1.5rem] transition-all duration-300"
-        style={{ background: "linear-gradient(135deg, #fb923c, #f97316)" }}
+        className="absolute inset-0 translate-x-2.5 translate-y-2.5 rounded-2xl transition-transform duration-300"
+        style={{ background: "rgba(0,0,0,0.4)" }}
         aria-hidden
       />
 
       {/* front card */}
       <div
-        className="proc-card relative h-full flex flex-col items-center text-center rounded-[1.5rem] border pt-12 px-6 pb-8 transition-all duration-300"
-        style={{ background: "var(--bg-card)", borderColor: "var(--border)", boxShadow: "0 18px 44px -26px rgba(0,0,0,0.85)" }}
+        className="proc-card relative h-full flex flex-col items-center text-center rounded-2xl border p-7 transition-all duration-300"
+        style={{ background: "var(--bg-card)", borderColor: "var(--border)" }}
       >
-        {/* sheen sweep */}
-        <span className="absolute inset-0 rounded-[1.5rem] overflow-hidden pointer-events-none" aria-hidden>
-          <span className="proc-sheen absolute inset-0" />
-        </span>
-
-        {/* dashed number circle, overlapping the top */}
+        {/* icon circle, top */}
         <span
-          className="proc-badge absolute -top-6 left-1/2 -translate-x-1/2 z-20 flex items-center justify-center rounded-full text-sm font-extrabold"
-          style={{ width: 52, height: 52, border: "2px dashed rgba(249,115,22,0.6)", color: "var(--primary)", background: "var(--bg-card)" }}
+          className="flex items-center justify-center rounded-full mb-5 transition-transform duration-300 group-hover:scale-110"
+          style={{ width: 56, height: 56, background: shade }}
         >
-          {s.num}
+          <Icon size={24} color="#fff" strokeWidth={2} />
         </span>
 
-        <h3 className="relative text-sm font-extrabold uppercase tracking-[0.14em] mb-3">{s.title}</h3>
-        <p className="relative text-xs leading-relaxed mb-7" style={{ color: "var(--text-muted)" }}>{s.desc}</p>
-
-        {/* bottom icon */}
-        <span className="relative mt-auto transition-transform duration-300 group-hover:scale-110 group-hover:-translate-y-0.5" style={{ color: "var(--primary)" }}>
-          <Icon size={30} strokeWidth={1.6} />
-        </span>
+        <h3 className="text-base font-bold mb-2">{s.title}</h3>
+        <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>{s.desc}</p>
       </div>
     </div>
   );
@@ -77,9 +71,14 @@ function reveal(shown: boolean, index: number): CSSProperties {
   };
 }
 
+type HubPath = { d: string; dot: [number, number] }[];
+
 export default function ProcessSection() {
   const ref = useRef<HTMLDivElement>(null);
+  const capsuleRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [shown, setShown] = useState(false);
+  const [hub, setHub] = useState<{ w: number; h: number; top: HubPath; bottom: HubPath } | null>(null);
 
   useEffect(() => {
     const el = ref.current;
@@ -97,7 +96,45 @@ export default function ProcessSection() {
     return () => ob.disconnect();
   }, []);
 
-  const rows = [steps.slice(0, 3), steps.slice(3, 6)];
+  // Measure real card + capsule positions so every spoke lands exactly on
+  // the capsule's edge and each card's own center — no guessed coordinates.
+  useEffect(() => {
+    function measure() {
+      const container = ref.current, capsule = capsuleRef.current;
+      const cards = cardRefs.current;
+      if (!container || !capsule || cards.some((c) => !c)) return;
+
+      const cRect = container.getBoundingClientRect();
+      const capRect = capsule.getBoundingClientRect();
+      const capX = capRect.left + capRect.width / 2 - cRect.left;
+      const capTopY = capRect.top - cRect.top;
+      const capBottomY = capRect.bottom - cRect.top;
+      const spread = capRect.width * 0.28;
+      const offsets = [-spread, 0, spread];
+
+      const top: HubPath = [0, 1, 2].map((i) => {
+        const r = cards[i]!.getBoundingClientRect();
+        const x = r.left + r.width / 2 - cRect.left;
+        const y = r.bottom - cRect.top;
+        const hx = capX + offsets[i];
+        return { d: `M ${x} ${y} Q ${x} ${capTopY} ${hx} ${capTopY}`, dot: [x, y] };
+      });
+
+      const bottom: HubPath = [3, 4, 5].map((i) => {
+        const r = cards[i]!.getBoundingClientRect();
+        const x = r.left + r.width / 2 - cRect.left;
+        const y = r.top - cRect.top;
+        const hx = capX + offsets[i - 3];
+        return { d: `M ${hx} ${capBottomY} Q ${x} ${capBottomY} ${x} ${y}`, dot: [x, y] };
+      });
+
+      setHub({ w: cRect.width, h: cRect.height, top, bottom });
+    }
+
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
 
   return (
     <section className="relative overflow-hidden py-24">
@@ -106,15 +143,12 @@ export default function ProcessSection() {
         @keyframes proc-arrow-pulse-y { 0%,100% { opacity:.45; transform: translateY(0); }  50% { opacity:1; transform: translateY(3px); } }
         .proc-arrow   { animation: proc-arrow-pulse 1.8s ease-in-out infinite; }
         .proc-arrow-y { animation: proc-arrow-pulse-y 1.8s ease-in-out infinite; }
-        .proc-sheen {
-          background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,0.07) 50%, transparent 65%);
-          transform: translateX(-120%);
-          transition: transform .8s ease;
-        }
-        .proc-wrap:hover .proc-sheen { transform: translateX(120%); }
-        .proc-wrap:hover .proc-card  { transform: translateY(-8px); border-color: rgba(249,115,22,0.5) !important; box-shadow: 0 28px 56px -26px rgba(249,115,22,0.45); }
-        .proc-wrap:hover .proc-tab   { top: -0.65rem; right: -0.65rem; }
-        @media (prefers-reduced-motion: reduce) { .proc-arrow, .proc-arrow-y, .proc-sheen { animation: none !important; transition: none !important; } }
+        .proc-wrap:hover .proc-card { transform: translate(-2.5px, -2.5px); box-shadow: 0 18px 40px -20px rgba(249,115,22,0.5); }
+        @keyframes proc-hub-flow { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
+        .proc-hub-flow { stroke-dasharray: 18 82; animation: proc-hub-flow 2.2s linear infinite; }
+        @keyframes proc-pulse-dot { 0%,100% { r: 3.5; opacity: .85; } 50% { r: 5; opacity: 1; } }
+        .proc-hub-dot { animation: proc-pulse-dot 2s ease-in-out infinite; }
+        @media (prefers-reduced-motion: reduce) { .proc-arrow, .proc-arrow-y, .proc-hub-flow, .proc-hub-dot { animation: none !important; transition: none !important; } }
       `}</style>
 
       {/* Ambient glow */}
@@ -136,34 +170,83 @@ export default function ProcessSection() {
           </p>
         </div>
 
-        {/* ── Desktop: 3 columns × 2 rows with arrows ── */}
-        <div ref={ref} className="hidden lg:flex flex-col gap-14">
-          {rows.map((row, r) => (
-            <div key={r} className="flex items-stretch">
-              {row.map((s, c) => {
-                const idx = r * 3 + c;
-                return (
-                  <div key={s.num} className="flex items-stretch flex-1">
-                    <div className="flex-1 flex" style={reveal(shown, idx)}>
-                      <StepCard s={s} />
-                    </div>
-                    {c < row.length - 1 && (
-                      <div className="flex items-center justify-center px-4 shrink-0">
-                        <FlowArrow delay={idx * 0.2} />
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+        {/* ── Desktop: hub-and-spoke — 3 cards up top, 3 below, all wired into a central capsule ── */}
+        <div ref={ref} className="hidden lg:flex flex-col gap-20 relative">
+
+          {/* Connector lines + dots, drawn behind everything else */}
+          {hub && (
+            <svg
+              className="pointer-events-none absolute inset-0 w-full h-full z-0"
+              viewBox={`0 0 ${hub.w} ${hub.h}`}
+              aria-hidden
+            >
+              {[...hub.top, ...hub.bottom].map((p, i) => (
+                <g key={i}>
+                  {/* solid neutral base line */}
+                  <path d={p.d} fill="none" stroke="var(--text-muted)" strokeWidth={1.75} strokeLinecap="round" opacity={0.4} />
+                  {/* animated flowing highlight travelling along the same path */}
+                  <path
+                    className="proc-hub-flow"
+                    d={p.d}
+                    pathLength={100}
+                    fill="none"
+                    stroke={SHADES[i]}
+                    strokeWidth={2.5}
+                    strokeLinecap="round"
+                    style={{ animationDelay: `${i * 0.15}s` }}
+                  />
+                  <circle className="proc-hub-dot" cx={p.dot[0]} cy={p.dot[1]} r={3.5} fill={SHADES[i]} style={{ animationDelay: `${i * 0.15}s` }} />
+                </g>
+              ))}
+            </svg>
+          )}
+
+          {/* Top row */}
+          <div className="flex items-stretch gap-8 relative z-10">
+            {steps.slice(0, 3).map((s, i) => (
+              <div key={s.num} className="flex-1" ref={(el) => { cardRefs.current[i] = el; }} style={reveal(shown, i)}>
+                <StepCard s={s} shade={SHADES[i]} />
+              </div>
+            ))}
+          </div>
+
+          {/* Central capsule — with a faint outer track ring, matching the reference */}
+          <div className="flex justify-center relative z-10">
+            <div className="relative flex items-center justify-center">
+              <div
+                className="absolute rounded-full pointer-events-none"
+                style={{ inset: -14, border: "1.5px solid rgba(249,115,22,0.25)" }}
+                aria-hidden
+              />
+              <div
+                ref={capsuleRef}
+                className="relative flex items-center gap-3 rounded-full px-10 py-5 shadow-2xl"
+                style={{ background: "linear-gradient(135deg, #fb923c, #f97316)", boxShadow: "0 24px 60px -20px rgba(249,115,22,0.55)" }}
+              >
+                <Workflow size={26} color="#fff" strokeWidth={2} />
+                <div className="text-left">
+                  <p className="font-extrabold text-lg leading-tight text-white">MY PROCESS</p>
+                  <p className="text-xs font-medium text-white/80">Idea to Launch, in 6 Steps</p>
+                </div>
+              </div>
             </div>
-          ))}
+          </div>
+
+          {/* Bottom row */}
+          <div className="flex items-stretch gap-8 relative z-10">
+            {steps.slice(3, 6).map((s, i) => (
+              <div key={s.num} className="flex-1" ref={(el) => { cardRefs.current[i + 3] = el; }} style={reveal(shown, i + 3)}>
+                <StepCard s={s} shade={SHADES[i + 3]} />
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* ── Tablet: 2 columns ── */}
         <div className="hidden sm:grid lg:hidden grid-cols-2 gap-x-6 gap-y-12">
           {steps.map((s, i) => (
             <div key={s.num} style={reveal(shown, i)}>
-              <StepCard s={s} />
+              <StepCard s={s} shade={SHADES[i]} />
             </div>
           ))}
         </div>
@@ -173,7 +256,7 @@ export default function ProcessSection() {
           {steps.map((s, i) => (
             <div key={s.num} className="w-full max-w-md flex flex-col items-center gap-6">
               <div className="w-full" style={reveal(shown, i)}>
-                <StepCard s={s} />
+                <StepCard s={s} shade={SHADES[i]} />
               </div>
               {i < steps.length - 1 && <FlowArrow down delay={i * 0.2} />}
             </div>

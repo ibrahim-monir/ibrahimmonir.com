@@ -125,6 +125,20 @@ class TestimonialResource extends Resource
                     ->label('Active')
                     ->default(true)
                     ->inline(false),
+
+                Toggle::make('is_linkedin')
+                    ->label('From LinkedIn')
+                    ->helperText('Shows a "via LinkedIn" badge on the review card')
+                    ->live()
+                    ->inline(false),
+
+                TextInput::make('linkedin_url')
+                    ->label('LinkedIn Recommendation URL')
+                    ->url()
+                    ->placeholder('https://www.linkedin.com/in/...')
+                    ->helperText('Optional — makes the badge link out to the profile/recommendation')
+                    ->visible(fn ($get) => (bool) $get('is_linkedin'))
+                    ->columnSpanFull(),
             ])->columns(2),
         ]);
     }
@@ -138,6 +152,7 @@ class TestimonialResource extends Resource
                 TextColumn::make('job_title')->label('Title')->placeholder('—'),
                 TextColumn::make('company')->searchable()->color('warning')->placeholder('—'),
                 TextColumn::make('rating')->label('★')->sortable(),
+                IconColumn::make('is_linkedin')->label('LinkedIn')->boolean(),
                 IconColumn::make('is_active')->label('Active')->boolean(),
             ])
             ->defaultSort('order')

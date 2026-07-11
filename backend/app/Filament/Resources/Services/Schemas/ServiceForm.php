@@ -4,7 +4,9 @@ namespace App\Filament\Resources\Services\Schemas;
 
 use App\Filament\Support\MediaSelect;
 use App\Models\Media;
+use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
@@ -43,8 +45,18 @@ class ServiceForm
                             TextInput::make('price')->numeric()->prefix('$')->nullable(),
                             TextInput::make('icon')->helperText('Heroicon name or emoji'),
                             TextInput::make('order')->numeric()->default(0),
-                            Toggle::make('is_active')->label('Active')->default(true)->inline(false),
+                            ColorPicker::make('color')->label('Accent Color'),
                         ]),
+
+                        Grid::make(2)->schema([
+                            Toggle::make('is_active')->label('Active')->default(true)->inline(false),
+                            Toggle::make('is_popular')->label('Mark as Popular')->default(false)->inline(false),
+                        ]),
+
+                        TagsInput::make('features')
+                            ->label('Features List')
+                            ->placeholder('Add a feature and press Enter')
+                            ->helperText('Each feature will show as a bullet point'),
                     ]),
 
                     // Right: description + image

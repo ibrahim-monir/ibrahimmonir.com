@@ -4,6 +4,7 @@ import TopBar from "@/components/TopBar";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { fetchSettings, str, arr } from "@/lib/settings";
+import { fetchServiceNavItems } from "@/lib/services";
 import ParticlesBackground from "@/components/ParticlesBackground";
 import HeroPhoto from "@/components/HeroPhoto";
 import HeroTypewriter from "@/components/HeroTypewriter";
@@ -40,11 +41,12 @@ const FALLBACK_WORKS: WorkItem[] = [
 
 export default async function HomePage() {
   const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api";
-  const [settings, experiencesRaw, testimonialsRaw, worksRaw] = await Promise.all([
+  const [settings, experiencesRaw, testimonialsRaw, worksRaw, services] = await Promise.all([
     fetchSettings(),
     fetch(`${API}/experiences`,   { cache: 'no-store' }).then(r => r.ok ? r.json() : []).catch(() => []),
     fetch(`${API}/testimonials`,  { cache: 'no-store' }).then(r => r.ok ? r.json() : []).catch(() => []),
     fetch(`${API}/works`,         { cache: 'no-store' }).then(r => r.ok ? r.json() : []).catch(() => []),
+    fetchServiceNavItems(),
   ]);
   const timeline: { role: string; company: string; year_label: string; description: string }[] = experiencesRaw;
   const testimonials: TestimonialItem[] = testimonialsRaw;
@@ -60,7 +62,7 @@ export default async function HomePage() {
   return (
     <>
       <TopBar phone={str(settings.contact_phone)} />
-      <Navbar />
+      <Navbar services={services} />
       <main className="pt-[100px] flex-1">
 
         {/* ── Hero + About — single unified section ── */}
@@ -158,9 +160,6 @@ export default async function HomePage() {
         {/* ── Stats Counter ── */}
         <StatsCounter stats={statsData} />
 
-        {/* ── Tech Stack Slider ── */}
-        <TechStackSlider />
-
         {/* ── 3rd: Experience ── */}
         <section className="py-20">
           <div className="container">
@@ -211,6 +210,9 @@ export default async function HomePage() {
         <Testimonials reviews={testimonials} />
 
         <BlogPreview />
+
+        {/* ── Tech Stack Slider ── */}
+        <TechStackSlider />
 
         {/* ── CTA ── */}
         <section className="py-20">
