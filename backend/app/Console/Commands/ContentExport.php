@@ -10,18 +10,15 @@ class ContentExport extends Command
 {
     protected $signature = 'content:export {--path= : Override output file path}';
 
-    protected $description = 'Export all syncable DB tables to a git-tracked JSON file';
+    protected $description = 'Export the syncable DB tables to a git-tracked JSON file';
 
     /**
-     * Transient / device-specific / security tables that must never be synced.
+     * Only these tables travel between machines/live via content.json. Everything
+     * else (contacts, invoices, clients, experiences, blog_posts, users, ...) is
+     * per-environment business data — syncing it risks overwriting real production
+     * records with stale local dev data. See commit ebe981b.
      */
-    public const SKIP = [
-        'migrations', 'cache', 'cache_locks', 'jobs', 'job_batches', 'failed_jobs',
-        'sessions', 'password_reset_tokens', 'personal_access_tokens',
-        // Credentials must not travel between environments — the live admin login
-        // is managed by AdminUserSeeder, not by synced dev data.
-        'users',
-    ];
+    public const ALLOWED = ['services', 'testimonials', 'media'];
 
     public function handle(): int
     {
@@ -33,8 +30,7 @@ class ContentExport extends Command
             // keep only tables that belong to THIS database.
             ->map(fn ($t) => $this->scopeToDatabase($t, $database))
             ->filter()
-            ->reject(fn ($t) => in_array($t, self::SKIP, true))
-            ->reject(fn ($t) => str_starts_with($t, 'wp_')) // leftover WordPress tables
+            ->filter(fn ($t) => in_array($t, self::ALLOWED, true))
             ->unique()
             ->sort()
             ->values();
