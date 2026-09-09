@@ -1,5 +1,6 @@
 'use client';
-import { use } from "react";
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { ArrowLeft, FileDown, MessageSquare, Calendar, DollarSign } from "lucide-react";
@@ -35,12 +36,22 @@ function formatBytes(bytes: number) {
   return `${(bytes / 1048576).toFixed(1)} MB`;
 }
 
-export default function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+// Reads the project id from the query string, not a [id] segment -- static
+// export can only pre-render routes whose params are known at build time,
+// and a client's project id isn't.
+function ProjectDetail() {
+  const id = useSearchParams().get("id") ?? "";
   const { data: project, isLoading } = useQuery<ProjectDetail>({
     queryKey: ["project", id],
     queryFn: () => api.get(`/projects/${id}`).then((r) => r.data.data ?? r.data),
+    enabled: !!id,
   });
+
+  if (!id) return (
+    <div className="max-w-4xl mx-auto text-center py-20" style={{ color: "var(--text-muted)" }}>
+      No project selected.
+    </div>
+  );
 
   if (isLoading) return (
     <div className="max-w-4xl mx-auto">
@@ -155,7 +166,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
             <h2 className="font-semibold flex items-center gap-2">
               <MessageSquare size={18} style={{ color: "var(--primary)" }} /> Messages
             </h2>
-            <Link href={`/portal/messages/${project.id}`} className="text-xs" style={{ color: "var(--primary)" }}>Open chat</Link>
+            <Link href={`/portal/messages/view?project=${project.id}`} className="text-xs" style={{ color: "var(--primary)" }}>Open chat</Link>
           </div>
           {project.messages.length === 0 ? (
             <p className="text-sm py-4 text-center" style={{ color: "var(--text-muted)" }}>No messages yet.</p>
@@ -180,5 +191,13 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
         </div>
       )}
     </div>
+  );
+}
+
+export default function ProjectDetailPage() {
+  return (
+    <Suspense fallback={null}>
+      <ProjectDetail />
+    </Suspense>
   );
 }

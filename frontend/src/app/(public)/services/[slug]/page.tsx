@@ -152,6 +152,19 @@ async function getRelatedPosts(slug: string): Promise<BlogPost[]> {
   }
 }
 
+// Same reasoning as blog/[slug]: static export needs every slug enumerated
+// up front, and the full services list is exactly that.
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
+  try {
+    const res = await fetch(`${API}/services`);
+    if (!res.ok) return [];
+    const data = await res.json();
+    return (data.services ?? []).map((s: Service) => ({ slug: s.slug }));
+  } catch {
+    return [];
+  }
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const service = await getService(slug);

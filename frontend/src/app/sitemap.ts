@@ -1,5 +1,9 @@
 import type { MetadataRoute } from "next";
 
+// Static export builds this once at build time, same as every other route --
+// no server is available afterward to regenerate it per request.
+export const dynamic = "force-static";
+
 const SITE_URL = "https://ibrahimmonir.com";
 const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api";
 
@@ -8,7 +12,7 @@ type Service = { slug: string; updated_at?: string };
 
 async function fetchBlogSlugs(): Promise<BlogPost[]> {
   try {
-    const res = await fetch(`${API}/blog?per_page=100`, { cache: "no-store" });
+    const res = await fetch(`${API}/blog?per_page=100`);
     if (!res.ok) return [];
     const data = await res.json();
     return Array.isArray(data.data) ? data.data : [];
@@ -19,7 +23,7 @@ async function fetchBlogSlugs(): Promise<BlogPost[]> {
 
 async function fetchServiceSlugs(): Promise<Service[]> {
   try {
-    const res = await fetch(`${API}/services`, { cache: "no-store" });
+    const res = await fetch(`${API}/services`);
     if (!res.ok) return [];
     const data = await res.json();
     return Array.isArray(data.services) ? data.services : [];

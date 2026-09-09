@@ -65,6 +65,20 @@ async function getRecent(excludeSlug: string): Promise<Post[]> {
   } catch { return []; }
 }
 
+// Static export pre-renders exactly the routes this returns -- unlike the
+// portal's client-only IDs, every blog slug is known from the API at build
+// time, so this is the case static export is actually built for.
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
+  try {
+    const res = await fetch(`${API}/blog?per_page=1000`);
+    if (!res.ok) return [];
+    const data = await res.json();
+    return (data.data ?? []).map((p: Post) => ({ slug: p.slug }));
+  } catch {
+    return [];
+  }
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const post = await getPost(slug);

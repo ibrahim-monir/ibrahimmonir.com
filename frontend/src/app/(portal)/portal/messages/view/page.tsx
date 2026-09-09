@@ -1,5 +1,6 @@
 'use client';
-import { use, useState, useEffect, useRef } from "react";
+import { Suspense, useState, useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { ArrowLeft, Send } from "lucide-react";
@@ -19,8 +20,12 @@ interface Project {
   title: string;
 }
 
-export default function MessagesPage({ params }: { params: Promise<{ projectId: string }> }) {
-  const { projectId } = use(params);
+// This route has no fixed set of project IDs to pre-render (static export
+// requires generateStaticParams to enumerate every value up front), so the
+// ID travels as a query string instead of a [projectId] segment and is read
+// entirely on the client -- same shape as a traditional SPA route.
+function MessagesThread() {
+  const projectId = useSearchParams().get("project") ?? "";
   const { user } = useAuthStore();
   const qc = useQueryClient();
   const [text, setText] = useState("");
@@ -29,11 +34,13 @@ export default function MessagesPage({ params }: { params: Promise<{ projectId: 
   const { data: project } = useQuery<Project>({
     queryKey: ["project-meta", projectId],
     queryFn: () => api.get(`/projects/${projectId}`).then((r) => r.data.project ?? r.data),
+    enabled: !!projectId,
   });
 
   const { data: messages = [] } = useQuery<Message[]>({
     queryKey: ["messages", projectId],
     queryFn: () => api.get(`/projects/${projectId}/messages`).then((r) => r.data.messages ?? []),
+    enabled: !!projectId,
     refetchInterval: 4000,
   });
 
@@ -63,6 +70,14 @@ export default function MessagesPage({ params }: { params: Promise<{ projectId: 
     new Date(dt).toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" });
 
   let lastDate = "";
+
+  if (!projectId) {
+    return (
+      <div className="max-w-3xl mx-auto text-center py-20" style={{ color: "var(--text-muted)" }}>
+        No conversation selected.
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-3xl mx-auto flex flex-col" style={{ height: "calc(100vh - 8rem)" }}>
@@ -147,5 +162,13 @@ export default function MessagesPage({ params }: { params: Promise<{ projectId: 
         </button>
       </form>
     </div>
+  );
+}
+
+export default function MessagesPage() {
+  return (
+    <Suspense fallback={null}>
+      <MessagesThread />
+    </Suspense>
   );
 }

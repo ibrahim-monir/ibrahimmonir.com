@@ -1,33 +1,20 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Self-contained server bundle (.next/standalone) for the cPanel Node.js
-  // deploy — traces only the deps this app actually needs instead of
-  // shipping/installing the full node_modules on the server.
-  output: "standalone",
+  // Plain static HTML/CSS/JS (like upokoron's frontend/dist) -- no Node
+  // process on the server at all, so the shared cPanel box (which also
+  // carries two live e-commerce sites) sees near-zero load from this app.
+  // Data (blog/services/testimonials) is pulled from the API at build time;
+  // a new post only shows up after the next deploy, same as upokoron.
+  output: "export",
   images: {
-    remotePatterns: [
-      { protocol: "http", hostname: "localhost", port: "8000", pathname: "/storage/**" },
-      { protocol: "https", hostname: "api.ibrahimmonir.com", pathname: "/storage/**" },
-    ],
+    // The Image Optimization API needs a Node server -- unavailable in
+    // static export, so images are served as-is.
+    unoptimized: true,
   },
-  async redirects() {
-    return [
-      // Canonicalize to the apex domain (matches metadataBase in layout.tsx).
-      {
-        source: "/:path*",
-        has: [{ type: "host", value: "www.ibrahimmonir.com" }],
-        destination: "https://ibrahimmonir.com/:path*",
-        permanent: true,
-      },
-      // The Packages page was renamed to Pricing.
-      {
-        source: "/packages",
-        destination: "/pricing",
-        permanent: true,
-      },
-    ];
-  },
+  // redirects() is not supported by output: "export" (no server to run it
+  // on). The same two redirects are done via .htaccess instead --
+  // see frontend/public_html.htaccess.
 };
 
 export default nextConfig;

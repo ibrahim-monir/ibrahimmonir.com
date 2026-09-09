@@ -1,29 +1,23 @@
 name: Deploy Frontend to cPanel
 
-# Mirrors upokoron's deploy.yml (github.com/ibrahim-monir/upokoron) since the
-# main domain's frontend lives on the same cPanel host as upokoron.com, which
-# has no SSH access -- everything goes through the cPanel API instead.
-#
-# DIFFERENCE FROM UPOKORON: that app ships a static Vite build (frontend/dist)
-# straight into public_html, no server process involved. This app is Next.js
-# in SSR mode (keeps redirects(), middleware, etc.), so the deploy target is a
-# cPanel "Setup Node.js App" instance, not a plain docroot -- the bundle is
-# `.next/standalone` (Next's self-contained server output), and a Node app
-# managed by Phusion Passenger needs an explicit restart after new files land
-# (it does not notice a changed directory on its own).
+# Mirrors upokoron's deploy.yml (github.com/ibrahim-monir/upokoron): a plain
+# static export uploaded via the cPanel API, no SSH. The Next.js app builds
+# with output: "export" specifically so there is no Node process to keep
+# running on the server -- this cPanel box is shared with two live
+# e-commerce sites, so the goal is the smallest possible footprint (a docroot
+# full of static files), same as upokoron's frontend/dist.
 #
 # BEFORE TRUSTING THE PUSH TRIGGER:
-#   1. Fill in CPANEL_USER and NODE_APP_ROOT below.
-#   2. In hPanel/cPanel -> "Setup Node.js App", create (or locate) the Node
-#      app for ibrahimmonir.com. Its "Application root" is NODE_APP_ROOT;
-#      its "Application startup file" must be server.js (that's what
-#      `.next/standalone` generates).
-#   3. Add repo secret CPANEL_API_TOKEN (hPanel -> Security -> Manage API
-#      Tokens -- same account that runs upokoron, but tokens are not shared
-#      across repos, so create one here even if you already have one there).
-#   4. Run this workflow once by hand (Actions tab -> Run workflow) and watch
-#      every step -- especially Extract and Restart, which depend on exact
-#      server paths nobody can verify from outside the account.
+#   1. Fill in CPANEL_USER and WEB_ROOT below (WEB_ROOT is the absolute path
+#      to ibrahimmonir.com's document root, e.g. /home/USER/public_html or
+#      /home/USER/domains/ibrahimmonir.com/public_html -- whichever hPanel
+#      shows for this domain).
+#   2. Add repo secret CPANEL_API_TOKEN (hPanel -> Security -> Manage API
+#      Tokens -- create a fresh one for this repo even if upokoron already
+#      has one; tokens aren't shared across repos).
+#   3. Run this workflow once by hand (Actions tab -> Run workflow) and
+#      check every step -- Extract in particular depends on WEB_ROOT being
+#      exactly right, which nobody can verify from outside the account.
 
 on:
   push:
@@ -36,9 +30,8 @@ on:
 env:
   CPANEL_HOST: premium.mywhiteserver.com
   CPANEL_USER: REPLACE_WITH_CPANEL_USERNAME
-  # Absolute path to the Node app's "Application root" as shown in
-  # cPanel's Setup Node.js App screen, e.g. /home/USER/ibrahimmonir.com.
-  NODE_APP_ROOT: REPLACE_WITH_NODE_APP_ROOT
+  # Absolute path to ibrahimmonir.com's document root on the server.
+  WEB_ROOT: REPLACE_WITH_WEB_ROOT
   DOMAIN: https://ibrahimmonir.com
 
 jobs:
@@ -56,43 +49,29 @@ jobs:
         working-directory: frontend
         run: npm ci
 
-      - name: Build the Next.js app
-        working-directory: frontend
-        env:
-          NEXT_PUBLIC_BUILD_COMMIT: ${{ github.sha }}
+      # Written into public/ so the static export picks it up as a plain
+      # file at /build-info.json -- lets the Verify step below confirm this
+      # exact commit is what's actually being served, the same way
+      # upokoron's update.php reports build.json.
+      - name: Write build info
         run: |
-          export NEXT_PUBLIC_BUILD_TIME="$(date -u '+%Y-%m-%d %H:%M')"
-          npm run build
+          printf '{"commit":"%s","built_at":"%s"}' \
+            "$(git rev-parse --short HEAD)" \
+            "$(date -u '+%Y-%m-%d %H:%M')" \
+            > frontend/public/build-info.json
 
-      # ------------------------------------------------- assemble the bundle
-      #
-      # .next/standalone is Next's self-contained server output: server.js +
-      # only the node_modules this app actually needs, traced at build time.
-      # It does NOT include public/ or .next/static -- Next's own docs say to
-      # copy those in by hand, which is what this does.
+      - name: Build the static export
+        working-directory: frontend
+        run: npm run build
 
       - name: Assemble the deploy bundle
         id: assemble
         run: |
           set -euo pipefail
-
-          STAGE="$RUNNER_TEMP/stage"
-          APP_OUT="$STAGE/nodeapp"
-          mkdir -p "$APP_OUT"
-
-          cp -r frontend/.next/standalone/. "$APP_OUT/"
-          mkdir -p "$APP_OUT/.next/static"
-          cp -r frontend/.next/static/. "$APP_OUT/.next/static/"
-          if [ -d frontend/public ]; then
-            cp -r frontend/public "$APP_OUT/public"
-          fi
-
-          COMMIT=$(git rev-parse --short HEAD)
-          printf '{"commit":"%s","built_at":"%s"}' "$COMMIT" "$(date -u '+%Y-%m-%d %H:%M')" > "$APP_OUT/build.json"
-          echo "commit=$COMMIT" >> "$GITHUB_OUTPUT"
-
-          cd "$STAGE"
-          zip -r -q "$RUNNER_TEMP/deploy.zip" nodeapp
+          cp frontend/public_html.htaccess frontend/out/.htaccess
+          echo "commit=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+          cd frontend/out
+          zip -r -q "$RUNNER_TEMP/deploy.zip" .
           echo "Bundle: $(du -h "$RUNNER_TEMP/deploy.zip" | cut -f1)"
 
       - name: Upload the bundle to cPanel
@@ -124,11 +103,11 @@ jobs:
             --data-urlencode "cpanel_jsonapi_func=fileop" \
             --data-urlencode "op=extract" \
             --data-urlencode "sourcefiles=/home/${CPANEL_USER}/deploy.zip" \
-            --data-urlencode "destfiles=${NODE_APP_ROOT}" \
+            --data-urlencode "destfiles=${WEB_ROOT}" \
             --data-urlencode "doubledecode=1" \
             "https://${CPANEL_HOST}:2083/json-api/cpanel")
           echo "$RESPONSE"
-          echo "$RESPONSE" | grep -q '"result":1' || { echo "::error::Extraction failed -- see the response above. Check that NODE_APP_ROOT exists and matches cPanel's Node app Application root exactly."; exit 1; }
+          echo "$RESPONSE" | grep -q '"result":1' || { echo "::error::Extraction failed -- see the response above. Check that WEB_ROOT matches ibrahimmonir.com's document root exactly."; exit 1; }
 
       - name: Remove the uploaded zip
         continue-on-error: true
@@ -144,34 +123,13 @@ jobs:
             --data-urlencode "sourcefiles=/home/${CPANEL_USER}/deploy.zip" \
             "https://${CPANEL_HOST}:2083/json-api/cpanel"
 
-      # Phusion Passenger (what cPanel's Node.js Selector runs on) restarts
-      # an app when tmp/restart.txt changes mtime -- it never notices new
-      # files landing under its app root on its own. Writing into it via
-      # UAPI avoids needing SSH, same as every other step here.
-
-      - name: Restart the Node app (touch tmp/restart.txt)
-        run: |
-          set -euo pipefail
-          RESPONSE=$(curl -sS -f \
-            -H "Authorization: cpanel ${CPANEL_USER}:${{ secrets.CPANEL_API_TOKEN }}" \
-            -F "dir=${NODE_APP_ROOT}/tmp" \
-            -F "file=restart.txt" \
-            -F "content=restarted at $(date -u '+%Y-%m-%d %H:%M:%S UTC') for ${{ steps.assemble.outputs.commit }}" \
-            "https://${CPANEL_HOST}:2083/execute/Fileman/save_file_content")
-          echo "$RESPONSE"
-
-      # Gives Passenger a moment to spin the new process up before we ask it
-      # what commit it's running.
-      - name: Wait for the app to restart
-        run: sleep 15
-
       - name: Verify the live build matches this commit
         run: |
           set -euo pipefail
-          RESPONSE=$(curl -sS -f "${DOMAIN}/api/deploy-status")
+          RESPONSE=$(curl -sS -f "${DOMAIN}/build-info.json")
           echo "$RESPONSE"
           echo "$RESPONSE" | grep -q "${{ steps.assemble.outputs.commit }}" || {
-            echo "::error::The live site still does not report commit ${{ steps.assemble.outputs.commit }}. The deploy did not actually land -- check the Extract and Restart steps above."
+            echo "::error::The live site still does not report commit ${{ steps.assemble.outputs.commit }}. The deploy did not actually land -- check the Extract step above."
             exit 1
           }
           echo "Confirmed: production is now running ${{ steps.assemble.outputs.commit }}."

@@ -43,7 +43,7 @@ export default function MessagesIndexPage() {
             const last = lastMessage(project);
             const unread = unreadCount(project);
             return (
-              <Link key={project.id} href={`/portal/messages/${project.id}`}
+              <Link key={project.id} href={`/portal/messages/view?project=${project.id}`}
                 className="card p-5 flex items-center gap-4 hover:border-orange-500/50 transition-all">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
                   style={{ background: unread > 0 ? "rgba(249,115,22,0.2)" : "var(--bg-muted)" }}>

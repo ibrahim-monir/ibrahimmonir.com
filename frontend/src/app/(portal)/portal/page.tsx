@@ -244,7 +244,7 @@ export default function PortalDashboard() {
           ) : (
             <div className="space-y-3">
               {projects.slice(0, 4).map((p) => (
-                <Link key={p.id} href={`/portal/projects/${p.id}`}
+                <Link key={p.id} href={`/portal/projects/view?id=${p.id}`}
                   className="card p-4 flex items-center gap-4 hover:border-orange-500/50 transition-all">
                   <div className="flex-1 min-w-0">
                     <div className="font-medium mb-1 truncate text-sm">{p.title}</div>
@@ -295,7 +295,7 @@ export default function PortalDashboard() {
             ) : (
               <div className="space-y-2.5">
                 {upcoming.map((p) => (
-                  <Link key={p.id} href={`/portal/projects/${p.id}`}
+                  <Link key={p.id} href={`/portal/projects/view?id=${p.id}`}
                     className="flex items-center justify-between gap-2 group">
                     <span className="text-xs truncate group-hover:underline">{p.title}</span>
                     <span className="text-xs font-semibold shrink-0 px-2 py-0.5 rounded-full"
