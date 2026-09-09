@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Self-contained server bundle (.next/standalone) for the cPanel Node.js
+  // deploy — traces only the deps this app actually needs instead of
+  // shipping/installing the full node_modules on the server.
+  output: "standalone",
   images: {
     remotePatterns: [
       { protocol: "http", hostname: "localhost", port: "8000", pathname: "/storage/**" },
