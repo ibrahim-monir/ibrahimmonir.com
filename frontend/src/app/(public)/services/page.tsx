@@ -97,7 +97,7 @@ async function getServices(): Promise<Service[]> {
     return list.map((s, i) => ({
       num: String(i + 1).padStart(2, "0"),
       slug: s.slug,
-      iconColor: "#f97316",
+      iconColor: s.color || "#f97316",
       popular: s.is_popular,
       wide: i % 3 === 2,
       title: s.title,
