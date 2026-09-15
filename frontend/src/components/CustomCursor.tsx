@@ -46,7 +46,7 @@ export default function CustomCursor() {
         ringRef.current.style.width = '48px';
         ringRef.current.style.height = '48px';
         ringRef.current.style.opacity = '1';
-        ringRef.current.style.background = 'rgba(249,115,22,0.08)';
+        ringRef.current.style.background = 'rgba(237,28,36,0.08)';
       }
       if (dotRef.current) dotRef.current.style.transform += ' scale(0)';
     };
@@ -72,7 +72,7 @@ export default function CustomCursor() {
         width: '40px',
         height: '40px',
         borderRadius: '50%',
-        border: '2px solid #f97316',
+        border: '2px solid #ED1C24',
         pointerEvents: 'none',
         zIndex: '9997',
         animation: 'cursorRipple 0.5s ease-out forwards',
@@ -118,12 +118,12 @@ export default function CustomCursor() {
       <div ref={dotRef} style={{
         position: 'fixed', top: 0, left: 0,
         width: '10px', height: '10px',
-        background: '#f97316',
+        background: '#ED1C24',
         borderRadius: '50%',
         pointerEvents: 'none',
         zIndex: 9999,
         willChange: 'transform',
-        boxShadow: '0 0 8px #f97316, 0 0 20px rgba(249,115,22,0.4)',
+        boxShadow: '0 0 8px #ED1C24, 0 0 20px rgba(237,28,36,0.4)',
         transition: 'opacity 0.15s',
       }} />
 
@@ -131,7 +131,7 @@ export default function CustomCursor() {
       <div ref={ringRef} style={{
         position: 'fixed', top: 0, left: 0,
         width: '40px', height: '40px',
-        border: '1.5px solid #f97316',
+        border: '1.5px solid #ED1C24',
         borderRadius: '50%',
         pointerEvents: 'none',
         zIndex: 9998,

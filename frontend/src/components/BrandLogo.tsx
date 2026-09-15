@@ -20,9 +20,9 @@ function DotI() {
           width: "0.22em",
           height: "0.22em",
           borderRadius: "50%",
-          background: "#f97316",
+          background: "#ED1C24",
           display: "block",
-          boxShadow: "0 0 6px rgba(249,115,22,0.6)",
+          boxShadow: "0 0 6px rgba(237,28,36,0.6)",
         }}
       />
     </span>

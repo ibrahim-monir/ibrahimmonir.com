@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Barlow_Condensed, Overlock } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
@@ -7,7 +7,16 @@ import CustomCursor from "@/components/CustomCursor";
 import ChatWidget from "@/components/ChatWidget";
 import { fetchSettings, str } from "@/lib/settings";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const heading = Barlow_Condensed({
+  subsets: ["latin"],
+  weight: ["500", "700"],
+  variable: "--font-heading-family",
+});
+const body = Overlock({
+  subsets: ["latin"],
+  weight: ["400", "700", "900"],
+  variable: "--font-body-family",
+});
 
 export const metadata: Metadata = {
   title: { default: "Ibrahim Monir — Full-Stack Developer", template: "%s | Ibrahim Monir" },
@@ -29,7 +38,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const gtmId = str(settings.gtm_container_id);
 
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={`${heading.variable} ${body.variable}`}>
       <head>
         {gtmId && (
           <Script id="gtm-init" strategy="afterInteractive">

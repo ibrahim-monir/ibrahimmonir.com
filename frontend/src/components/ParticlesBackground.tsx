@@ -12,7 +12,7 @@ const options: ISourceOptions = {
   fpsLimit: 60,
   particles: {
     number: { value: 55, density: { enable: true } },
-    color: { value: ['#f97316', '#fb923c', '#fbbf24', '#ffffff'] },
+    color: { value: ['#ED1C24', '#ED1C24', '#9C2426', '#1D1D1D'] },
     opacity: {
       value: { min: 0.08, max: 0.45 },
       animation: { enable: true, speed: 0.8, sync: false },
@@ -24,7 +24,7 @@ const options: ISourceOptions = {
     links: {
       enable: true,
       distance: 160,
-      color: '#f97316',
+      color: '#ED1C24',
       opacity: 0.15,
       width: 1,
     },

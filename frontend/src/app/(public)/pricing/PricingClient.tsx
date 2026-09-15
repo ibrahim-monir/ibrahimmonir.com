@@ -71,7 +71,7 @@ export default function PricingClient() {
       {/* Currency Toggle */}
       <div className="flex justify-center mb-12">
         <div className="flex items-center gap-1 p-1 rounded-full border"
-          style={{ borderColor: "var(--border)", background: "var(--card)" }}>
+          style={{ borderColor: "var(--border)", background: "var(--bg-card)" }}>
           <button
             onClick={() => setCurrency("usd")}
             className={`px-5 py-1.5 rounded-full text-sm font-semibold transition-all ${
@@ -101,7 +101,7 @@ export default function PricingClient() {
             className={`card p-8 flex flex-col relative transition-all ${
               plan.is_popular ? "border-orange-500 md:scale-105 z-10" : "hover:border-orange-500/50"
             }`}
-            style={plan.is_popular ? { boxShadow: "0 24px 60px -18px rgba(249,115,22,0.4)" } : undefined}
+            style={plan.is_popular ? { boxShadow: "0 24px 60px -18px rgba(237,28,36,0.4)" } : undefined}
           >
             {plan.is_popular && (
               <div className="absolute -top-3 left-1/2 -translate-x-1/2">

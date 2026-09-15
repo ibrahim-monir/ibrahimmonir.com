@@ -114,7 +114,7 @@ export default function FAQClient() {
           <section key={cat.id} id={cat.id} className="scroll-mt-28">
             <div className="flex items-center gap-2.5 mb-6">
               <span className="w-8 h-8 rounded-lg flex items-center justify-center"
-                style={{ background: "rgba(249,115,22,0.12)", color: "var(--primary)" }}>
+                style={{ background: "rgba(237,28,36,0.12)", color: "var(--primary)" }}>
                 <cat.icon size={16} />
               </span>
               <h2 className="text-xl font-bold" style={{ color: "var(--text)" }}>{cat.label}</h2>

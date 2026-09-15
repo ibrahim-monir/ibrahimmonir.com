@@ -23,7 +23,7 @@ export default function Navbar({ services = [] }: { services?: ServiceNavItem[] 
 
   return (
     <header className="fixed top-9 left-0 right-0 z-40 border-b backdrop-blur-md"
-      style={{ background: "rgba(13,13,13,0.92)", borderColor: "var(--border)" }}>
+      style={{ background: "rgba(255,255,255,0.92)", borderColor: "var(--border)" }}>
       <nav className="container flex items-center justify-between h-16">
 
         <Link href="/" className="flex items-center">
@@ -37,7 +37,7 @@ export default function Navbar({ services = [] }: { services?: ServiceNavItem[] 
               return (
                 <li key={l.href} className="relative group">
                   <Link href={l.href}
-                    className="px-3 py-2 rounded-lg text-base font-medium transition-colors hover:text-white inline-flex items-center gap-1"
+                    className="px-3 py-2 rounded-lg text-base font-medium transition-colors hover:text-[var(--primary)] inline-flex items-center gap-1"
                     style={{
                       color: active ? "var(--text)" : "var(--text-muted)",
                       background: active ? "var(--bg-muted)" : undefined,
@@ -53,7 +53,7 @@ export default function Navbar({ services = [] }: { services?: ServiceNavItem[] 
                       {services.map((s) => (
                         <li key={s.slug}>
                           <Link href={`/services/${s.slug}`}
-                            className="block px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:text-white hover:bg-[var(--bg-muted)]"
+                            className="block px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:text-[var(--primary)] hover:bg-[var(--bg-muted)]"
                             style={{ color: pathname === `/services/${s.slug}` ? "var(--text)" : "var(--text-muted)" }}>
                             {s.title}
                           </Link>
@@ -61,7 +61,7 @@ export default function Navbar({ services = [] }: { services?: ServiceNavItem[] 
                       ))}
                       <li className="mt-1 pt-1" style={{ borderTop: "1px solid var(--border)" }}>
                         <Link href="/services"
-                          className="block px-3 py-2 rounded-lg text-sm font-semibold transition-colors hover:text-white"
+                          className="block px-3 py-2 rounded-lg text-sm font-semibold transition-colors hover:text-[var(--primary)]"
                           style={{ color: "var(--primary)" }}>
                           View All Services
                         </Link>
@@ -75,7 +75,7 @@ export default function Navbar({ services = [] }: { services?: ServiceNavItem[] 
             return (
               <li key={l.href}>
                 <Link href={l.href}
-                  className="px-3 py-2 rounded-lg text-base font-medium transition-colors hover:text-white"
+                  className="px-3 py-2 rounded-lg text-base font-medium transition-colors hover:text-[var(--primary)]"
                   style={{
                     color: pathname === l.href ? "var(--text)" : "var(--text-muted)",
                     background: pathname === l.href ? "var(--bg-muted)" : undefined,

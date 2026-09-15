@@ -72,23 +72,23 @@ export default async function HomePage() {
           <div className="absolute inset-0 pointer-events-none" aria-hidden>
             {/* Grid overlay */}
             <div className="absolute inset-0" style={{
-              backgroundImage: "linear-gradient(rgba(249,115,22,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(249,115,22,0.04) 1px, transparent 1px)",
+              backgroundImage: "linear-gradient(rgba(237,28,36,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(237,28,36,0.04) 1px, transparent 1px)",
               backgroundSize: "60px 60px",
             }} />
             {/* Corner glow */}
             <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full blur-3xl"
-              style={{ background: "radial-gradient(circle, rgba(249,115,22,0.14) 0%, transparent 70%)" }} />
+              style={{ background: "radial-gradient(circle, rgba(237,28,36,0.14) 0%, transparent 70%)" }} />
             {/* Light beam sweep */}
             <div className="hero-beam" />
             {/* Floating ring 1 */}
-            <div className="hero-shape hero-shape-a" style={{ top: "15%", left: "8%", width: 56, height: 56, borderRadius: "50%", border: "1.5px solid rgba(249,115,22,0.25)" }} />
+            <div className="hero-shape hero-shape-a" style={{ top: "15%", left: "8%", width: 56, height: 56, borderRadius: "50%", border: "1.5px solid rgba(237,28,36,0.25)" }} />
             {/* Floating ring 2 */}
-            <div className="hero-shape hero-shape-b" style={{ top: "60%", left: "3%", width: 32, height: 32, borderRadius: "50%", border: "1px solid rgba(249,115,22,0.18)" }} />
+            <div className="hero-shape hero-shape-b" style={{ top: "60%", left: "3%", width: 32, height: 32, borderRadius: "50%", border: "1px solid rgba(237,28,36,0.18)" }} />
             {/* Floating square */}
-            <div className="hero-shape hero-shape-c" style={{ top: "75%", left: "30%", width: 18, height: 18, borderRadius: 4, border: "1.5px solid rgba(249,115,22,0.2)", transform: "rotate(20deg)" }} />
+            <div className="hero-shape hero-shape-c" style={{ top: "75%", left: "30%", width: 18, height: 18, borderRadius: 4, border: "1.5px solid rgba(237,28,36,0.2)", transform: "rotate(20deg)" }} />
             {/* Floating dot cluster */}
-            <div className="hero-shape hero-shape-a" style={{ top: "30%", left: "42%", width: 8, height: 8, borderRadius: "50%", background: "rgba(249,115,22,0.35)", animationDelay: "1s" }} />
-            <div className="hero-shape hero-shape-b" style={{ top: "50%", left: "38%", width: 5, height: 5, borderRadius: "50%", background: "rgba(249,115,22,0.25)", animationDelay: "2s" }} />
+            <div className="hero-shape hero-shape-a" style={{ top: "30%", left: "42%", width: 8, height: 8, borderRadius: "50%", background: "rgba(237,28,36,0.35)", animationDelay: "1s" }} />
+            <div className="hero-shape hero-shape-b" style={{ top: "50%", left: "38%", width: 5, height: 5, borderRadius: "50%", background: "rgba(237,28,36,0.25)", animationDelay: "2s" }} />
           </div>
 
           <div className="container relative z-10">
@@ -176,11 +176,11 @@ export default async function HomePage() {
                 {timeline.map((item) => (
                   <div key={item.role + item.year_label} className="relative">
                     <div className="absolute -left-12 top-2 w-3 h-3 rounded-full"
-                      style={{ background: "var(--primary)", boxShadow: "0 0 0 4px rgba(249,115,22,0.2)" }} />
+                      style={{ background: "var(--primary)", boxShadow: "0 0 0 4px rgba(237,28,36,0.2)" }} />
                     <div className="p-6 rounded-xl transition-all duration-200 hover:-translate-y-0.5"
                       style={{
-                        background: "linear-gradient(135deg, rgba(249,115,22,0.06) 0%, var(--bg-card) 60%)",
-                        border: "1px solid rgba(249,115,22,0.28)",
+                        background: "linear-gradient(135deg, rgba(237,28,36,0.06) 0%, var(--bg-card) 60%)",
+                        border: "1px solid rgba(237,28,36,0.28)",
                         borderLeft: "3px solid var(--primary)",
                       }}>
                       <div className="flex items-start justify-between gap-4 mb-2">

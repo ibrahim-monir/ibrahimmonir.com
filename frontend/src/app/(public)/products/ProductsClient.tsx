@@ -61,7 +61,7 @@ export default function ProductsClient() {
               <div className="flex flex-wrap gap-2 mb-5">
                 {p.tags.map((t) => (
                   <span key={t} className="text-xs px-2 py-1 rounded-md"
-                    style={{ background: "rgba(249,115,22,0.1)", color: "#fb923c" }}>
+                    style={{ background: "rgba(237,28,36,0.1)", color: "#ED1C24" }}>
                     {t}
                   </span>
                 ))}

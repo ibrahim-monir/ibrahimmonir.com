@@ -594,7 +594,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
     getRelatedPosts(slug),
   ]);
 
-  const color = service.color || "#f97316";
+  const color = service.color || "#ED1C24";
   const technologies = TECHNOLOGIES[slug] ?? [];
   const faqs = FAQS[slug] ?? FAQS.default;
   const heroImg = img(service.image);

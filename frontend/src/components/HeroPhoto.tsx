@@ -34,8 +34,8 @@ export default function HeroPhoto() {
             fontSize: "0.73rem",
             fontWeight: 600,
             background: "rgba(18,18,18,.93)",
-            border: "1px solid rgba(249,115,22,.45)",
-            color: "#fb923c",
+            border: "1px solid rgba(237,28,36,.45)",
+            color: "#ED1C24",
             backdropFilter: "blur(8px)",
             boxShadow: "0 4px 16px rgba(0,0,0,.55)",
             animation: "badge-float 3.2s ease-in-out infinite",
@@ -61,7 +61,7 @@ export default function HeroPhoto() {
             position: "absolute",
             width: "200%", height: "200%",
             top: "-50%", left: "-50%",
-            background: "conic-gradient(from 0deg, #f97316 0%, #fbbf24 25%, rgba(249,115,22,.12) 50%, #fbbf24 75%, #f97316 100%)",
+            background: "conic-gradient(from 0deg, #ED1C24 0%, #9C2426 25%, rgba(237,28,36,.12) 50%, #9C2426 75%, #ED1C24 100%)",
             animation: "border-spin 3s linear infinite",
           }} />
 

@@ -46,7 +46,7 @@ export default function LoginPage() {
               {perks.map((p) => (
                 <div key={p.title} className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
-                    style={{ background: "rgba(249,115,22,0.12)" }}>
+                    style={{ background: "rgba(237,28,36,0.12)" }}>
                     <p.Icon size={19} style={{ color: "var(--primary)" }} />
                   </div>
                   <div>

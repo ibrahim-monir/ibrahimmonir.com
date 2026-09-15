@@ -117,7 +117,7 @@ export default async function BlogPostPage({ params }: PageProps) {
             <div className="flex flex-wrap items-center gap-3 mb-4">
               {post.category && (
                 <span className="text-xs font-semibold px-3 py-1 rounded-full"
-                  style={{ background: "rgba(249,115,22,0.12)", color: "var(--primary)", border: "1px solid rgba(249,115,22,0.3)" }}>
+                  style={{ background: "rgba(237,28,36,0.12)", color: "var(--primary)", border: "1px solid rgba(237,28,36,0.3)" }}>
                   {post.category.name}
                 </span>
               )}
@@ -203,7 +203,7 @@ export default async function BlogPostPage({ params }: PageProps) {
             <div className="rounded-2xl p-5 mb-5" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
               <div className="flex flex-col items-center text-center gap-3">
                 <div className="w-16 h-16 rounded-full flex items-center justify-center text-xl font-bold"
-                  style={{ background: "linear-gradient(135deg, var(--primary), #f59e0b)", color: "#fff" }}>
+                  style={{ background: "linear-gradient(135deg, var(--primary), var(--accent))", color: "#fff" }}>
                   IM
                 </div>
                 <div>
@@ -227,7 +227,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                 <h3 className="text-sm font-bold mb-3" style={{ color: "var(--text)" }}>Category</h3>
                 <Link href={`/blog?category=${post.category.slug}`}
                   className="inline-flex items-center gap-2 text-sm px-3 py-1.5 rounded-lg"
-                  style={{ background: "rgba(249,115,22,0.1)", color: "var(--primary)", border: "1px solid rgba(249,115,22,0.25)" }}>
+                  style={{ background: "rgba(237,28,36,0.1)", color: "var(--primary)", border: "1px solid rgba(237,28,36,0.25)" }}>
                   <Tag size={12} /> {post.category.name}
                 </Link>
               </div>
@@ -308,7 +308,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                       {/* Category overlay */}
                       {p.category && (
                         <span className="absolute top-3 left-3 text-xs font-semibold px-2.5 py-1 rounded-full"
-                          style={{ background: "rgba(249,115,22,0.9)", color: "#fff" }}>
+                          style={{ background: "rgba(237,28,36,0.9)", color: "#fff" }}>
                           {p.category.name}
                         </span>
                       )}

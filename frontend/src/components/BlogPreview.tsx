@@ -68,7 +68,7 @@ export default async function BlogPreview() {
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-4xl"
-                      style={{ background: `linear-gradient(135deg, var(--bg-muted) 0%, #1a1a1a 100%)` }}>
+                      style={{ background: `linear-gradient(135deg, var(--bg-muted) 0%, var(--text) 100%)` }}>
                       <span style={{ opacity: 0.2 }}>✍️</span>
                     </div>
                   )}
@@ -76,7 +76,7 @@ export default async function BlogPreview() {
                   {/* Category badge overlay */}
                   {post.category && (
                     <span className="absolute top-3 left-3 text-xs font-semibold px-2.5 py-1 rounded-full"
-                      style={{ background: "rgba(249,115,22,0.92)", color: "#fff" }}>
+                      style={{ background: "rgba(237,28,36,0.92)", color: "#fff" }}>
                       {post.category.name}
                     </span>
                   )}

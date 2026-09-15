@@ -37,7 +37,7 @@ export default function ForgotPasswordPage() {
           {sent ? (
             <div className="text-center space-y-4">
               <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto"
-                style={{ background: "rgba(249,115,22,0.15)" }}>
+                style={{ background: "rgba(237,28,36,0.15)" }}>
                 <Mail size={28} style={{ color: "var(--primary)" }} />
               </div>
               <h2 className="font-semibold text-lg">Check your inbox</h2>

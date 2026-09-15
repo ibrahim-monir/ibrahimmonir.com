@@ -70,15 +70,15 @@ export default function StatsCounter({ stats }: StatsCounterProps) {
         <div
           className="relative overflow-hidden rounded-2xl"
           style={{
-            background: "linear-gradient(135deg, rgba(249,115,22,0.07) 0%, var(--bg-card) 50%, rgba(249,115,22,0.04) 100%)",
-            border: "1px solid rgba(249,115,22,0.28)",
+            background: "linear-gradient(135deg, rgba(237,28,36,0.07) 0%, var(--bg-card) 50%, rgba(237,28,36,0.04) 100%)",
+            border: "1px solid rgba(237,28,36,0.28)",
           }}
         >
           {/* Subtle center glow */}
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
-              background: "radial-gradient(ellipse 70% 100% at 50% 50%, rgba(249,115,22,0.06) 0%, transparent 70%)",
+              background: "radial-gradient(ellipse 70% 100% at 50% 50%, rgba(237,28,36,0.06) 0%, transparent 70%)",
             }}
           />
 
@@ -89,7 +89,7 @@ export default function StatsCounter({ stats }: StatsCounterProps) {
                 {i < stats.length - 1 && (
                   <div
                     className="hidden md:block self-stretch w-px my-6 flex-shrink-0"
-                    style={{ background: "rgba(249,115,22,0.2)" }}
+                    style={{ background: "rgba(237,28,36,0.2)" }}
                   />
                 )}
               </div>

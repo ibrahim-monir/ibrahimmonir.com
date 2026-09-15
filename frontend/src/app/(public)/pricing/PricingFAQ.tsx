@@ -45,8 +45,8 @@ function FaqVisual() {
           50%      { transform: translateY(-10px); }
         }
         @keyframes faq-pulse {
-          0%, 100% { transform: scale(1);    box-shadow: 0 0 0 0 rgba(249,115,22,0.35); }
-          50%      { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(249,115,22,0); }
+          0%, 100% { transform: scale(1);    box-shadow: 0 0 0 0 rgba(237,28,36,0.35); }
+          50%      { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(237,28,36,0); }
         }
         .faq-chip  { animation: faq-float 4.5s ease-in-out infinite; }
         .faq-icon  { animation: faq-pulse 3s ease-in-out infinite; }
@@ -72,7 +72,7 @@ function FaqVisual() {
       {/* Center icon */}
       <div
         className="faq-icon relative z-10 flex items-center justify-center rounded-full"
-        style={{ width: 120, height: 120, background: "rgba(249,115,22,0.14)", border: "1px solid rgba(249,115,22,0.35)", backdropFilter: "blur(4px)" }}
+        style={{ width: 120, height: 120, background: "rgba(237,28,36,0.14)", border: "1px solid rgba(237,28,36,0.35)", backdropFilter: "blur(4px)" }}
       >
         <MessageCircleQuestion size={52} style={{ color: "var(--primary)" }} />
       </div>

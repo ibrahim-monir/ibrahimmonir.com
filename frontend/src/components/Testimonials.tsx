@@ -29,7 +29,7 @@ function Stars({ count, size = 14 }: { count: number; size?: number }) {
   return (
     <div style={{ display: "flex", gap: 3 }}>
       {Array.from({ length: 5 }).map((_, i) => (
-        <Star key={i} size={size} fill={i < count ? "#f97316" : "none"} stroke={i < count ? "#f97316" : "#4b5563"} />
+        <Star key={i} size={size} fill={i < count ? "#ED1C24" : "none"} stroke={i < count ? "#ED1C24" : "#4b5563"} />
       ))}
     </div>
   );
@@ -40,7 +40,7 @@ function LinkedinBadge({ r }: { r: TestimonialItem }) {
   const badgeStyle: React.CSSProperties = {
     display: "inline-flex", alignItems: "center", gap: 5, fontSize: "0.7rem", fontWeight: 600,
     padding: "4px 9px", borderRadius: 999,
-    background: "rgba(249,115,22,0.12)", color: "var(--primary)", border: "1px solid rgba(249,115,22,0.3)",
+    background: "rgba(237,28,36,0.12)", color: "var(--primary)", border: "1px solid rgba(237,28,36,0.3)",
     flexShrink: 0,
   };
   return r.linkedin_url ? (

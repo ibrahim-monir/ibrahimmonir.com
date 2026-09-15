@@ -37,9 +37,9 @@ export default function TopBar({ phone }: TopBarProps) {
                 rel="noopener noreferrer"
                 title={label}
                 className="flex items-center justify-center w-7 h-7 rounded-lg transition-colors"
-                style={{ color: "var(--text-muted)" }}
-                onMouseOver={(e) => (e.currentTarget.style.color = "var(--accent)")}
-                onMouseOut={(e) => (e.currentTarget.style.color = "var(--text-muted)")}
+                style={{ color: "rgba(255,255,255,0.6)" }}
+                onMouseOver={(e) => (e.currentTarget.style.color = "var(--primary)")}
+                onMouseOut={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.6)")}
               >
                 <Icon size={18} />
               </Link>
@@ -52,12 +52,12 @@ export default function TopBar({ phone }: TopBarProps) {
           href={`tel:${displayPhone.replace(/\s/g, "")}`}
           className="flex items-center gap-2 px-3 py-1 rounded-full transition-all"
           style={{
-            background: "rgba(249,115,22,0.12)",
-            border: "1px solid rgba(249,115,22,0.35)",
+            background: "rgba(237,28,36,0.12)",
+            border: "1px solid rgba(237,28,36,0.35)",
             color: "var(--primary)",
           }}
-          onMouseOver={(e) => { e.currentTarget.style.background = "rgba(249,115,22,0.22)"; }}
-          onMouseOut={(e) => { e.currentTarget.style.background = "rgba(249,115,22,0.12)"; }}
+          onMouseOver={(e) => { e.currentTarget.style.background = "rgba(237,28,36,0.22)"; }}
+          onMouseOut={(e) => { e.currentTarget.style.background = "rgba(237,28,36,0.12)"; }}
         >
           <span className="topbar-phone-blink">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

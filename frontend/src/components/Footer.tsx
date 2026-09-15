@@ -60,7 +60,7 @@ export default function Footer() {
               </li>
               <li>
                 <a href="mailto:ibrahimkhalilmp@gmail.com"
-                  className="flex items-center gap-2.5 text-sm transition-colors hover:text-white"
+                  className="flex items-center gap-2.5 text-sm transition-colors hover:text-[var(--primary)]"
                   style={{ color: "var(--text-muted)" }}>
                   <Mail size={14} style={{ color: "var(--primary)", flexShrink: 0 }} />
                   ibrahimkhalilmp@gmail.com
@@ -109,7 +109,7 @@ export default function Footer() {
               {navCol.map((l) => (
                 <li key={l.label}>
                   <Link href={l.href}
-                    className="text-sm transition-colors hover:text-white"
+                    className="text-sm transition-colors hover:text-[var(--primary)]"
                     style={{ color: "var(--text-muted)" }}>
                     {l.label}
                   </Link>
@@ -127,7 +127,7 @@ export default function Footer() {
               {serviceCol.map((l) => (
                 <li key={l.label}>
                   <Link href={l.href}
-                    className="text-sm transition-colors hover:text-white"
+                    className="text-sm transition-colors hover:text-[var(--primary)]"
                     style={{ color: "var(--text-muted)" }}>
                     {l.label}
                   </Link>
@@ -145,7 +145,7 @@ export default function Footer() {
               {productCol.map((l) => (
                 <li key={l.label}>
                   <Link href={l.href}
-                    className="text-sm transition-colors hover:text-white"
+                    className="text-sm transition-colors hover:text-[var(--primary)]"
                     style={{ color: "var(--text-muted)" }}>
                     {l.label}
                   </Link>
@@ -172,7 +172,7 @@ export default function Footer() {
                 { href: "/contact", label: "Contact"        },
               ].map((l) => (
                 <Link key={l.label} href={l.href}
-                  className="text-xs transition-colors hover:text-white"
+                  className="text-xs transition-colors hover:text-[var(--primary)]"
                   style={{ color: "var(--text-muted)" }}>
                   {l.label}
                 </Link>

@@ -89,7 +89,7 @@ async function getServices(): Promise<Service[]> {
       slug: s.slug,
       title: s.title,
       desc: s.short_desc ?? "",
-      color: "#f97316",
+      color: "#ED1C24",
       popular: s.is_popular,
       icon: ICONS[s.slug] ?? DEFAULT_ICON,
       image: s.image ? `${STORAGE}/${s.image}` : undefined,
@@ -193,7 +193,7 @@ export default async function ServicesSection() {
                   {/* Learn more */}
                   <Link
                     href={`/services/${s.slug}`}
-                    className="mt-auto inline-flex items-center justify-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-lg transition-all hover:gap-2.5 self-start border-[#f97316]/40 bg-[#f97316]/10 text-[#f97316] hover:bg-[#f97316] hover:text-white"
+                    className="mt-auto inline-flex items-center justify-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-lg transition-all hover:gap-2.5 self-start border-[#ED1C24]/40 bg-[#ED1C24]/10 text-[#ED1C24] hover:bg-[#ED1C24] hover:text-white"
                     style={{ borderWidth: 1, borderStyle: "solid" }}
                   >
                     Learn more <ArrowRight size={12} />
@@ -214,7 +214,7 @@ export default async function ServicesSection() {
             {included.map((item) => (
               <div key={item.label}
                 className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium"
-                style={{ background: "rgba(249,115,22,0.08)", border: "1px solid rgba(249,115,22,0.2)" }}>
+                style={{ background: "rgba(237,28,36,0.08)", border: "1px solid rgba(237,28,36,0.2)" }}>
                 <item.icon size={14} style={{ color: "var(--primary)" }} />
                 {item.label}
               </div>

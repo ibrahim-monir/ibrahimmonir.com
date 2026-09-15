@@ -18,9 +18,9 @@ const steps: Step[] = [
   { num: "06", title: "Launch", desc: "I deploy to production and provide ongoing maintenance, updates and dedicated support.", icon: Rocket },
 ];
 
-// Brand-orange family only — varying shades give each card its own identity,
+// Brand-red family only — varying shades give each card its own identity,
 // echoing the reference infographic's per-card colors without leaving the palette.
-const SHADES = ["#f97316", "#fb923c", "#ea580c", "#f59e0b", "#ff8c42", "#c2410c"];
+const SHADES = ["#ED1C24", "#C4141B", "#9C2426", "#B91C1C", "#DC2626", "#7F1D1D"];
 
 function FlowArrow({ down = false, delay = 0 }: { down?: boolean; delay?: number }) {
   const base: CSSProperties = { width: 0, height: 0, animationDelay: `${delay}s` };
@@ -37,7 +37,7 @@ function StepCard({ s, shade }: { s: Step; shade: string }) {
       {/* stacked-paper shadow card, offset behind */}
       <div
         className="absolute inset-0 translate-x-2.5 translate-y-2.5 rounded-2xl transition-transform duration-300"
-        style={{ background: "rgba(0,0,0,0.4)" }}
+        style={{ background: "rgba(0,0,0,0.14)" }}
         aria-hidden
       />
 
@@ -143,7 +143,7 @@ export default function ProcessSection() {
         @keyframes proc-arrow-pulse-y { 0%,100% { opacity:.45; transform: translateY(0); }  50% { opacity:1; transform: translateY(3px); } }
         .proc-arrow   { animation: proc-arrow-pulse 1.8s ease-in-out infinite; }
         .proc-arrow-y { animation: proc-arrow-pulse-y 1.8s ease-in-out infinite; }
-        .proc-wrap:hover .proc-card { transform: translate(-2.5px, -2.5px); box-shadow: 0 18px 40px -20px rgba(249,115,22,0.5); }
+        .proc-wrap:hover .proc-card { transform: translate(-2.5px, -2.5px); box-shadow: 0 18px 40px -20px rgba(237,28,36,0.4); }
         @keyframes proc-hub-flow { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
         .proc-hub-flow { stroke-dasharray: 18 82; animation: proc-hub-flow 2.2s linear infinite; }
         @keyframes proc-pulse-dot { 0%,100% { r: 3.5; opacity: .85; } 50% { r: 5; opacity: 1; } }
@@ -154,7 +154,7 @@ export default function ProcessSection() {
       {/* Ambient glow */}
       <div
         className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[720px] h-[480px] rounded-full blur-3xl"
-        style={{ background: "radial-gradient(ellipse, rgba(249,115,22,0.09) 0%, transparent 70%)" }}
+        style={{ background: "radial-gradient(ellipse, rgba(237,28,36,0.07) 0%, transparent 70%)" }}
         aria-hidden
       />
 
@@ -215,13 +215,13 @@ export default function ProcessSection() {
             <div className="relative flex items-center justify-center">
               <div
                 className="absolute rounded-full pointer-events-none"
-                style={{ inset: -14, border: "1.5px solid rgba(249,115,22,0.25)" }}
+                style={{ inset: -14, border: "1.5px solid rgba(237,28,36,0.25)" }}
                 aria-hidden
               />
               <div
                 ref={capsuleRef}
                 className="relative flex items-center gap-3 rounded-full px-10 py-5 shadow-2xl"
-                style={{ background: "linear-gradient(135deg, #fb923c, #f97316)", boxShadow: "0 24px 60px -20px rgba(249,115,22,0.55)" }}
+                style={{ background: "linear-gradient(135deg, #ED1C24, #9C2426)", boxShadow: "0 24px 60px -20px rgba(237,28,36,0.45)" }}
               >
                 <Workflow size={26} color="#fff" strokeWidth={2} />
                 <div className="text-left">
