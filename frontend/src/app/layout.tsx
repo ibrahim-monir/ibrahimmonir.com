@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Barlow_Condensed, Overlock } from "next/font/google";
+import { Barlow_Condensed, Overlock, Alex_Brush } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
@@ -16,6 +16,11 @@ const body = Overlock({
   subsets: ["latin"],
   weight: ["400", "700", "900"],
   variable: "--font-body-family",
+});
+const logo = Alex_Brush({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-logo-family",
 });
 
 export const metadata: Metadata = {
@@ -38,7 +43,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const gtmId = str(settings.gtm_container_id);
 
   return (
-    <html lang="en" className={`${heading.variable} ${body.variable}`}>
+    <html lang="en" className={`${heading.variable} ${body.variable} ${logo.variable}`}>
       <head>
         {gtmId && (
           <Script id="gtm-init" strategy="afterInteractive">

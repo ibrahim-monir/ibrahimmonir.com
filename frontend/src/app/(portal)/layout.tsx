@@ -35,7 +35,7 @@ function Sidebar({ mobile = false, pathname, user, onNavigate, onLogout }: {
       style={{ background: "var(--bg-card)", borderRight: "1px solid var(--border)" }}>
       <div className="p-6 border-b" style={{ borderColor: "var(--border)" }}>
         <Link href="/" className="flex items-center gap-2">
-          <BrandLogo fontSize="1.1rem" />
+          <BrandLogo fontSize="1.5rem" color="var(--text)" />
         </Link>
       </div>
 

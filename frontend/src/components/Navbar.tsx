@@ -3,7 +3,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
-import BrandLogo from "@/components/BrandLogo";
 import type { ServiceNavItem } from "@/lib/services";
 
 const navLinks = [
@@ -22,13 +21,9 @@ export default function Navbar({ services = [] }: { services?: ServiceNavItem[] 
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
 
   return (
-    <header className="fixed top-9 left-0 right-0 z-40 border-b backdrop-blur-md"
-      style={{ background: "rgba(255,255,255,0.92)", borderColor: "var(--border)" }}>
+    <header className="fixed top-9 left-0 right-0 z-40 border-b"
+      style={{ background: "#fff", borderColor: "var(--border)" }}>
       <nav className="container flex items-center justify-between h-16">
-
-        <Link href="/" className="flex items-center rounded-lg px-3 py-1.5" style={{ background: "var(--text)" }}>
-          <BrandLogo fontSize="1.35rem" />
-        </Link>
 
         <ul className="hidden md:flex items-center gap-1">
           {navLinks.map((l) => {
@@ -39,7 +34,7 @@ export default function Navbar({ services = [] }: { services?: ServiceNavItem[] 
                   <Link href={l.href}
                     className="px-3 py-2 rounded-lg text-base font-medium transition-colors hover:text-[var(--primary)] inline-flex items-center gap-1"
                     style={{
-                      color: active ? "var(--text)" : "var(--text-muted)",
+                      color: "#000",
                       background: active ? "var(--bg-muted)" : undefined,
                     }}>
                     {l.label}
@@ -77,7 +72,7 @@ export default function Navbar({ services = [] }: { services?: ServiceNavItem[] 
                 <Link href={l.href}
                   className="px-3 py-2 rounded-lg text-base font-medium transition-colors hover:text-[var(--primary)]"
                   style={{
-                    color: pathname === l.href ? "var(--text)" : "var(--text-muted)",
+                    color: "#000",
                     background: pathname === l.href ? "var(--bg-muted)" : undefined,
                   }}>
                   {l.label}
@@ -113,7 +108,7 @@ export default function Navbar({ services = [] }: { services?: ServiceNavItem[] 
                         onClick={() => setOpen(false)}
                         className="flex-1 px-3 py-2.5 rounded-lg text-base font-medium"
                         style={{
-                          color: active ? "var(--text)" : "var(--text-muted)",
+                          color: "#000",
                           background: active ? "var(--bg-muted)" : undefined,
                         }}>
                         {l.label}
@@ -148,7 +143,7 @@ export default function Navbar({ services = [] }: { services?: ServiceNavItem[] 
                   onClick={() => setOpen(false)}
                   className="px-3 py-2.5 rounded-lg text-base font-medium"
                   style={{
-                    color: pathname === l.href ? "var(--text)" : "var(--text-muted)",
+                    color: "#000",
                     background: pathname === l.href ? "var(--bg-muted)" : undefined,
                   }}>
                   {l.label}
