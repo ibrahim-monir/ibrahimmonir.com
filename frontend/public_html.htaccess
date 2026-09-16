@@ -15,8 +15,14 @@
     # files are served straight off disk; everything else Laravel owns goes
     # through its front controller with REQUEST_URI left untouched, so
     # Laravel's own /api, /admin, /up, /sanctum routes still match as-is.
+    # Livewire also registers a JS/update endpoint at a fixed-format
+    # /livewire-{8 hex chars} prefix (hashed from APP_KEY, see
+    # EndpointResolver::prefix()) that isn't under any of those -- without
+    # this, Livewire's own script tag 404s and every Filament admin page
+    # loads with no interactivity.
     RewriteRule ^storage/(.*)$ /app/storage/$1 [L]
     RewriteRule ^(api|admin|up|sanctum)(/.*)?$ /app/index.php [L]
+    RewriteRule ^livewire-[0-9a-f]{8}(/.*)?$ /app/index.php [L]
 
     # Next's static export writes clean URLs as "route.html" files (e.g.
     # blog/test-post.html for /blog/test-post), not route/index.html -- map

@@ -56,6 +56,25 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Asset URL
+    |--------------------------------------------------------------------------
+    |
+    | In production this app isn't served from its own public/ directory --
+    | public_html/app/index.php is a copy of the front controller, deployed
+    | one level below the actual document root (see
+    | backend/public_html_index.php and config/filesystems.php). So asset(),
+    | and anything that falls back to it (Livewire's script tag, Filament's
+    | published CSS/JS/fonts), needs an explicit root or it generates URLs
+    | one level too shallow (e.g. /fonts/... instead of /app/fonts/...) and
+    | every asset 404s. Left unset, this falls back to APP_URL, which is
+    | correct for local development where public/ IS the document root.
+    |
+    */
+
+    'asset_url' => env('ASSET_URL'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |
