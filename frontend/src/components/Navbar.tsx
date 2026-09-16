@@ -26,7 +26,7 @@ export default function Navbar({ services = [] }: { services?: ServiceNavItem[] 
       style={{ background: "rgba(255,255,255,0.92)", borderColor: "var(--border)" }}>
       <nav className="container flex items-center justify-between h-16">
 
-        <Link href="/" className="flex items-center">
+        <Link href="/" className="flex items-center rounded-lg px-3 py-1.5" style={{ background: "var(--text)" }}>
           <BrandLogo fontSize="1.35rem" />
         </Link>
 
