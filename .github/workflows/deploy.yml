@@ -5,8 +5,11 @@ name: Deploy to production
 # Next.js export, an SSH script for Laravel on its own api.ibrahimmonir.com
 # subdomain). They now share one cPanel account (the SAME account as
 # upokoron.com -- see CPANEL_USER below), so they ship together -- a single
-# zip with `ibrahimmonir-laravel/` and `public_html/` as siblings, uploaded
-# and extracted the same way upokoron does it, with no SSH access at all.
+# zip with `ibrahimmonir-laravel/` and `$(basename WEB_ROOT)/` as siblings,
+# uploaded and extracted the same way upokoron does it, with no SSH access at
+# all. That second directory's name is NOT hardcoded to "public_html" --
+# WEB_ROOT on this account is literally named "ibrahimmonir.com", and
+# "public_html" is upokoron.com's own doc root (see the Assemble step).
 # The Laravel folder is named "ibrahimmonir-laravel", not plain "laravel":
 # that account already has upokoron.com's own app at ~/laravel, and a
 # same-named sibling here would overwrite it on every deploy.
@@ -102,7 +105,17 @@ jobs:
       # composer's classmap-authoritative mode means any new or removed PHP
       # class needs a fresh vendor/, and 8 MB is nothing for a CI runner to
       # upload. Two top-level dirs go into the zip, ibrahimmonir-laravel/ and
-      # public_html/, so extraction lands them as siblings on the server.
+      # $(basename WEB_ROOT)/, so extraction lands them as siblings on the
+      # server and the second one merges straight into the real doc root.
+      #
+      # That second directory MUST be named after WEB_ROOT's actual basename,
+      # not hardcoded "public_html" -- this account's document root for this
+      # domain is literally named "ibrahimmonir.com". A hardcoded
+      # "public_html" would extract as a SEPARATE sibling directory instead
+      # of merging into the real doc root -- and on this account,
+      # /home/*/public_html is upokoron.com's own live doc root, so a
+      # hardcoded name here would silently ship this app's files into a
+      # completely different, unrelated site.
 
       - name: Assemble the deploy bundle
         id: assemble
@@ -111,7 +124,7 @@ jobs:
 
           STAGE="$RUNNER_TEMP/stage"
           APP_OUT="$STAGE/ibrahimmonir-laravel"
-          WEB_OUT="$STAGE/public_html"
+          WEB_OUT="$STAGE/$(basename "$WEB_ROOT")"
           mkdir -p "$APP_OUT" "$WEB_OUT/app"
 
           for item in app bootstrap config database lang resources routes artisan composer.json composer.lock vendor; do
@@ -141,7 +154,7 @@ jobs:
           cp backend/public_html_update.php "$WEB_OUT/update.php"
 
           cd "$STAGE"
-          zip -r -q "$RUNNER_TEMP/deploy.zip" ibrahimmonir-laravel public_html
+          zip -r -q "$RUNNER_TEMP/deploy.zip" ibrahimmonir-laravel "$(basename "$WEB_ROOT")"
           echo "Bundle: $(du -h "$RUNNER_TEMP/deploy.zip" | cut -f1)"
 
       # ------------------------------------------------------------ upload
