@@ -71,10 +71,17 @@ return [
     | `storage:link` Artisan command is executed. The array keys should be
     | the locations of the links and the values should be their targets.
     |
+    | In production this app is not served from its own public/ directory --
+    | public_html/app/index.php is a copy of the front controller, deployed
+    | separately from ~/laravel (see backend/public_html_index.php). So the
+    | link target must be PUBLIC_HTML_PATH's "app/storage", not the default
+    | public_path('storage'), or the link would land somewhere nothing ever
+    | serves.
+    |
     */
 
     'links' => [
-        public_path('storage') => storage_path('app/public'),
+        (env('PUBLIC_HTML_PATH') ? env('PUBLIC_HTML_PATH').'/app/storage' : public_path('storage')) => storage_path('app/public'),
     ],
 
 ];

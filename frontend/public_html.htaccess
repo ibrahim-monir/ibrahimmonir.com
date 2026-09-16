@@ -10,6 +10,14 @@
     # The Packages page was renamed to Pricing.
     RewriteRule ^packages/?$ /pricing [R=301,L]
 
+    # Laravel now lives alongside the static frontend on the same account
+    # (see app/ -- no api.ibrahimmonir.com subdomain anymore). Public storage
+    # files are served straight off disk; everything else Laravel owns goes
+    # through its front controller with REQUEST_URI left untouched, so
+    # Laravel's own /api, /admin, /up, /sanctum routes still match as-is.
+    RewriteRule ^storage/(.*)$ /app/storage/$1 [L]
+    RewriteRule ^(api|admin|up|sanctum)(/.*)?$ /app/index.php [L]
+
     # Next's static export writes clean URLs as "route.html" files (e.g.
     # blog/test-post.html for /blog/test-post), not route/index.html -- map
     # extension-less requests to the matching .html file.

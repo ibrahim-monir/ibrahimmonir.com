@@ -1,0 +1,249 @@
+name: Deploy to production
+
+# Mirrors upokoron's deploy.yml (github.com/ibrahim-monir/upokoron): frontend
+# and backend used to deploy separately (a cPanel-API static upload for the
+# Next.js export, an SSH script for Laravel on its own api.ibrahimmonir.com
+# subdomain). They now share one cPanel account (the SAME account as
+# upokoron.com -- see CPANEL_USER below), so they ship together -- a single
+# zip with `ibrahimmonir-laravel/` and `public_html/` as siblings, uploaded
+# and extracted the same way upokoron does it, with no SSH access at all.
+# The Laravel folder is named "ibrahimmonir-laravel", not plain "laravel":
+# that account already has upokoron.com's own app at ~/laravel, and a
+# same-named sibling here would overwrite it on every deploy.
+# Anything that needs the live .env and database (migrate, seed, rebuild
+# caches, copy Filament's published assets into the web root) runs via
+# backend/public_html_update.php, hit over HTTP right after extraction --
+# see that file for why.
+#
+# BEFORE TRUSTING THE PUSH TRIGGER:
+#   1. Fill in CPANEL_USER and WEB_ROOT below (WEB_ROOT is the absolute path
+#      to ibrahimmonir.com's document root, e.g. /home/USER/public_html or
+#      /home/USER/domains/ibrahimmonir.com/public_html -- whichever hPanel
+#      shows for this domain). `ibrahimmonir-laravel/` is extracted as a
+#      SIBLING of whatever folder WEB_ROOT names, i.e. into dirname(WEB_ROOT).
+#   2. Add repo secrets CPANEL_API_TOKEN (hPanel -> Security -> Manage API
+#      Tokens) and UPDATE_TOKEN (any long random string -- it must also be
+#      set as UPDATE_TOKEN in the server's backend/.env, and
+#      PUBLIC_HTML_PATH there must equal WEB_ROOT below, or the storage
+#      symlink lands somewhere nothing serves -- see config/filesystems.php).
+#   3. Run this workflow once by hand (Actions tab -> Run workflow) and
+#      check every step -- Extract in particular depends on WEB_ROOT being
+#      exactly right, which nobody can verify from outside the account.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+env:
+  CPANEL_HOST: premium.mywhiteserver.com
+  CPANEL_USER: upokoron
+  WEB_ROOT: /home/upokoron/ibrahimmonir.com
+  DOMAIN: https://ibrahimmonir.com
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          tools: composer
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      # --------------------------------------------------------- backend
+
+      - name: Install PHP dependencies (no dev, optimized, authoritative)
+        working-directory: backend
+        run: composer install --no-dev --optimize-autoloader --classmap-authoritative --no-scripts --no-interaction --no-progress
+
+      # A stale composer.lock resolved on a machine running a newer PHP
+      # would sail past this build and only fail on the server, as a 500
+      # with no message.
+      - name: Verify the vendor bundle still targets PHP 8.3
+        working-directory: backend
+        run: |
+          FLOOR=$(grep -oP 'PHP_VERSION_ID >= \K\d+' vendor/composer/platform_check.php)
+          if [ "$FLOOR" -gt 80399 ]; then
+            echo "::error::vendor/ needs PHP $FLOOR, which rules out a PHP 8.3 host. Run 'composer update' so the platform pin (^8.3) takes effect."
+            exit 1
+          fi
+
+      # --------------------------------------------------------- frontend
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      # Written into public/ so the static export picks it up as a plain
+      # file at /build-info.json -- lets the Verify step below confirm this
+      # exact commit is what's actually being served.
+      - name: Write build info
+        run: |
+          printf '{"commit":"%s","built_at":"%s"}' \
+            "$(git rev-parse --short HEAD)" \
+            "$(date -u '+%Y-%m-%d %H:%M')" \
+            > frontend/public/build-info.json
+
+      - name: Build the static export
+        working-directory: frontend
+        run: npm run build
+
+      # ------------------------------------------------- assemble the bundle
+      #
+      # Ships the FULL vendor/ every time, not a slim update-only bundle --
+      # composer's classmap-authoritative mode means any new or removed PHP
+      # class needs a fresh vendor/, and 8 MB is nothing for a CI runner to
+      # upload. Two top-level dirs go into the zip, ibrahimmonir-laravel/ and
+      # public_html/, so extraction lands them as siblings on the server.
+
+      - name: Assemble the deploy bundle
+        id: assemble
+        run: |
+          set -euo pipefail
+
+          STAGE="$RUNNER_TEMP/stage"
+          APP_OUT="$STAGE/ibrahimmonir-laravel"
+          WEB_OUT="$STAGE/public_html"
+          mkdir -p "$APP_OUT" "$WEB_OUT/app"
+
+          for item in app bootstrap config database lang resources routes artisan composer.json composer.lock vendor; do
+            if [ -e "backend/$item" ]; then
+              cp -r "backend/$item" "$APP_OUT/$item"
+            fi
+          done
+
+          # bootstrap/cache and storage ship empty -- a cached config baked
+          # from CI's environment must never reach the server, and CI has no
+          # logs worth carrying over. Real storage/app/public contents (user
+          # uploads) live only on the server and must never be touched here.
+          rm -f "$APP_OUT"/bootstrap/cache/*.php
+          for dir in storage/app/private storage/app/public storage/framework/cache/data \
+                     storage/framework/sessions storage/framework/testing storage/framework/views storage/logs; do
+            mkdir -p "$APP_OUT/$dir"
+            printf '*\n!.gitignore\n' > "$APP_OUT/$dir/.gitignore"
+          done
+
+          COMMIT=$(git rev-parse --short HEAD)
+          printf '{"commit":"%s","built_at":"%s"}' "$COMMIT" "$(date -u '+%Y-%m-%d %H:%M')" > "$APP_OUT/build.json"
+          echo "commit=$COMMIT" >> "$GITHUB_OUTPUT"
+
+          cp -r frontend/out/. "$WEB_OUT/"
+          cp frontend/public_html.htaccess "$WEB_OUT/.htaccess"
+          cp backend/public_html_index.php "$WEB_OUT/app/index.php"
+          cp backend/public_html_update.php "$WEB_OUT/update.php"
+
+          cd "$STAGE"
+          zip -r -q "$RUNNER_TEMP/deploy.zip" ibrahimmonir-laravel public_html
+          echo "Bundle: $(du -h "$RUNNER_TEMP/deploy.zip" | cut -f1)"
+
+      # ------------------------------------------------------------ upload
+      #
+      # Fileman::upload_files is a documented, current UAPI function.
+
+      - name: Upload the bundle to cPanel
+        run: |
+          set -euo pipefail
+          RESPONSE=$(curl -sS -f \
+            -H "Authorization: cpanel ${CPANEL_USER}:${{ secrets.CPANEL_API_TOKEN }}" \
+            -F "dir=/home/${CPANEL_USER}" \
+            -F "file-1=@${RUNNER_TEMP}/deploy.zip;filename=deploy.zip" \
+            "https://${CPANEL_HOST}:2083/execute/Fileman/upload_files")
+          echo "$RESPONSE"
+          echo "$RESPONSE" | grep -q '"failed":0' || { echo "::error::Upload reported a failure."; exit 1; }
+
+      # ------------------------------------------------------------ extract
+      #
+      # NOTE: unlike upload_files, there is no current UAPI function for
+      # extraction -- this has to go through the older cPanel API 2 fileop
+      # call. Paths must be fully-qualified (relative "." is rejected as
+      # "resolves outside your home directory"), and the response is HTTP 200
+      # even on failure, so the JSON body is checked explicitly below.
+      #
+      # Extracting into dirname(WEB_ROOT), not WEB_ROOT itself, is what makes
+      # ibrahimmonir-laravel/ land as a sibling of public_html/ (whatever that
+      # folder is actually named) instead of nested inside it. It also means
+      # this extraction touches ONLY files inside ibrahimmonir-laravel/ and
+      # ibrahimmonir.com/ -- upokoron.com's own ~/laravel and ~/public_html
+      # are never in the zip, so this never touches them.
+
+      - name: Extract on the server
+        run: |
+          set -euo pipefail
+          DEST="$(dirname "${WEB_ROOT}")"
+          RESPONSE=$(curl -sS -f \
+            -H "Authorization: cpanel ${CPANEL_USER}:${{ secrets.CPANEL_API_TOKEN }}" \
+            --get \
+            --data-urlencode "cpanel_jsonapi_user=${CPANEL_USER}" \
+            --data-urlencode "cpanel_jsonapi_apiversion=2" \
+            --data-urlencode "cpanel_jsonapi_module=Fileman" \
+            --data-urlencode "cpanel_jsonapi_func=fileop" \
+            --data-urlencode "op=extract" \
+            --data-urlencode "sourcefiles=/home/${CPANEL_USER}/deploy.zip" \
+            --data-urlencode "destfiles=${DEST}" \
+            --data-urlencode "doubledecode=1" \
+            "https://${CPANEL_HOST}:2083/json-api/cpanel")
+          echo "$RESPONSE"
+          echo "$RESPONSE" | grep -q '"result":1' || { echo "::error::Extraction failed -- see the response above. Check that WEB_ROOT matches ibrahimmonir.com's document root exactly."; exit 1; }
+
+      - name: Remove the uploaded zip
+        continue-on-error: true
+        run: |
+          curl -sS \
+            -H "Authorization: cpanel ${CPANEL_USER}:${{ secrets.CPANEL_API_TOKEN }}" \
+            --get \
+            --data-urlencode "cpanel_jsonapi_user=${CPANEL_USER}" \
+            --data-urlencode "cpanel_jsonapi_apiversion=2" \
+            --data-urlencode "cpanel_jsonapi_module=Fileman" \
+            --data-urlencode "cpanel_jsonapi_func=fileop" \
+            --data-urlencode "op=unlink" \
+            --data-urlencode "sourcefiles=/home/${CPANEL_USER}/deploy.zip" \
+            "https://${CPANEL_HOST}:2083/json-api/cpanel"
+
+      # -------------------------------------------------- migrate & rebuild
+
+      - name: Run migrations and rebuild caches
+        run: |
+          set -euo pipefail
+          RESPONSE=$(curl -sS -f -X POST \
+            -d "token=${{ secrets.UPDATE_TOKEN }}" \
+            -d "action=update" \
+            "${DOMAIN}/update.php")
+
+          if echo "$RESPONSE" | grep -q "did not finish"; then
+            echo "$RESPONSE"
+            echo "::error::The update endpoint reported a failure. Previous code is still serving on the backend side -- check the output above."
+            exit 1
+          fi
+
+          echo "Update applied."
+
+      # Everything above can report success while the static files quietly
+      # still show the previous build -- fetching both fresh and grepping for
+      # this run's commit is what actually confirms the new code is live.
+      - name: Verify the live build matches this commit
+        run: |
+          set -euo pipefail
+          COMMIT="${{ steps.assemble.outputs.commit }}"
+
+          FRONTEND=$(curl -sS -f "${DOMAIN}/build-info.json")
+          echo "$FRONTEND"
+          echo "$FRONTEND" | grep -q "$COMMIT" || {
+            echo "::error::The live frontend still does not report commit ${COMMIT}. Check the Extract step above."
+            exit 1
+          }
+
+          BACKEND=$(curl -sS -f "${DOMAIN}/update.php?token=${{ secrets.UPDATE_TOKEN }}")
+          echo "$BACKEND" | grep -q "$COMMIT" || {
+            echo "::error::The live backend still does not report commit ${COMMIT}. Check the Extract step above."
+            exit 1
+          }
+
+          echo "Confirmed: production is now running ${COMMIT}."
