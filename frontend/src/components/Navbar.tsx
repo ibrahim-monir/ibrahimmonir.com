@@ -22,7 +22,7 @@ export default function Navbar({ services = [] }: { services?: ServiceNavItem[] 
 
   return (
     <header className="fixed top-9 left-0 right-0 z-40 border-b"
-      style={{ background: "#fff", borderColor: "var(--border)" }}>
+      style={{ background: "#fff", borderColor: "var(--border)", boxShadow: "0 1px 0 rgba(16,24,40,0.02), 0 6px 20px -12px rgba(16,24,40,0.12)" }}>
       <nav className="container flex items-center justify-between h-16">
 
         <ul className="hidden md:flex items-center gap-1">
@@ -32,19 +32,17 @@ export default function Navbar({ services = [] }: { services?: ServiceNavItem[] 
               return (
                 <li key={l.href} className="relative group">
                   <Link href={l.href}
-                    className="px-3 py-2 rounded-lg text-base font-medium transition-colors hover:text-[var(--primary)] inline-flex items-center gap-1"
-                    style={{
-                      color: "#000",
-                      background: active ? "var(--bg-muted)" : undefined,
-                    }}>
+                    aria-current={active ? "page" : undefined}
+                    className="nav-link inline-flex items-center gap-1"
+                    data-active={active || undefined}>
                     {l.label}
                     <ChevronDown size={14} className="transition-transform group-hover:rotate-180" />
                   </Link>
 
                   {/* Dropdown — shown on hover, bridged so the gap doesn't close it */}
                   <div className="absolute left-0 top-full pt-2 opacity-0 invisible translate-y-1 transition-all duration-150 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 z-50">
-                    <ul className="w-64 rounded-xl p-2 shadow-xl"
-                      style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+                    <ul className="w-64 rounded-xl p-2"
+                      style={{ background: "var(--surface)", border: "1px solid var(--border)", boxShadow: "var(--shadow-lg)" }}>
                       {services.map((s) => (
                         <li key={s.slug}>
                           <Link href={`/services/${s.slug}`}
@@ -70,11 +68,9 @@ export default function Navbar({ services = [] }: { services?: ServiceNavItem[] 
             return (
               <li key={l.href}>
                 <Link href={l.href}
-                  className="px-3 py-2 rounded-lg text-base font-medium transition-colors hover:text-[var(--primary)]"
-                  style={{
-                    color: "#000",
-                    background: pathname === l.href ? "var(--bg-muted)" : undefined,
-                  }}>
+                  aria-current={pathname === l.href ? "page" : undefined}
+                  className="nav-link"
+                  data-active={pathname === l.href || undefined}>
                   {l.label}
                 </Link>
               </li>
@@ -83,20 +79,18 @@ export default function Navbar({ services = [] }: { services?: ServiceNavItem[] 
         </ul>
 
         <div className="hidden md:flex items-center gap-3">
-          <Link href="/login"
-            className="text-sm font-semibold py-1.5 px-4 rounded-lg transition-all hover:brightness-110"
-            style={{ background: "var(--primary)", color: "#fff" }}>
+          <Link href="/login" className="btn-primary !py-2 !px-4 !text-sm">
             Client Login
           </Link>
         </div>
 
-        <button className="md:hidden p-2" onClick={() => setOpen(!open)}>
+        <button className="md:hidden p-2 rounded-lg hover:bg-[var(--bg-muted)]" onClick={() => setOpen(!open)} aria-label="Toggle menu" aria-expanded={open}>
           {open ? <X size={22} /> : <Menu size={22} />}
         </button>
       </nav>
 
       {open && (
-        <div className="md:hidden border-t py-4" style={{ borderColor: "var(--border)", background: "var(--bg-card)" }}>
+        <div className="md:hidden border-t py-4" style={{ borderColor: "var(--border)", background: "#fff" }}>
           <div className="container flex flex-col gap-1">
             {navLinks.map((l) => {
               if (l.href === "/services" && services.length > 0) {
@@ -108,7 +102,7 @@ export default function Navbar({ services = [] }: { services?: ServiceNavItem[] 
                         onClick={() => setOpen(false)}
                         className="flex-1 px-3 py-2.5 rounded-lg text-base font-medium"
                         style={{
-                          color: "#000",
+                          color: "var(--text)",
                           background: active ? "var(--bg-muted)" : undefined,
                         }}>
                         {l.label}
@@ -143,7 +137,7 @@ export default function Navbar({ services = [] }: { services?: ServiceNavItem[] 
                   onClick={() => setOpen(false)}
                   className="px-3 py-2.5 rounded-lg text-base font-medium"
                   style={{
-                    color: "#000",
+                    color: "var(--text)",
                     background: pathname === l.href ? "var(--bg-muted)" : undefined,
                   }}>
                   {l.label}

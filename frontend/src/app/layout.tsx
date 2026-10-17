@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Barlow_Condensed, Overlock, Alex_Brush } from "next/font/google";
+import { Space_Grotesk, Inter, JetBrains_Mono, Alex_Brush } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
@@ -7,15 +7,20 @@ import CustomCursor from "@/components/CustomCursor";
 import ChatWidget from "@/components/ChatWidget";
 import { fetchSettings, str } from "@/lib/settings";
 
-const heading = Barlow_Condensed({
+const heading = Space_Grotesk({
   subsets: ["latin"],
-  weight: ["500", "700"],
+  weight: ["500", "600", "700"],
   variable: "--font-heading-family",
 });
-const body = Overlock({
+const body = Inter({
   subsets: ["latin"],
-  weight: ["400", "700", "900"],
+  weight: ["400", "500", "600", "700", "800"],
   variable: "--font-body-family",
+});
+const mono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-mono-family",
 });
 const logo = Alex_Brush({
   subsets: ["latin"],
@@ -43,7 +48,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const gtmId = str(settings.gtm_container_id);
 
   return (
-    <html lang="en" className={`${heading.variable} ${body.variable} ${logo.variable}`}>
+    <html lang="en" className={`${heading.variable} ${body.variable} ${mono.variable} ${logo.variable}`}>
       <head>
         {gtmId && (
           <Script id="gtm-init" strategy="afterInteractive">

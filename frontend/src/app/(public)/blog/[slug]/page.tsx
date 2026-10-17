@@ -102,7 +102,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 
         {/* Back */}
         <Link href="/blog"
-          className="inline-flex items-center gap-2 text-sm mb-8 transition-colors hover:text-orange-400"
+          className="inline-flex items-center gap-2 text-sm mb-8 transition-colors hover:text-[var(--primary)]"
           style={{ color: "var(--text-muted)" }}>
           <ArrowLeft size={15} /> Back to Blog
         </Link>
@@ -176,7 +176,7 @@ export default async function BlogPostPage({ params }: PageProps) {
             <div className="mt-12 pt-6 flex flex-wrap items-center justify-between gap-3"
               style={{ borderTop: "1px solid var(--border)" }}>
               <Link href="/blog"
-                className="inline-flex items-center gap-2 text-sm hover:text-orange-400 transition-colors"
+                className="inline-flex items-center gap-2 text-sm hover:text-[var(--primary)] transition-colors"
                 style={{ color: "var(--text-muted)" }}>
                 <ArrowLeft size={14} /> All Posts
               </Link>
@@ -187,7 +187,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                   { label: "LinkedIn",   href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://ibrahimmonir.com/blog/${post.slug}`)}` },
                 ].map(({ label, href }) => (
                   <a key={label} href={href} target="_blank" rel="noopener noreferrer"
-                    className="text-xs font-medium px-3 py-1.5 rounded-lg transition-colors hover:border-orange-500"
+                    className="text-xs font-medium px-3 py-1.5 rounded-lg transition-colors hover:border-[var(--primary)]"
                     style={{ background: "var(--bg-card)", color: "var(--text-muted)", border: "1px solid var(--border)" }}>
                     {label}
                   </a>
@@ -248,7 +248,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                           }
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-medium leading-snug line-clamp-2 group-hover:text-orange-400 transition-colors"
+                          <p className="text-xs font-medium leading-snug line-clamp-2 group-hover:text-[var(--primary)] transition-colors"
                             style={{ color: "var(--text)" }}>
                             {p.title}
                           </p>
@@ -316,7 +316,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 
                     {/* Body */}
                     <div className="p-5 flex flex-col gap-2.5 flex-1">
-                      <h3 className="text-sm font-bold leading-snug line-clamp-2 group-hover:text-orange-400 transition-colors"
+                      <h3 className="text-sm font-bold leading-snug line-clamp-2 group-hover:text-[var(--primary)] transition-colors"
                         style={{ color: "var(--text)" }}>
                         {p.title}
                       </h3>
@@ -331,7 +331,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                           <Calendar size={11} className="inline mr-1" />
                           {fmtDate(p.published_at ?? p.created_at)}
                         </span>
-                        <span className="ml-auto text-xs font-semibold group-hover:text-orange-400 transition-colors"
+                        <span className="ml-auto text-xs font-semibold group-hover:text-[var(--primary)] transition-colors"
                           style={{ color: "var(--text-muted)" }}>
                           Read →
                         </span>

@@ -42,7 +42,7 @@ export default async function BlogPreview() {
       <div className="container">
 
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-14">
           <span className="badge mb-4 inline-flex">Blog</span>
           <h2 className="section-title">
             Latest <span className="gradient-text">Articles</span>
@@ -58,39 +58,39 @@ export default async function BlogPreview() {
 
             return (
               <Link key={post.id} href={`/blog/${post.slug}`}
-                className="card group flex flex-col overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+                className="card group flex flex-col overflow-hidden hover:-translate-y-1"
                 style={{ borderColor: "var(--border)" }}
               >
                 {/* Image or gradient placeholder */}
-                <div className="relative overflow-hidden" style={{ height: 180 }}>
+                <div className="relative overflow-hidden aspect-[16/9] border-b" style={{ borderColor: "var(--border)" }}>
                   {imageUrl ? (
                     <img src={imageUrl} alt={post.title}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-4xl"
-                      style={{ background: `linear-gradient(135deg, var(--bg-muted) 0%, var(--text) 100%)` }}>
+                    <div className="w-full h-full flex items-center justify-center text-4xl bg-grid"
+                      style={{ backgroundColor: "var(--bg-card)" }}>
                       <span style={{ opacity: 0.2 }}>✍️</span>
                     </div>
                   )}
 
                   {/* Category badge overlay */}
                   {post.category && (
-                    <span className="absolute top-3 left-3 text-xs font-semibold px-2.5 py-1 rounded-full"
-                      style={{ background: "rgba(237,28,36,0.92)", color: "#fff" }}>
+                    <span className="badge absolute top-3 left-3"
+                      style={{ background: "rgba(255,255,255,0.94)", borderColor: "transparent" }}>
                       {post.category.name}
                     </span>
                   )}
 
                   {/* Post number */}
-                  <span className="absolute top-3 right-3 text-xs font-bold px-2 py-1 rounded-md"
-                    style={{ background: "rgba(0,0,0,0.55)", color: "rgba(255,255,255,0.5)" }}>
+                  <span className="absolute top-3 right-3 font-mono text-[0.7rem] px-2 py-1 rounded-md"
+                    style={{ background: "rgba(11,14,20,0.6)", color: "rgba(255,255,255,0.75)" }}>
                     0{i + 1}
                   </span>
                 </div>
 
                 <div className="p-6 flex flex-col flex-1">
                   {/* Title */}
-                  <h3 className="font-bold text-base leading-snug mb-3 group-hover:text-orange-400 transition-colors"
+                  <h3 className="font-semibold text-lg leading-snug mb-3 group-hover:text-[var(--primary)] transition-colors"
                     style={{ lineHeight: 1.45, color: "var(--text)" }}>
                     {post.title}
                   </h3>
@@ -127,7 +127,7 @@ export default async function BlogPreview() {
 
         {/* CTA */}
         <div className="text-center mt-12">
-          <Link href="/blog" className="btn-primary text-base py-3 px-8">
+          <Link href="/blog" className="btn-outline text-base py-3 px-8">
             View All Articles <ArrowRight size={18} />
           </Link>
         </div>

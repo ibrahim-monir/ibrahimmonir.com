@@ -329,7 +329,7 @@ function RelatedArticles({ relatedPosts, color }: { relatedPosts: BlogPost[]; co
                 )}
               </div>
               <div className="p-4 flex flex-col gap-2 flex-1">
-                <h3 className="text-sm font-semibold leading-snug line-clamp-2 group-hover:text-orange-400 transition-colors"
+                <h3 className="text-sm font-semibold leading-snug line-clamp-2 group-hover:text-[var(--primary)] transition-colors"
                   style={{ color: "var(--text)" }}>
                   {p.title}
                 </h3>
@@ -392,7 +392,7 @@ function CTABand() {
 function BackLink() {
   return (
     <Link href="/services"
-      className="inline-flex items-center gap-2 text-sm mb-6 transition-colors hover:text-orange-400"
+      className="inline-flex items-center gap-2 text-sm mb-6 transition-colors hover:text-[var(--primary)]"
       style={{ color: "var(--text-muted)" }}>
       <ArrowLeft size={15} /> All Services
     </Link>

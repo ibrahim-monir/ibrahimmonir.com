@@ -21,7 +21,7 @@ const techs = [
   },
   {
     name: "Next.js",
-    color: "#ffffff",
+    color: "#0f1420",
     icon: (
       <svg viewBox="0 0 24 24" fill="currentColor" width="62" height="62">
         <path d="M18.665 21.978C16.758 23.255 14.465 24 12 24 5.377 24 0 18.623 0 12S5.377 0 12 0s12 5.377 12 12c0 3.583-1.574 6.801-4.067 9.001L9.219 7.2H7.2v9.596h1.615V9.251l9.85 12.727zm-3.332-8.533 1.6 2.061V7.2h-1.6v6.245z"/>
@@ -107,9 +107,10 @@ function TechCard({ name, color, icon }: { name: string; color: string; icon: Re
     <div
       style={{
         display: "flex", flexDirection: "column", alignItems: "center", gap: 10,
-        padding: "38px 44px", borderRadius: 14,
-        background: "var(--bg-muted)", border: "1px solid var(--border)",
-        minWidth: 172, flexShrink: 0,
+        padding: "30px 40px", borderRadius: 14,
+        background: "var(--surface)", border: "1px solid var(--border)",
+        boxShadow: "var(--shadow-sm)",
+        minWidth: 168, flexShrink: 0,
         transition: "border-color 0.2s, transform 0.2s",
         cursor: "default",
       }}
@@ -123,7 +124,7 @@ function TechCard({ name, color, icon }: { name: string; color: string; icon: Re
       }}
     >
       <div style={{ color }}>{icon}</div>
-      <span style={{ fontSize: "0.8rem", fontWeight: 600, color: "var(--text-muted)", whiteSpace: "nowrap" }}>
+      <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.74rem", fontWeight: 500, color: "var(--text-muted)", whiteSpace: "nowrap" }}>
         {name}
       </span>
     </div>
@@ -148,7 +149,7 @@ export default function TechStackSlider() {
       `}</style>
 
       <section style={{ background: "var(--bg-card)", borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)", padding: "48px 0" }}>
-        <p style={{ textAlign: "center", fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: 32 }}>
+        <p style={{ textAlign: "center", fontFamily: "var(--font-mono)", fontSize: "0.72rem", fontWeight: 500, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: 32 }}>
           Technologies I Work With
         </p>
 

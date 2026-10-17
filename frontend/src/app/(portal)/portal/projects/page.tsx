@@ -52,7 +52,7 @@ export default function ProjectsPage() {
         <div className="space-y-4">
           {projects.map((project) => (
             <Link key={project.id} href={`/portal/projects/view?id=${project.id}`}
-              className="card p-6 hover:border-orange-500/50 transition-all block">
+              className="card p-6 hover:border-[var(--primary)]/50 transition-all block">
               <div className="flex items-start justify-between gap-4 mb-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-3 mb-1">

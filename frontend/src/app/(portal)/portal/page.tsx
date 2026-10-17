@@ -169,12 +169,12 @@ export default function PortalDashboard() {
             { label: "Total Paid",        value: formatCurrency(paidAmt),    icon: CheckCircle, color: "#10b981", href: "/portal/invoices" },
           ].map((s) => (
             <Link key={s.label} href={s.href}
-              className="card p-5 hover:border-orange-500/50 transition-all group">
+              className="card p-5 hover:border-[var(--primary)]/50 transition-all group">
               <div className="w-10 h-10 rounded-lg flex items-center justify-center mb-3"
                 style={{ background: `${s.color}20` }}>
                 <s.icon size={20} style={{ color: s.color }} />
               </div>
-              <div className="text-xl font-bold mb-1 group-hover:text-orange-400 transition-colors">{s.value}</div>
+              <div className="text-xl font-bold mb-1 group-hover:text-[var(--primary)] transition-colors">{s.value}</div>
               <div className="text-xs" style={{ color: "var(--text-muted)" }}>{s.label}</div>
             </Link>
           ))}
@@ -194,7 +194,7 @@ export default function PortalDashboard() {
             { label: "My Projects",    icon: FolderOpen,    href: "/portal/projects", color: "#10b981" },
           ].map((a) => (
             <Link key={a.label} href={a.href}
-              className="card p-4 flex items-center gap-3 hover:border-orange-500/50 transition-all group text-sm font-medium">
+              className="card p-4 flex items-center gap-3 hover:border-[var(--primary)]/50 transition-all group text-sm font-medium">
               <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
                 style={{ background: `${a.color}18` }}>
                 <a.icon size={16} style={{ color: a.color }} />
@@ -245,7 +245,7 @@ export default function PortalDashboard() {
             <div className="space-y-3">
               {projects.slice(0, 4).map((p) => (
                 <Link key={p.id} href={`/portal/projects/view?id=${p.id}`}
-                  className="card p-4 flex items-center gap-4 hover:border-orange-500/50 transition-all">
+                  className="card p-4 flex items-center gap-4 hover:border-[var(--primary)]/50 transition-all">
                   <div className="flex-1 min-w-0">
                     <div className="font-medium mb-1 truncate text-sm">{p.title}</div>
                     <div className="flex items-center gap-2">

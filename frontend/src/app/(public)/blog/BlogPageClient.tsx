@@ -163,7 +163,7 @@ export default function BlogPageClient({
                     {/* Title */}
                     <Link href={`/blog/${post.slug}`}>
                       <h3
-                        className="font-bold text-base leading-snug line-clamp-2 group-hover:text-orange-400 transition-colors"
+                        className="font-bold text-base leading-snug line-clamp-2 group-hover:text-[var(--primary)] transition-colors"
                         style={{ color: "var(--text)" }}
                       >
                         {post.title}

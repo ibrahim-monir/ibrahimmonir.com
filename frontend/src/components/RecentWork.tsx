@@ -43,7 +43,7 @@ export default function RecentWork({ works }: { works: WorkItem[] }) {
   return (
     <section className="py-20">
       <div className="container">
-        <div className="text-center mb-12">
+        <div className="text-center mb-14">
           <span className="badge mb-4 inline-flex">Portfolio</span>
           <h2 className="section-title mb-4">My Recent Work</h2>
           <p className="section-subtitle mx-auto">
@@ -61,14 +61,14 @@ export default function RecentWork({ works }: { works: WorkItem[] }) {
             );
 
             return (
-              <div key={`${w.id ?? w.title}-${i}`} className="card overflow-hidden hover:border-orange-500/50 transition-all group">
+              <div key={`${w.id ?? w.title}-${i}`} className="card overflow-hidden group hover:-translate-y-1 flex flex-col">
                 <button
                   type="button"
                   onClick={() => galleryImages.length && setGallery({ title: w.title, images: galleryImages, index: 0 })}
                   disabled={!galleryImages.length}
                   aria-label={`View ${w.title} gallery`}
-                  className="relative h-48 w-full overflow-hidden block text-left"
-                  style={{ background: grad, cursor: galleryImages.length ? "zoom-in" : "default" }}
+                  className="relative aspect-[16/10] w-full overflow-hidden block text-left border-b"
+                  style={{ background: grad, borderColor: "var(--border)", cursor: galleryImages.length ? "zoom-in" : "default" }}
                 >
                   {w.thumbnail ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -80,20 +80,20 @@ export default function RecentWork({ works }: { works: WorkItem[] }) {
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <span style={{ fontSize: "2.6rem", fontWeight: 800, color: "rgba(255,255,255,.9)" }}>
+                      <span style={{ fontFamily: "var(--font-heading)", fontSize: "2.8rem", fontWeight: 700, letterSpacing: "-0.04em", color: "rgba(255,255,255,.92)" }}>
                         {initials(w.title)}
                       </span>
                     </div>
                   )}
                   {w.category && (
-                    <span className="badge" style={{ position: "absolute", left: 12, bottom: 12 }}>
+                    <span className="badge" style={{ position: "absolute", left: 12, top: 12, background: "rgba(255,255,255,0.94)", borderColor: "transparent", backdropFilter: "blur(6px)" }}>
                       {w.category}
                     </span>
                   )}
                   {!!galleryImages.length && (
                     <div
                       className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                      style={{ background: "rgba(0,0,0,.35)" }}
+                      style={{ background: "rgba(11,14,20,.45)" }}
                     >
                       <span
                         className="flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-full"
@@ -104,22 +104,23 @@ export default function RecentWork({ works }: { works: WorkItem[] }) {
                     </div>
                   )}
                 </button>
-                <div className="p-6">
-                  <div className="flex items-center justify-between gap-2 mb-3">
-                    <h3 className="font-bold text-lg group-hover:text-orange-400 transition-colors">{w.title}</h3>
+                <div className="p-6 flex-1 flex flex-col">
+                  <div className="flex items-start justify-between gap-3 mb-4">
+                    <h3 className="font-semibold text-lg leading-snug group-hover:text-[var(--primary)] transition-colors">{w.title}</h3>
                     <a
                       href={href}
                       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                       aria-label={`Open ${w.title}`}
-                      style={{ color: "var(--primary)", flexShrink: 0 }}
+                      className="flex items-center justify-center w-8 h-8 rounded-lg border transition-colors hover:bg-[var(--primary)] hover:text-white hover:border-[var(--primary)]"
+                      style={{ color: "var(--text-muted)", borderColor: "var(--border)", flexShrink: 0 }}
                     >
                       <ExternalLink size={15} />
                     </a>
                   </div>
                   {!!(w.technologies && w.technologies.length) && (
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-1.5 mt-auto">
                       {w.technologies.slice(0, 4).map((t) => (
-                        <span key={t} className="text-xs px-2 py-1 rounded-md" style={{ background: "rgba(237,28,36,0.1)", color: "#ED1C24" }}>
+                        <span key={t} className="chip">
                           {t}
                         </span>
                       ))}
@@ -132,7 +133,7 @@ export default function RecentWork({ works }: { works: WorkItem[] }) {
         </div>
 
         <div className="text-center mt-12">
-          <Link href="/works" className="btn-primary text-base py-3 px-8">
+          <Link href="/works" className="btn-outline text-base py-3 px-8">
             View All Work <ArrowRight size={18} />
           </Link>
         </div>

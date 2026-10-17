@@ -36,7 +36,9 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer style={{ background: "var(--bg-card)", borderTop: "1px solid var(--border)" }}>
+    <footer className="theme-dark relative overflow-hidden" style={{ borderTop: "1px solid var(--border)" }}>
+      <div className="absolute inset-x-0 top-0 h-px pointer-events-none" aria-hidden
+        style={{ background: "linear-gradient(90deg, transparent, rgba(237,28,36,0.6), transparent)" }} />
 
       {/* Main footer content */}
       <div className="container" style={{ padding: "64px 24px 48px" }}>
@@ -102,14 +104,14 @@ export default function Footer() {
 
           {/* Navigation */}
           <div className="lg:col-span-2">
-            <h4 style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: 20 }}>
+            <h4 style={{ fontFamily: "var(--font-mono)", fontSize: "0.7rem", fontWeight: 500, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--text)", marginBottom: 20 }}>
               Navigation
             </h4>
             <ul className="space-y-3">
               {navCol.map((l) => (
                 <li key={l.label}>
                   <Link href={l.href}
-                    className="text-sm transition-colors hover:text-[var(--primary)]"
+                    className="text-sm transition-colors hover:text-[var(--text)]"
                     style={{ color: "var(--text-muted)" }}>
                     {l.label}
                   </Link>
@@ -120,14 +122,14 @@ export default function Footer() {
 
           {/* Services */}
           <div className="lg:col-span-3">
-            <h4 style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: 20 }}>
+            <h4 style={{ fontFamily: "var(--font-mono)", fontSize: "0.7rem", fontWeight: 500, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--text)", marginBottom: 20 }}>
               Services
             </h4>
             <ul className="space-y-3">
               {serviceCol.map((l) => (
                 <li key={l.label}>
                   <Link href={l.href}
-                    className="text-sm transition-colors hover:text-[var(--primary)]"
+                    className="text-sm transition-colors hover:text-[var(--text)]"
                     style={{ color: "var(--text-muted)" }}>
                     {l.label}
                   </Link>
@@ -138,14 +140,14 @@ export default function Footer() {
 
           {/* Products */}
           <div className="lg:col-span-2">
-            <h4 style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: 20 }}>
+            <h4 style={{ fontFamily: "var(--font-mono)", fontSize: "0.7rem", fontWeight: 500, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--text)", marginBottom: 20 }}>
               Products
             </h4>
             <ul className="space-y-3">
               {productCol.map((l) => (
                 <li key={l.label}>
                   <Link href={l.href}
-                    className="text-sm transition-colors hover:text-[var(--primary)]"
+                    className="text-sm transition-colors hover:text-[var(--text)]"
                     style={{ color: "var(--text-muted)" }}>
                     {l.label}
                   </Link>

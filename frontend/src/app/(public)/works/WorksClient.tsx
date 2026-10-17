@@ -63,7 +63,7 @@ export default function WorksClient({ works }: { works: WorkItem[] }) {
           const href = w.url && w.url !== "#" ? w.url : "/contact";
           const external = href.startsWith("http");
           return (
-            <div key={`${w.id ?? w.title}-${i}`} className="card overflow-hidden hover:border-orange-500/50 transition-all group">
+            <div key={`${w.id ?? w.title}-${i}`} className="card overflow-hidden hover:border-[var(--primary)]/50 transition-all group">
               <div className="relative h-48 overflow-hidden" style={{ background: GRADIENTS[i % GRADIENTS.length] }}>
                 {w.thumbnail ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -87,7 +87,7 @@ export default function WorksClient({ works }: { works: WorkItem[] }) {
                 )}
               </div>
               <div className="p-6">
-                <h3 className="font-bold text-lg mb-2 group-hover:text-orange-400 transition-colors">{w.title}</h3>
+                <h3 className="font-bold text-lg mb-2 group-hover:text-[var(--primary)] transition-colors">{w.title}</h3>
                 {w.description && (
                   <p className="text-sm mb-4 leading-relaxed" style={{ color: "var(--text-muted)" }}>{w.description}</p>
                 )}

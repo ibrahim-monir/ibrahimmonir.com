@@ -99,7 +99,7 @@ export default function PricingClient() {
           <div
             key={plan.id}
             className={`card p-8 flex flex-col relative transition-all ${
-              plan.is_popular ? "border-orange-500 md:scale-105 z-10" : "hover:border-orange-500/50"
+              plan.is_popular ? "border-[var(--primary)] md:scale-105 z-10" : "hover:border-[var(--primary)]/50"
             }`}
             style={plan.is_popular ? { boxShadow: "0 24px 60px -18px rgba(237,28,36,0.4)" } : undefined}
           >

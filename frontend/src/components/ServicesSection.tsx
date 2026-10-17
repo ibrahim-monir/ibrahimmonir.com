@@ -111,7 +111,7 @@ export default async function ServicesSection() {
   const services = await getServices();
 
   return (
-    <section className="py-24" style={{ background: "var(--bg-card)", borderTop: "1px solid var(--border)" }}>
+    <section className="py-24 section-alt">
       <div className="container">
 
         {/* Header */}
@@ -139,11 +139,11 @@ export default async function ServicesSection() {
             return (
               <div
                 key={s.title}
-                className={`group relative overflow-hidden rounded-2xl border [border-color:var(--border)] hover:[border-color:var(--svc)] flex flex-col transition-all duration-300 hover:-translate-y-1 ${span}`}
-                style={{ background: "var(--bg-muted)", ["--svc" as string]: s.color + "80" } as CSSProperties}
+                className={`group relative overflow-hidden rounded-2xl border [border-color:var(--border)] hover:[border-color:var(--svc)] flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-lg)] ${span}`}
+                style={{ background: "var(--surface)", boxShadow: "var(--shadow-sm)", ["--svc" as string]: s.color + "80" } as CSSProperties}
               >
                 {/* Image banner — real photo if set, otherwise a colored gradient with the icon centered */}
-                <div className="relative h-40 w-full overflow-hidden flex-shrink-0">
+                <div className="relative h-40 w-full overflow-hidden flex-shrink-0 border-b" style={{ borderColor: "var(--border)" }}>
                   {s.image ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -154,11 +154,11 @@ export default async function ServicesSection() {
                     />
                   ) : (
                     <div
-                      className="w-full h-full flex items-center justify-center"
-                      style={{ background: `linear-gradient(135deg, ${s.color}33, ${s.color}0d)` }}
+                      className="w-full h-full flex items-center justify-center bg-grid"
+                      style={{ backgroundColor: "var(--bg-card)" }}
                     >
-                      <div className="w-12 h-12 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
-                        style={{ background: s.color + "22", color: s.color }}>
+                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3"
+                        style={{ background: "var(--surface)", color: s.color, border: "1px solid var(--border)", boxShadow: "var(--shadow-md)" }}>
                         {s.icon}
                       </div>
                     </div>
@@ -177,8 +177,8 @@ export default async function ServicesSection() {
 
                 {/* Content */}
                 <div className="relative p-5 sm:p-6 flex flex-col flex-1">
-                  {/* Title */}
-                  <h3 className={`font-bold leading-snug mb-2 ${wide ? "text-xl" : "text-base"}`}>
+                  <span className="font-mono text-[0.7rem] mb-2" style={{ color: "var(--text-muted)" }}>{s.num}</span>
+                  <h3 className={`font-semibold leading-snug mb-2 ${wide ? "text-xl" : "text-base"}`}>
                     {s.title}
                   </h3>
 
@@ -193,10 +193,9 @@ export default async function ServicesSection() {
                   {/* Learn more */}
                   <Link
                     href={`/services/${s.slug}`}
-                    className="mt-auto inline-flex items-center justify-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-lg transition-all hover:gap-2.5 self-start border-[#ED1C24]/40 bg-[#ED1C24]/10 text-[#ED1C24] hover:bg-[#ED1C24] hover:text-white"
-                    style={{ borderWidth: 1, borderStyle: "solid" }}
+                    className="mt-auto inline-flex items-center gap-1.5 text-sm font-semibold transition-all hover:gap-2.5 self-start text-[var(--primary)]"
                   >
-                    Learn more <ArrowRight size={12} />
+                    Learn more <ArrowRight size={14} />
                   </Link>
                 </div>
               </div>
@@ -205,16 +204,16 @@ export default async function ServicesSection() {
         </div>
 
         {/* Included in every project */}
-        <div className="card p-6">
-          <p className="text-center text-xs font-bold uppercase tracking-widest mb-5"
+        <div className="card p-6 md:p-8">
+          <p className="text-center font-mono text-[0.7rem] font-medium uppercase tracking-[0.14em] mb-5"
             style={{ color: "var(--text-muted)" }}>
             Included in every project
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             {included.map((item) => (
               <div key={item.label}
-                className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium"
-                style={{ background: "rgba(237,28,36,0.08)", border: "1px solid rgba(237,28,36,0.2)" }}>
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium"
+                style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
                 <item.icon size={14} style={{ color: "var(--primary)" }} />
                 {item.label}
               </div>
@@ -224,7 +223,7 @@ export default async function ServicesSection() {
 
         {/* CTA */}
         <div className="text-center mt-10">
-          <Link href="/services" className="btn-primary text-base py-3 px-8">
+          <Link href="/services" className="btn-outline text-base py-3 px-8">
             View All Services <ArrowRight size={18} />
           </Link>
         </div>

@@ -19,8 +19,8 @@ export default function TopBar({ phone }: TopBarProps) {
     <div
       className="fixed top-0 left-0 right-0 z-50 flex items-center h-9"
       style={{
-        background: "rgba(10,10,10,0.97)",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
+        background: "var(--ink)",
+        borderBottom: "1px solid rgba(255,255,255,0.07)",
         fontSize: "0.78rem",
       }}
     >
@@ -36,12 +36,12 @@ export default function TopBar({ phone }: TopBarProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 title={label}
-                className="flex items-center justify-center w-7 h-7 rounded-lg transition-colors"
+                className="flex items-center justify-center w-7 h-7 rounded-md transition-colors hover:bg-white/5"
                 style={{ color: "rgba(255,255,255,0.6)" }}
                 onMouseOver={(e) => (e.currentTarget.style.color = "var(--primary)")}
                 onMouseOut={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.6)")}
               >
-                <Icon size={18} />
+                <Icon size={15} />
               </Link>
             );
           })}
@@ -50,7 +50,7 @@ export default function TopBar({ phone }: TopBarProps) {
         {/* Right: Phone */}
         <Link
           href={`tel:${displayPhone.replace(/\s/g, "")}`}
-          className="flex items-center gap-2 px-3 py-1 rounded-full transition-all"
+          className="flex items-center gap-2 px-3 py-0.5 rounded-md transition-all"
           style={{
             background: "rgba(237,28,36,0.12)",
             border: "1px solid rgba(237,28,36,0.35)",
@@ -64,7 +64,7 @@ export default function TopBar({ phone }: TopBarProps) {
               <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.24h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
             </svg>
           </span>
-          <span className="font-semibold" style={{ fontSize: "0.78rem", letterSpacing: "0.02em" }}>
+          <span className="font-mono font-medium" style={{ fontSize: "0.74rem", letterSpacing: "0.01em" }}>
             {displayPhone}
           </span>
         </Link>

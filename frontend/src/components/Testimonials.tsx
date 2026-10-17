@@ -151,9 +151,10 @@ function ReviewCard({ r }: { r: TestimonialItem }) {
         flexDirection: "column",
         gap: 16,
         padding: 28,
-        borderRadius: 18,
-        background: "var(--bg-muted)",
+        borderRadius: 16,
+        background: "var(--surface)",
         border: "1px solid var(--border)",
+        boxShadow: "var(--shadow-sm)",
         overflow: "hidden",
         transition: "border-color 0.25s, transform 0.25s",
         // @ts-expect-error CSS custom property
@@ -198,7 +199,7 @@ function ReviewCard({ r }: { r: TestimonialItem }) {
               onClick={() => setOpen(true)}
               style={{
                 position: "relative", zIndex: 1, fontSize: "0.78rem", fontWeight: 600,
-                color: "var(--primary)", background: "var(--bg-muted)",
+                color: "var(--primary)", background: "var(--surface)",
               }}
             >
               Read more
@@ -263,12 +264,12 @@ export default function Testimonials({ reviews }: { reviews: TestimonialItem[] }
           style={{
             display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center",
             gap: 28, marginBottom: 48, padding: "20px 28px", borderRadius: 16,
-            background: "var(--bg-muted)", border: "1px solid var(--border)",
+            background: "var(--surface)", border: "1px solid var(--border)", boxShadow: "var(--shadow-sm)",
             width: "fit-content", marginInline: "auto",
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <span style={{ fontSize: "2.4rem", fontWeight: 800, lineHeight: 1, color: "var(--primary)" }}>
+            <span style={{ fontFamily: "var(--font-heading)", fontSize: "2.4rem", fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 1, color: "var(--text)" }}>
               {avgRounded.toFixed(1)}
             </span>
             <div>

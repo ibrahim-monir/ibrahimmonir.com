@@ -47,10 +47,12 @@ export default function HeroTypewriter({ initial, roles }: { initial?: string; r
   }, [displayed, deleting, paused, idx, texts]);
 
   return (
-    <p className="text-xl font-medium mb-6 gradient-text" style={{ lineHeight: 1.3, minHeight: "1.8rem" }}>
-      {displayed}
+    <p className="font-semibold mb-6" style={{ fontFamily: "var(--font-heading)", fontSize: "clamp(1.3rem, 2.4vw, 1.75rem)", lineHeight: 1.3, minHeight: "2.3rem", letterSpacing: "-0.02em" }}>
+      <span className="font-mono mr-2" style={{ color: "var(--primary)", fontSize: "0.85em" }}>&gt;</span>
+      <span className="gradient-text">
+      {displayed}</span>
       <span
-        className="inline-block w-0.5 h-5 ml-0.5 align-middle animate-pulse"
+        className="inline-block w-[3px] h-6 ml-1 align-middle animate-pulse"
         style={{ background: "var(--primary)", verticalAlign: "middle" }}
       />
     </p>

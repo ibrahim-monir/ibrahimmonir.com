@@ -37,14 +37,14 @@ function StepCard({ s, shade }: { s: Step; shade: string }) {
       {/* stacked-paper shadow card, offset behind */}
       <div
         className="absolute inset-0 translate-x-2.5 translate-y-2.5 rounded-2xl transition-transform duration-300"
-        style={{ background: "rgba(0,0,0,0.14)" }}
+        style={{ background: "color-mix(in srgb, var(--primary) 10%, var(--bg-muted))" }}
         aria-hidden
       />
 
       {/* front card */}
       <div
         className="proc-card relative h-full flex flex-col items-center text-center rounded-2xl border p-7 transition-all duration-300"
-        style={{ background: "var(--bg-card)", borderColor: "var(--border)" }}
+        style={{ background: "var(--surface)", borderColor: "var(--border)" }}
       >
         {/* icon circle, top */}
         <span
@@ -54,8 +54,9 @@ function StepCard({ s, shade }: { s: Step; shade: string }) {
           <Icon size={24} color="#fff" strokeWidth={2} />
         </span>
 
-        <h3 className="text-base font-bold mb-2">{s.title}</h3>
-        <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>{s.desc}</p>
+        <span className="font-mono text-[0.7rem] mb-1" style={{ color: "var(--primary)" }}>STEP {s.num}</span>
+        <h3 className="text-lg font-semibold mb-2">{s.title}</h3>
+        <p className="text-sm leading-relaxed" style={{ color: "var(--text-muted)" }}>{s.desc}</p>
       </div>
     </div>
   );
@@ -225,7 +226,7 @@ export default function ProcessSection() {
               >
                 <Workflow size={26} color="#fff" strokeWidth={2} />
                 <div className="text-left">
-                  <p className="font-extrabold text-lg leading-tight text-white">MY PROCESS</p>
+                  <p className="font-bold text-lg leading-tight text-white tracking-wide" style={{ fontFamily: "var(--font-heading)" }}>MY PROCESS</p>
                   <p className="text-xs font-medium text-white/80">Idea to Launch, in 6 Steps</p>
                 </div>
               </div>

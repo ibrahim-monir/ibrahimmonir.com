@@ -100,7 +100,7 @@ export default function FAQClient() {
       <div className="flex flex-wrap gap-2.5 justify-center mb-14">
         {CATEGORIES.map((cat) => (
           <a key={cat.id} href={`#${cat.id}`}
-            className="inline-flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-full transition-colors hover:border-orange-500"
+            className="inline-flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-full transition-colors hover:border-[var(--primary)]"
             style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text)" }}>
             <cat.icon size={14} />
             {cat.label}

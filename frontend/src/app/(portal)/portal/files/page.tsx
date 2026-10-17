@@ -96,7 +96,7 @@ export default function FilesPage() {
               </div>
               <div className="col-span-2 flex justify-end">
                 <button onClick={() => handleDownload(file.id, file.name)}
-                  className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg transition-all hover:bg-orange-500/20"
+                  className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg transition-all hover:bg-[var(--primary)]/20"
                   style={{ color: "var(--primary)", border: "1px solid var(--primary)" }}>
                   <Download size={13} /> Download
                 </button>

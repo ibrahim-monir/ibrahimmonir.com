@@ -42,7 +42,7 @@ export default function ProductsClient() {
       {/* Product grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filtered.map((p) => (
-          <div key={p.title} className="card overflow-hidden hover:border-orange-500/50 transition-all group">
+          <div key={p.title} className="card overflow-hidden hover:border-[var(--primary)]/50 transition-all group">
             <div className="h-44 flex items-center justify-center" style={{ background: "var(--bg-muted)" }}>
               <div className="text-center">
                 <Package size={40} style={{ color: "var(--text-muted)", margin: "0 auto 8px" }} />

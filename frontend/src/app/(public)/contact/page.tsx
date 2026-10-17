@@ -93,7 +93,7 @@ export default function ContactPage() {
                     {c.href ? (
                       <a href={c.href}
                         {...(c.href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                        className="hover:text-orange-400 transition-colors">{c.value}</a>
+                        className="hover:text-[var(--primary)] transition-colors">{c.value}</a>
                     ) : (
                       <span>{c.value}</span>
                     )}
@@ -132,7 +132,7 @@ export default function ContactPage() {
                     <input type={f.type} required={f.required}
                       value={form[f.key as keyof typeof form]}
                       onChange={(e) => setForm(prev => ({ ...prev, [f.key]: e.target.value }))}
-                      className="w-full px-4 py-2.5 rounded-lg text-sm outline-none transition-colors focus:border-orange-500"
+                      className="w-full px-4 py-2.5 rounded-lg text-sm outline-none transition-colors focus:border-[var(--primary)]"
                       style={{ background: "var(--bg-muted)", border: "1px solid var(--border)", color: "var(--text)" }} />
                   </div>
                 ))}
@@ -142,7 +142,7 @@ export default function ContactPage() {
                 <input type="tel"
                   value={form.phone}
                   onChange={(e) => setForm(prev => ({ ...prev, phone: e.target.value }))}
-                  className="w-full px-4 py-2.5 rounded-lg text-sm outline-none transition-colors focus:border-orange-500"
+                  className="w-full px-4 py-2.5 rounded-lg text-sm outline-none transition-colors focus:border-[var(--primary)]"
                   style={{ background: "var(--bg-muted)", border: "1px solid var(--border)", color: "var(--text)" }} />
               </div>
               <div>
@@ -150,7 +150,7 @@ export default function ContactPage() {
                 <input type="text" required
                   value={form.subject}
                   onChange={(e) => setForm(prev => ({ ...prev, subject: e.target.value }))}
-                  className="w-full px-4 py-2.5 rounded-lg text-sm outline-none transition-colors focus:border-orange-500"
+                  className="w-full px-4 py-2.5 rounded-lg text-sm outline-none transition-colors focus:border-[var(--primary)]"
                   style={{ background: "var(--bg-muted)", border: "1px solid var(--border)", color: "var(--text)" }} />
               </div>
               <div>
@@ -158,7 +158,7 @@ export default function ContactPage() {
                 <textarea required rows={5}
                   value={form.message}
                   onChange={(e) => setForm(prev => ({ ...prev, message: e.target.value }))}
-                  className="w-full px-4 py-2.5 rounded-lg text-sm outline-none transition-colors resize-none focus:border-orange-500"
+                  className="w-full px-4 py-2.5 rounded-lg text-sm outline-none transition-colors resize-none focus:border-[var(--primary)]"
                   style={{ background: "var(--bg-muted)", border: "1px solid var(--border)", color: "var(--text)" }} />
               </div>
               <button type="submit" disabled={loading} className="btn-primary w-full justify-center py-3">
