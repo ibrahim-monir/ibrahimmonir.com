@@ -161,6 +161,16 @@ jobs:
       #
       # Fileman::upload_files is a documented, current UAPI function.
 
+      # Kept on the run page (Actions -> this run -> Artifacts) so a deploy
+      # can still be finished by hand -- upload deploy.zip to the home dir
+      # in cPanel File Manager and extract it -- when the API upload fails.
+      - name: Keep the bundle as a run artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: deploy-bundle
+          path: ${{ runner.temp }}/deploy.zip
+          retention-days: 7
+
       - name: Upload the bundle to cPanel
         run: |
           set -euo pipefail
