@@ -164,12 +164,28 @@ jobs:
       - name: Upload the bundle to cPanel
         run: |
           set -euo pipefail
-          RESPONSE=$(curl -sS -f \
+          if [ -z "${{ secrets.CPANEL_API_TOKEN }}" ]; then
+            echo "::error::Repo secret CPANEL_API_TOKEN is not set."
+            exit 1
+          fi
+          # No -f: on a 4xx/5xx it would hide cPanel's own error body.
+          HTTP=$(curl -sS -o "$RUNNER_TEMP/upload.json" -w '%{http_code}' \
+            --retry 2 --retry-delay 10 \
             -H "Authorization: cpanel ${CPANEL_USER}:${{ secrets.CPANEL_API_TOKEN }}" \
             -F "dir=/home/${CPANEL_USER}" \
             -F "file-1=@${RUNNER_TEMP}/deploy.zip;filename=deploy.zip" \
             "https://${CPANEL_HOST}:2083/execute/Fileman/upload_files")
-          echo "$RESPONSE"
+          RESPONSE=$(cat "$RUNNER_TEMP/upload.json")
+          echo "HTTP $HTTP"
+          echo "$RESPONSE" | head -c 2000; echo
+          if [ "$HTTP" != "200" ]; then
+            case "$HTTP" in
+              401|403) echo "::error::cPanel rejected the API token (HTTP $HTTP). Regenerate it in hPanel and update the CPANEL_API_TOKEN repo secret." ;;
+              413)     echo "::error::Deploy bundle is too large for cPanel's upload limit (HTTP 413)." ;;
+              *)       echo "::error::cPanel upload failed with HTTP $HTTP -- see the response above." ;;
+            esac
+            exit 1
+          fi
           echo "$RESPONSE" | grep -q '"failed":0' || { echo "::error::Upload reported a failure."; exit 1; }
 
       # ------------------------------------------------------------ extract
