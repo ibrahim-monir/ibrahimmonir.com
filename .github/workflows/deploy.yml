@@ -251,10 +251,18 @@ jobs:
       - name: Run migrations and rebuild caches
         run: |
           set -euo pipefail
+          # --data-urlencode: a raw token containing + & # % would be mangled.
           RESPONSE=$(curl -sS -f -X POST \
-            -d "token=${{ secrets.UPDATE_TOKEN }}" \
-            -d "action=update" \
+            --data-urlencode "token=${{ secrets.UPDATE_TOKEN }}" \
+            --data-urlencode "action=update" \
             "${DOMAIN}/update.php")
+
+          # The page answers 200 even when the token is rejected, so check
+          # for that explicitly instead of reporting a no-op as success.
+          if echo "$RESPONSE" | grep -q "Not available"; then
+            echo "::error::update.php rejected the token. Make the UPDATE_TOKEN repo secret match UPDATE_TOKEN in the server's .env."
+            exit 1
+          fi
 
           if echo "$RESPONSE" | grep -q "did not finish"; then
             echo "$RESPONSE"
@@ -279,7 +287,7 @@ jobs:
             exit 1
           }
 
-          BACKEND=$(curl -sS -f "${DOMAIN}/update.php?token=${{ secrets.UPDATE_TOKEN }}")
+          BACKEND=$(curl -sS -f -G --data-urlencode "token=${{ secrets.UPDATE_TOKEN }}" "${DOMAIN}/update.php")
           echo "$BACKEND" | grep -q "$COMMIT" || {
             echo "::error::The live backend still does not report commit ${COMMIT}. Check the Extract step above."
             exit 1
