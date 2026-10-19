@@ -111,8 +111,13 @@ export default async function ServicesSection() {
   const services = await getServices();
 
   return (
-    <section className="py-24 section-alt">
-      <div className="container">
+    <section className="relative overflow-hidden py-24 section-alt">
+      {/* Background pattern — dot matrix faded toward the edges, plus a soft brand glow */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 bg-dots bg-grid-fade" />
+      <div aria-hidden className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[720px] h-[420px] rounded-full"
+        style={{ background: "radial-gradient(ellipse, rgba(237,28,36,0.07) 0%, transparent 70%)" }} />
+
+      <div className="container relative">
 
         {/* Header */}
         <div className="text-center mb-16">
