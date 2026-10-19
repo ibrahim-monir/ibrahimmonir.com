@@ -1,9 +1,9 @@
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { ArrowRight, Shield, FileText, Headphones, RefreshCw, Code2 } from "lucide-react";
+import { serviceImage } from "@/lib/services";
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api";
-const STORAGE = API.replace(/\/api\/?$/, "") + "/storage";
 
 type ApiService = {
   id: number;
@@ -92,7 +92,7 @@ async function getServices(): Promise<Service[]> {
       color: "#ED1C24",
       popular: s.is_popular,
       icon: ICONS[s.slug] ?? DEFAULT_ICON,
-      image: s.image ? `${STORAGE}/${s.image}` : undefined,
+      image: serviceImage(s.slug, s.image),
     }));
   } catch {
     return [];

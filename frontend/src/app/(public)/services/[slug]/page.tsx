@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { serviceImage } from "@/lib/services";
 import {
   ArrowLeft, ArrowRight, Check, Calendar,
   Layers, ListChecks, Workflow, Briefcase, HelpCircle, Newspaper,
@@ -597,7 +598,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
   const color = service.color || "#ED1C24";
   const technologies = TECHNOLOGIES[slug] ?? [];
   const faqs = FAQS[slug] ?? FAQS.default;
-  const heroImg = img(service.image);
+  const heroImg = serviceImage(slug, service.image) ?? null;
 
   const props = { service, color, heroImg, technologies, faqs, relatedWork, relatedPosts };
 

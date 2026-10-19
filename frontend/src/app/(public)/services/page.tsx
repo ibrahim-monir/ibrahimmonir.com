@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 import type { ReactNode } from "react";
+import { serviceImage } from "@/lib/services";
 
 export const metadata: Metadata = {
   title: "Services",
@@ -9,7 +10,6 @@ export const metadata: Metadata = {
 };
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api";
-const STORAGE = API.replace(/\/api\/?$/, "") + "/storage";
 
 type ApiService = {
   id: number;
@@ -104,7 +104,7 @@ async function getServices(): Promise<Service[]> {
       price: s.price ? `From $${Math.round(parseFloat(s.price)).toLocaleString()}` : "Get a Quote",
       desc: s.short_desc ?? "",
       features: s.features ?? [],
-      image: s.image ? `${STORAGE}/${s.image}` : undefined,
+      image: serviceImage(s.slug, s.image),
       icon: ICONS[s.slug] ?? DEFAULT_ICON,
     }));
   } catch {
