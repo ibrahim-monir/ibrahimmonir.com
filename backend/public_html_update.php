@@ -32,6 +32,25 @@ if (! is_file($app_root.'/vendor/autoload.php')) {
     );
 }
 
+// The deploy just replaced these files under a running PHP, and OPcache may
+// still hold the previous copies (cPanel hosts often revalidate slowly or
+// never). A stale vendor/composer classmap -- authoritative, see deploy.yml --
+// hides every class added in this deploy, so a new seeder "doesn't exist"
+// until some later request. Invalidate before anything is loaded.
+if (function_exists('opcache_invalidate')) {
+    foreach (['app', 'bootstrap', 'config', 'database', 'routes', 'vendor/composer'] as $dir) {
+        if (! is_dir($app_root.'/'.$dir)) {
+            continue;
+        }
+        $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($app_root.'/'.$dir, FilesystemIterator::SKIP_DOTS));
+        foreach ($files as $file) {
+            if ($file->getExtension() === 'php') {
+                @opcache_invalidate($file->getPathname(), true);
+            }
+        }
+    }
+}
+
 require $app_root.'/vendor/autoload.php';
 
 $app = require_once $app_root.'/bootstrap/app.php';
