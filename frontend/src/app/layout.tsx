@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Inter, JetBrains_Mono, Alex_Brush } from "next/font/google";
+import { Space_Grotesk, Inter, JetBrains_Mono, Fredoka } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
@@ -22,9 +22,9 @@ const mono = JetBrains_Mono({
   weight: ["400", "500"],
   variable: "--font-mono-family",
 });
-const logo = Alex_Brush({
+const logo = Fredoka({
   subsets: ["latin"],
-  weight: ["400"],
+  weight: ["700"],
   variable: "--font-logo-family",
 });
 

@@ -27,7 +27,7 @@ export default function Navbar({ services = [] }: { services?: ServiceNavItem[] 
       <nav className="container flex items-center justify-between h-16">
 
         <Link href="/" aria-label="Ibrahim Monir — Home" className="flex-shrink-0">
-          <BrandLogo fontSize="1.6rem" color="#0f1420" />
+          <BrandLogo fontSize="1.5rem" color="#0f1420" />
         </Link>
 
         <ul className="hidden md:flex items-center gap-1">
