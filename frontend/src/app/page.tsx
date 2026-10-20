@@ -43,9 +43,9 @@ export default async function HomePage() {
   const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api";
   const [settings, experiencesRaw, testimonialsRaw, worksRaw, services] = await Promise.all([
     fetchSettings(),
-    fetch(`${API}/experiences`,   { cache: 'no-store' }).then(r => r.ok ? r.json() : []).catch(() => []),
-    fetch(`${API}/testimonials`,  { cache: 'no-store' }).then(r => r.ok ? r.json() : []).catch(() => []),
-    fetch(`${API}/works`,         { cache: 'no-store' }).then(r => r.ok ? r.json() : []).catch(() => []),
+    fetch(`${API}/experiences`,   { cache: 'force-cache' }).then(r => r.ok ? r.json() : []).catch(() => []),
+    fetch(`${API}/testimonials`,  { cache: 'force-cache' }).then(r => r.ok ? r.json() : []).catch(() => []),
+    fetch(`${API}/works`,         { cache: 'force-cache' }).then(r => r.ok ? r.json() : []).catch(() => []),
     fetchServiceNavItems(),
   ]);
   const timeline: { role: string; company: string; year_label: string; description: string }[] = experiencesRaw;

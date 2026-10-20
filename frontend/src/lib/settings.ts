@@ -25,7 +25,7 @@ export function yearsOfExperience(startYear: number = EXPERIENCE_START_YEAR): nu
 
 export async function fetchSettings(): Promise<SiteSettings> {
   try {
-    const res = await fetch(`${API}/settings`, { cache: 'no-store' });
+    const res = await fetch(`${API}/settings`, { cache: 'force-cache' });
     if (!res.ok) return {};
     return await res.json();
   } catch {

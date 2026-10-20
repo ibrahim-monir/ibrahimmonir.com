@@ -59,7 +59,7 @@ const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api";
 
 export async function fetchSocialLinks(): Promise<SocialLink[]> {
   try {
-    const res = await fetch(`${API}/social-links`, { cache: "no-store" });
+    const res = await fetch(`${API}/social-links`, { cache: "force-cache" });
     if (!res.ok) return [];
     const data = await res.json();
     return Array.isArray(data) ? data : [];

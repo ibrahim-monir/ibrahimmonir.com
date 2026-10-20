@@ -15,7 +15,7 @@ const FALLBACK_WORKS: WorkItem[] = [
 
 export default async function WorksPage() {
   const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api";
-  const worksRaw = await fetch(`${API}/works`, { cache: "no-store" })
+  const worksRaw = await fetch(`${API}/works`, { cache: "force-cache" })
     .then((r) => (r.ok ? r.json() : []))
     .catch(() => []);
   const works: WorkItem[] = Array.isArray(worksRaw) && worksRaw.length ? worksRaw : FALLBACK_WORKS;
