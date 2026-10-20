@@ -3,7 +3,7 @@ import Link from "next/link";
 import TopBar from "@/components/TopBar";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { fetchSettings, str, arr } from "@/lib/settings";
+import { fetchSettings, str, arr, yearsOfExperience } from "@/lib/settings";
 import { fetchServiceNavItems } from "@/lib/services";
 import ParticlesBackground from "@/components/ParticlesBackground";
 import HeroPhoto from "@/components/HeroPhoto";
@@ -52,10 +52,12 @@ export default async function HomePage() {
   const testimonials: TestimonialItem[] = testimonialsRaw;
   const recentWorks: WorkItem[] = Array.isArray(worksRaw) && worksRaw.length ? worksRaw.slice(0, 8) : FALLBACK_WORKS;
 
+  const expYears = yearsOfExperience(parseInt(str(settings.experience_start_year, "2016")));
+
   const statsData = [
     { num: parseInt(str(settings.stat_projects_completed, "80")),  suffix: "+", label: "Projects Delivered" },
     { num: parseInt(str(settings.stat_clients_served,     "40")),  suffix: "+", label: "Happy Clients" },
-    { num: parseInt(str(settings.stat_years_experience,   "5")),   suffix: "+", label: "Years Experience" },
+    { num: expYears,                                               suffix: "+", label: "Years Experience" },
     { num: parseInt(str(settings.stat_satisfaction,       "100")), suffix: "%", label: "Client Satisfaction" },
   ];
 
@@ -161,7 +163,7 @@ export default async function HomePage() {
                 <span className="badge mb-4 inline-flex">My Journey</span>
                 <h2 className="section-title mb-4">Experience</h2>
                 <p className="section-subtitle">
-                  5+ years of building web products — from freelance projects to full-scale business systems.
+                  {expYears}+ years of building web products — from freelance projects to full-scale business systems.
                 </p>
               </div>
 

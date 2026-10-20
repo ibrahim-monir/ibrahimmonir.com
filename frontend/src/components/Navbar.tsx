@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import type { ServiceNavItem } from "@/lib/services";
+import BrandLogo from "@/components/BrandLogo";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -24,6 +25,10 @@ export default function Navbar({ services = [] }: { services?: ServiceNavItem[] 
     <header className="fixed top-9 left-0 right-0 z-40 border-b"
       style={{ background: "#fff", borderColor: "var(--border)", boxShadow: "0 1px 0 rgba(16,24,40,0.02), 0 6px 20px -12px rgba(16,24,40,0.12)" }}>
       <nav className="container flex items-center justify-between h-16">
+
+        <Link href="/" aria-label="Ibrahim Monir — Home" className="flex-shrink-0">
+          <BrandLogo fontSize="1.6rem" color="#0f1420" />
+        </Link>
 
         <ul className="hidden md:flex items-center gap-1">
           {navLinks.map((l) => {

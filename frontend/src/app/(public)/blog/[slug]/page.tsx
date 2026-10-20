@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Calendar, Eye, Clock, Tag } from "lucide-react";
+import { yearsOfExperience } from "@/lib/settings";
 
 interface PageProps { params: Promise<{ slug: string }> }
 
@@ -211,7 +212,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                   <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>Full-Stack Web Developer</p>
                 </div>
                 <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>
-                  Building scalable web applications with WordPress, Laravel &amp; Next.js. 5+ years of experience.
+                  Building scalable web applications with WordPress, Laravel &amp; Next.js. {yearsOfExperience()}+ years of experience.
                 </p>
                 <Link href="/contact"
                   className="w-full text-center text-sm font-medium py-2 rounded-lg transition-colors"

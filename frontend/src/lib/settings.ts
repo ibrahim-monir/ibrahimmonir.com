@@ -14,6 +14,15 @@ export function arr(val: unknown, fallback: string[] = []): string[] {
   return fallback;
 }
 
+/** Web-development career start year — years of experience are computed from this. */
+export const EXPERIENCE_START_YEAR = 2016;
+
+/** Years of experience, computed live from the start year so it auto-updates every year. */
+export function yearsOfExperience(startYear: number = EXPERIENCE_START_YEAR): number {
+  const years = new Date().getFullYear() - (Number.isFinite(startYear) ? startYear : EXPERIENCE_START_YEAR);
+  return years > 0 ? years : 1;
+}
+
 export async function fetchSettings(): Promise<SiteSettings> {
   try {
     const res = await fetch(`${API}/settings`, { cache: 'no-store' });
