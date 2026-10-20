@@ -285,6 +285,9 @@ if ($authorised && ! $blocked && ($_POST['action'] ?? '') === 'update') {
         $seeders = [
             'WorkSeeder',
             'ArnaFashionWorkSeeder',
+            // Before ImportExistingMediaSeeder, so the images it copies onto
+            // the public disk get picked up by the Media Library too.
+            'BlogPostSeeder',
             'ImportExistingMediaSeeder',
             'PricingSeeder',
             'ServiceSeeder',
