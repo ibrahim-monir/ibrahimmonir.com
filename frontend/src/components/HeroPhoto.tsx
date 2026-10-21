@@ -85,7 +85,10 @@ export default function HeroPhoto() {
               src="/ibrahim-hero.jpg"
               alt="Ibrahim Monir"
               fill
-              className="object-cover object-top"
+              className="object-cover"
+              // The source photo is square with the subject right of centre;
+              // shift the crop right so he sits centred in the portrait frame.
+              style={{ objectPosition: "90% top" }}
               priority
               quality={95}
               sizes="(max-width: 1280px) 440px, 1000px"
