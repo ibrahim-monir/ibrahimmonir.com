@@ -15,7 +15,7 @@ export function arr(val: unknown, fallback: string[] = []): string[] {
 }
 
 /** Web-development career start year — years of experience are computed from this. */
-export const EXPERIENCE_START_YEAR = 2016;
+export const EXPERIENCE_START_YEAR = 2018;
 
 /** Years of experience, computed live from the start year so it auto-updates every year. */
 export function yearsOfExperience(startYear: number = EXPERIENCE_START_YEAR): number {

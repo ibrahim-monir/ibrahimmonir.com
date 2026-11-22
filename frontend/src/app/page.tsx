@@ -3,7 +3,7 @@ import Link from "next/link";
 import TopBar from "@/components/TopBar";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { fetchSettings, str, arr, yearsOfExperience } from "@/lib/settings";
+import { fetchSettings, str, arr, yearsOfExperience, EXPERIENCE_START_YEAR } from "@/lib/settings";
 import { fetchServiceNavItems } from "@/lib/services";
 import ParticlesBackground from "@/components/ParticlesBackground";
 import HeroPhoto from "@/components/HeroPhoto";
@@ -52,7 +52,7 @@ export default async function HomePage() {
   const testimonials: TestimonialItem[] = testimonialsRaw;
   const recentWorks: WorkItem[] = Array.isArray(worksRaw) && worksRaw.length ? worksRaw.slice(0, 8) : FALLBACK_WORKS;
 
-  const expYears = yearsOfExperience(parseInt(str(settings.experience_start_year, "2016")));
+  const expYears = yearsOfExperience(parseInt(str(settings.experience_start_year, String(EXPERIENCE_START_YEAR))));
 
   const statsData = [
     { num: parseInt(str(settings.stat_projects_completed, "80")),  suffix: "+", label: "Projects Delivered" },
