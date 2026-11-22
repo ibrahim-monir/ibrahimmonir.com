@@ -281,8 +281,8 @@ export default function Testimonials({ reviews }: { reviews: TestimonialItem[] }
           <div style={{ width: 1, height: 38, background: "var(--border)" }} />
 
           <div style={{ textAlign: "center" }}>
-            <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--text)" }}>{reviews.length}+</div>
-            <div style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>Happy clients</div>
+            <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--text)" }}>{reviews.length}</div>
+            <div style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>{reviews.length === 1 ? "Review" : "Reviews"}</div>
           </div>
 
           <div style={{ width: 1, height: 38, background: "var(--border)" }} />

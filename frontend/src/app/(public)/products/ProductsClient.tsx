@@ -3,15 +3,16 @@ import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Download, Package } from "lucide-react";
 
-const categories = ["All", "Theme", "Plugin", "System", "Script"];
+const categories = ["All", "WordPress", "WooCommerce"];
 
-const products = [
-  { title: "AdminPro Dashboard",   category: "Theme",  price: "$49",  downloads: 320, desc: "Modern Laravel Filament admin theme with dark mode and 20+ widgets.",                              tags: ["Laravel", "Filament", "Tailwind"] },
-  { title: "LaraInvoice",          category: "Plugin", price: "$29",  downloads: 185, desc: "Complete invoicing plugin for Laravel with PDF export and payment tracking.",                     tags: ["Laravel", "PHP"] },
-  { title: "NextPortfolio Starter",category: "Theme",  price: "Free", downloads: 890, desc: "Minimal portfolio starter template built with Next.js 14 and Tailwind CSS.",                     tags: ["Next.js", "TypeScript"] },
-  { title: "MultiVendor Core",     category: "System", price: "$199", downloads: 45,  desc: "Ready-made multi-vendor marketplace with vendor dashboard and commission management.",           tags: ["Laravel", "React"] },
-  { title: "SMSNotify",            category: "Plugin", price: "$19",  downloads: 267, desc: "Laravel package for sending SMS via multiple gateways (Twilio, Nexmo, custom).",               tags: ["Laravel", "PHP"] },
-  { title: "LMS Starter Kit",      category: "System", price: "$149", downloads: 67,  desc: "Learning management system with courses, quizzes, and student progress tracking.",              tags: ["Laravel", "Next.js"] },
+// Ibrahim's own plugins. `href` is the public repo; without one, "Get It"
+// goes to the contact page.
+const products: { title: string; category: string; price: string; desc: string; tags: string[]; href?: string }[] = [
+  { title: "Smart Blogger Toolkit",      category: "WordPress",   price: "Free", desc: "Modular toolkit for bloggers: reading time, SEO basics, auto table of contents, related posts, Rank Math integration and a redirect manager.", tags: ["WordPress", "PHP"], href: "https://github.com/ibrahim-monir/smart-blogger-toolkit" },
+  { title: "Smart WP Migration",         category: "WordPress",   price: "Free", desc: "Back up, export and import a full WordPress site (database + files) as a single .wpress package.",                                            tags: ["WordPress", "PHP"], href: "https://github.com/ibrahim-monir/smart-wp-migration" },
+  { title: "Ultra Addons for Side Cart", category: "WooCommerce", price: "Free", desc: "10+ add-ons for the WooCommerce side cart: extra cart features and upsells.",                                                                 tags: ["WooCommerce", "PHP", "JS"], href: "https://github.com/ibrahim-monir/Ultra-Addons-for-Side-Cart-Woocommerce" },
+  { title: "BOGO Offer with Badge",      category: "WooCommerce", price: "Free", desc: "Buy-one-get-one offers with product badges that highlight the deal on shop and product pages.",                                         tags: ["WooCommerce", "PHP"], href: "https://github.com/ibrahim-monir/bogo-offer-with-badge" },
+  { title: "Smart FSFSP",                category: "WooCommerce", price: "Ask",  desc: "Free-shipping rules for WooCommerce with an admin settings screen: set thresholds and conditions without code.",                        tags: ["WooCommerce", "PHP"] },
 ];
 
 export default function ProductsClient() {
@@ -68,12 +69,19 @@ export default function ProductsClient() {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-xs flex items-center gap-1" style={{ color: "var(--text-muted)" }}>
-                  <Download size={12} /> {p.downloads} downloads
+                  <Download size={12} /> {p.href ? "On GitHub" : "On request"}
                 </span>
-                <Link href="/contact" className="flex items-center gap-1 text-sm font-medium"
-                  style={{ color: "var(--primary)" }}>
-                  Get It <ArrowRight size={14} />
-                </Link>
+                {p.href ? (
+                  <a href={p.href} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center gap-1 text-sm font-medium" style={{ color: "var(--primary)" }}>
+                    Get It <ArrowRight size={14} />
+                  </a>
+                ) : (
+                  <Link href="/contact" className="flex items-center gap-1 text-sm font-medium"
+                    style={{ color: "var(--primary)" }}>
+                    Get It <ArrowRight size={14} />
+                  </Link>
+                )}
               </div>
             </div>
           </div>

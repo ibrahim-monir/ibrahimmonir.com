@@ -4,7 +4,7 @@ import ProductsClient from "./ProductsClient";
 
 export const metadata: Metadata = {
   title: "Products",
-  description: "Premium themes, plugins, and ready-made systems by Ibrahim Monir.",
+  description: "Free WordPress and WooCommerce plugins built by Ibrahim Monir.",
 };
 
 export default function ProductsPage() {
@@ -15,9 +15,9 @@ export default function ProductsPage() {
           <span className="badge mb-4 inline-flex">
             <Package size={13} /> Products
           </span>
-          <h1 className="section-title mb-4">Themes, Plugins &amp; Systems</h1>
+          <h1 className="section-title mb-4">WordPress &amp; WooCommerce Plugins</h1>
           <p className="section-subtitle mx-auto">
-            Ready-made products to kickstart your project. Themes, plugins, and complete systems.
+            Plugins I built and use on real client sites, free to download from GitHub.
           </p>
         </div>
 
