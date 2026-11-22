@@ -33,17 +33,21 @@ async function fetchServiceSlugs(): Promise<Service[]> {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  // Build time: static pages only change when the site is rebuilt, and a
+  // fresh lastmod nudges Google to recrawl them after a deploy.
+  const builtAt = new Date();
+
   const staticRoutes: MetadataRoute.Sitemap = [
-    { url: `${SITE_URL}/`, changeFrequency: "monthly", priority: 1 },
-    { url: `${SITE_URL}/services`, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${SITE_URL}/works`, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${SITE_URL}/products`, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${SITE_URL}/pricing`, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${SITE_URL}/blog`, changeFrequency: "weekly", priority: 0.7 },
-    { url: `${SITE_URL}/faq`, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${SITE_URL}/contact`, changeFrequency: "yearly", priority: 0.6 },
-    { url: `${SITE_URL}/privacy`, changeFrequency: "yearly", priority: 0.3 },
-    { url: `${SITE_URL}/terms`, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${SITE_URL}/`, lastModified: builtAt, changeFrequency: "monthly", priority: 1 },
+    { url: `${SITE_URL}/services`, lastModified: builtAt, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${SITE_URL}/works`, lastModified: builtAt, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${SITE_URL}/products`, lastModified: builtAt, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${SITE_URL}/pricing`, lastModified: builtAt, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${SITE_URL}/blog`, lastModified: builtAt, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${SITE_URL}/faq`, lastModified: builtAt, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${SITE_URL}/contact`, lastModified: builtAt, changeFrequency: "yearly", priority: 0.6 },
+    { url: `${SITE_URL}/privacy`, lastModified: builtAt, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${SITE_URL}/terms`, lastModified: builtAt, changeFrequency: "yearly", priority: 0.3 },
   ];
 
   const [posts, services] = await Promise.all([fetchBlogSlugs(), fetchServiceSlugs()]);
