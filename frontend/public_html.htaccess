@@ -27,10 +27,31 @@
     # Next's static export writes clean URLs as "route.html" files (e.g.
     # blog/test-post.html for /blog/test-post), not route/index.html -- map
     # extension-less requests to the matching .html file.
+    #
+    # Next 16 ALSO writes a same-named directory for every route (blog/,
+    # works/, ... holding the __next.*.txt segment payloads), so these rules
+    # must NOT skip directories (the old `!-d` condition did, and Apache fell
+    # through to an "Index of /blog/" listing on every reload/direct visit).
+
+    # /blog/ -> /blog when blog.html exists (one canonical URL per page).
+    # (%{DOCUMENT_ROOT}, not %{REQUEST_FILENAME}: LiteSpeed strips the
+    # trailing slash from REQUEST_FILENAME, so a regex on it never matched.)
+    RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+    RewriteRule ^(.+)/$ /$1 [R=301,L]
+
+    # /blog -> blog.html, even though a blog/ directory also exists.
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME}.html -f
-    RewriteRule ^(.*)$ $1.html [L]
+    RewriteRule ^(.+)$ $1.html [L]
+</IfModule>
+
+# Never list directory contents (/_next/, route folders, uploads, ...).
+Options -Indexes
+
+# Stop mod_dir from 301-ing /blog to /blog/ just because a blog/ folder
+# exists -- the rewrite above serves blog.html for /blog instead.
+<IfModule mod_dir.c>
+    DirectorySlash Off
 </IfModule>
 
 ErrorDocument 404 /404.html
