@@ -21,7 +21,7 @@ class Order extends Model
     ];
 
     protected $fillable = [
-        'order_number', 'pricing_id', 'package_title', 'billing_cycle',
+        'order_number', 'pricing_id', 'client_id', 'package_title', 'billing_cycle',
         'name', 'email', 'phone', 'company', 'project_details',
         'currency', 'package_price', 'advance_percent', 'amount',
         'payment_method', 'payer_account', 'transaction_id',
@@ -33,6 +33,11 @@ class Order extends Model
         'amount'        => 'decimal:2',
         'confirmed_at'  => 'datetime',
     ];
+
+    public function client(): BelongsTo
+    {
+        return $this->belongsTo(Client::class);
+    }
 
     public function pricing(): BelongsTo
     {
@@ -55,6 +60,12 @@ class Order extends Model
         $symbol = $this->currency === 'BDT' ? '৳' : '$';
 
         return $symbol . number_format((float) $value, $this->currency === 'BDT' ? 0 : 2);
+    }
+
+    /** Phone digits only, e.g. "+880 1712-345678" -> "8801712345678". Used as the portal password. */
+    public static function phoneDigits(string $phone): string
+    {
+        return preg_replace('/\D+/', '', $phone);
     }
 
     public function methodLabel(): string

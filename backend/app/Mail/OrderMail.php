@@ -21,6 +21,8 @@ class OrderMail extends Mailable
         public Order $order,
         public bool $forAdmin = false,
         public string $event = 'placed', // placed | confirmed | rejected
+        // Portal login for the customer receipt: ['status' => created|existing, 'email' => ..., 'password' => ...]
+        public ?array $account = null,
     ) {}
 
     public function envelope(): Envelope

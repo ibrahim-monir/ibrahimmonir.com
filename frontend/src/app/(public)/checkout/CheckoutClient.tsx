@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
-  ArrowLeft, CheckCircle, Copy, Check, ShieldCheck, Smartphone, Landmark, Loader2, Clock, Mail,
+  ArrowLeft, CheckCircle, Copy, Check, ShieldCheck, Smartphone, Landmark, Loader2, Clock, Mail, KeyRound,
 } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
 
@@ -79,7 +79,7 @@ export default function CheckoutClient() {
   const [agree, setAgree] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [done, setDone] = useState<{ order_number: string; amount: string } | null>(null);
+  const [done, setDone] = useState<{ order_number: string; amount: string; account?: string } | null>(null);
 
   useEffect(() => {
     Promise.all([
@@ -145,7 +145,7 @@ export default function CheckoutClient() {
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok) {
-        setDone({ order_number: data.order_number, amount: data.amount });
+        setDone({ order_number: data.order_number, amount: data.amount, account: data.account });
         trackEvent("purchase_submitted", { package_name: plan.title, method, currency, value: advance });
         window.scrollTo({ top: 0, behavior: "smooth" });
       } else if (res.status === 422 && data.errors) {
@@ -206,7 +206,23 @@ export default function CheckoutClient() {
           <p className="flex gap-3"><Mail size={18} className="shrink-0" style={{ color: "var(--primary)" }} />
             <span>A receipt is on its way to <strong>{form.email}</strong>, and you&apos;ll get another email once it&apos;s confirmed.</span></p>
         </div>
-        <Link href="/" className="btn-outline justify-center">Back to home</Link>
+        {done.account === "created" && (
+          <div className="text-left text-sm rounded-xl p-5 mb-8 space-y-2" style={{ background: "var(--bg-muted)" }}>
+            <p className="font-semibold flex gap-2 items-center"><KeyRound size={16} style={{ color: "var(--primary)" }} /> Your client portal account is ready</p>
+            <p>Login: <strong>{form.email}</strong></p>
+            <p>Password: <strong className="font-mono">{form.phone.replace(/\D+/g, "")}</strong> (your phone number, digits only)</p>
+            <p style={{ color: "var(--danger)" }}>Please log in and change this password from Profile → Change Password.</p>
+          </div>
+        )}
+        {done.account === "existing" && (
+          <p className="text-sm mb-8" style={{ color: "var(--text-muted)" }}>
+            This order is linked to your existing portal account. Log in with your current password to track it.
+          </p>
+        )}
+        <div className="flex flex-wrap gap-3 justify-center">
+          {done.account && done.account !== "none" && <Link href="/login" className="btn-primary justify-center">Log in to portal</Link>}
+          <Link href="/" className="btn-outline justify-center">Back to home</Link>
+        </div>
       </div>
     );
   }
@@ -241,6 +257,9 @@ export default function CheckoutClient() {
               </Field>
               <Field label="Phone / WhatsApp" error={errors.phone}>
                 <input required type="tel" value={form.phone} onChange={set("phone")} className={inputCls} style={inputStyle} autoComplete="tel" placeholder="01XXXXXXXXX" />
+                <p className="text-xs mt-1.5" style={{ color: "var(--text-muted)" }}>
+                  New here? We&apos;ll create your client portal account. Login is your email, the first password is this number.
+                </p>
               </Field>
               <Field label="Company (optional)" error={errors.company}>
                 <input value={form.company} onChange={set("company")} className={inputCls} style={inputStyle} autoComplete="organization" />

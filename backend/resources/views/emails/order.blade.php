@@ -67,6 +67,21 @@
             <div class="note">{!! nl2br(e($o->project_details)) !!}</div>
         @endif
 
+        @if(! $forAdmin && $event === 'placed' && $account)
+            <div class="note" style="margin-top:22px">
+                @if($account['status'] === 'created')
+                    <p style="margin:0 0 10px"><strong>Your client portal account is ready.</strong> Track this order, invoices, project files and messages at <a href="{{ url('/login') }}">{{ url('/login') }}</a></p>
+                    <table style="margin:0">
+                        <tr><td class="k">Login email</td><td><strong>{{ $account['email'] }}</strong></td></tr>
+                        <tr><td class="k">Password</td><td><strong style="font-family:monospace;font-size:16px">{{ $account['password'] }}</strong> <span style="color:#6b7280;font-size:13px">(your phone number, digits only)</span></td></tr>
+                    </table>
+                    <p style="margin:12px 0 0;color:#b91c1c"><strong>Please log in once and change this password</strong> in Portal → Profile → Change Password, because your phone number is easy for others to guess.</p>
+                @else
+                    <p style="margin:0">This order is linked to your existing client portal account ({{ $account['email'] }}). Log in at <a href="{{ url('/login') }}">{{ url('/login') }}</a> with your current password to track it.</p>
+                @endif
+            </div>
+        @endif
+
         @if($forAdmin)
             <p style="margin-top:20px">Check the transaction in your {{ $o->methodLabel() }} account, then confirm or reject it in <a href="{{ url('/admin/orders') }}">Admin → Orders</a>.</p>
         @endif
