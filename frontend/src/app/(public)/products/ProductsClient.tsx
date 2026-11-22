@@ -1,18 +1,21 @@
 'use client';
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Download, Package } from "lucide-react";
+import { ArrowRight, Download } from "lucide-react";
 
 const categories = ["All", "WordPress", "WooCommerce"];
 
 // Ibrahim's own plugins. `href` is the public repo; without one, "Get It"
 // goes to the contact page.
-const products: { title: string; category: string; price: string; desc: string; tags: string[]; href?: string }[] = [
-  { title: "Smart Blogger Toolkit",      category: "WordPress",   price: "Free", desc: "Modular toolkit for bloggers: reading time, SEO basics, auto table of contents, related posts, Rank Math integration and a redirect manager.", tags: ["WordPress", "PHP"], href: "https://github.com/ibrahim-monir/smart-blogger-toolkit" },
-  { title: "Smart WP Migration",         category: "WordPress",   price: "Free", desc: "Back up, export and import a full WordPress site (database + files) as a single .wpress package.",                                            tags: ["WordPress", "PHP"], href: "https://github.com/ibrahim-monir/smart-wp-migration" },
-  { title: "Ultra Addons for Side Cart", category: "WooCommerce", price: "Free", desc: "10+ add-ons for the WooCommerce side cart: extra cart features and upsells.",                                                                 tags: ["WooCommerce", "PHP", "JS"], href: "https://github.com/ibrahim-monir/Ultra-Addons-for-Side-Cart-Woocommerce" },
-  { title: "BOGO Offer with Badge",      category: "WooCommerce", price: "Free", desc: "Buy-one-get-one offers with product badges that highlight the deal on shop and product pages.",                                         tags: ["WooCommerce", "PHP"], href: "https://github.com/ibrahim-monir/bogo-offer-with-badge" },
-  { title: "Smart FSFSP",                category: "WooCommerce", price: "Ask",  desc: "Free-shipping rules for WooCommerce with an admin settings screen: set thresholds and conditions without code.",                        tags: ["WooCommerce", "PHP"] },
+// Feature images live in the site's Media Library (Admin → Media).
+const IMG = "/storage/media/2026/11";
+
+const products: { title: string; category: string; price: string; desc: string; tags: string[]; href?: string; image: string }[] = [
+  { title: "Smart Blogger Toolkit",      category: "WordPress",   price: "Free", desc: "Modular toolkit for bloggers: reading time, SEO basics, auto table of contents, related posts, Rank Math integration and a redirect manager.", tags: ["WordPress", "PHP"], href: "https://github.com/ibrahim-monir/smart-blogger-toolkit", image: `${IMG}/smart-blogger-toolkit.jpg` },
+  { title: "Smart WP Migration",         category: "WordPress",   price: "Free", desc: "Back up, export and import a full WordPress site (database + files) as a single .wpress package.",                                            tags: ["WordPress", "PHP"], href: "https://github.com/ibrahim-monir/smart-wp-migration", image: `${IMG}/smart-wp-migration.jpg` },
+  { title: "Ultra Addons for Side Cart", category: "WooCommerce", price: "Free", desc: "10+ add-ons for the WooCommerce side cart: extra cart features and upsells.",                                                                 tags: ["WooCommerce", "PHP", "JS"], href: "https://github.com/ibrahim-monir/Ultra-Addons-for-Side-Cart-Woocommerce", image: `${IMG}/ultra-addons-side-cart.jpg` },
+  { title: "BOGO Offer with Badge",      category: "WooCommerce", price: "Free", desc: "Buy-one-get-one offers with product badges that highlight the deal on shop and product pages.",                                         tags: ["WooCommerce", "PHP"], href: "https://github.com/ibrahim-monir/bogo-offer-with-badge", image: `${IMG}/bogo-offer-badge.jpg` },
+  { title: "Smart FSFSP",                category: "WooCommerce", price: "Ask",  desc: "Free-shipping rules for WooCommerce with an admin settings screen: set thresholds and conditions without code.",                        tags: ["WooCommerce", "PHP"], image: `${IMG}/smart-fsfsp.jpg` },
 ];
 
 export default function ProductsClient() {
@@ -44,11 +47,11 @@ export default function ProductsClient() {
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filtered.map((p) => (
           <div key={p.title} className="card overflow-hidden hover:border-[var(--primary)]/50 transition-all group">
-            <div className="h-44 flex items-center justify-center" style={{ background: "var(--bg-muted)" }}>
-              <div className="text-center">
-                <Package size={40} style={{ color: "var(--text-muted)", margin: "0 auto 8px" }} />
-                <span className="badge">{p.category}</span>
-              </div>
+            <div className="h-44 relative overflow-hidden" style={{ background: "var(--bg-muted)" }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={p.image} alt={p.title} loading="lazy"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              <span className="badge absolute top-3 left-3">{p.category}</span>
             </div>
             <div className="p-6">
               <div className="flex items-start justify-between gap-2 mb-2">
