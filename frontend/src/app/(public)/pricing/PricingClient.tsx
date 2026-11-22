@@ -14,6 +14,7 @@ interface PricingPlan {
   billing_cycle: string;
   features: string[];
   is_popular: boolean;
+  services?: string[] | null;
 }
 
 const billingLabel: Record<string, string> = {
@@ -33,7 +34,13 @@ function formatBDT(price: string | null) {
   return !n || isNaN(n) ? "Custom Quote" : "৳" + n.toLocaleString("en-BD");
 }
 
-export default function PricingClient() {
+/**
+ * Price table. On the Pricing page it lists every active package; on a
+ * service page pass `service` to show only packages assigned to it in
+ * Admin → Pricing ("Show on service pages"). Renders nothing when a service
+ * has no packages, so the page can hide the whole section.
+ */
+export default function PricingClient({ service, accent, onEmpty }: { service?: string; accent?: string; onEmpty?: () => void } = {}) {
   const [currency, setCurrency] = useState<"usd" | "bdt">("usd");
   const [plans, setPlans] = useState<PricingPlan[]>([]);
   const [loading, setLoading] = useState(true);
@@ -41,9 +48,14 @@ export default function PricingClient() {
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/pricing`)
       .then((r) => r.json())
-      .then((data) => setPlans(data))
+      .then((data: PricingPlan[]) => {
+        const list = service ? data.filter((p) => (p.services ?? []).includes(service)) : data;
+        setPlans(list);
+        if (service && !list.length) onEmpty?.();
+      })
       .finally(() => setLoading(false));
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [service]);
 
   // Default to BDT for visitors in Bangladesh's timezone — no IP lookup needed.
   useEffect(() => {
@@ -65,6 +77,10 @@ export default function PricingClient() {
       </div>
     );
   }
+
+  if (service && !plans.length) return null;
+
+  const cols = plans.length >= 4 ? "md:grid-cols-2 xl:grid-cols-4" : plans.length === 2 ? "md:grid-cols-2 max-w-3xl mx-auto" : "md:grid-cols-3";
 
   return (
     <>
@@ -94,20 +110,20 @@ export default function PricingClient() {
       </div>
 
       {/* Cards */}
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className={`grid ${cols} gap-6`}>
         {plans.map((plan) => (
           <div
             key={plan.id}
             className={`card p-8 flex flex-col relative transition-all ${
-              plan.is_popular ? "border-[var(--primary)] md:scale-105 z-10" : "hover:border-[var(--primary)]/50"
+              plan.is_popular ? `${plans.length >= 4 ? "" : "md:scale-105"} z-10` : "hover:border-[var(--primary)]/50"
             }`}
-            style={plan.is_popular ? { boxShadow: "0 24px 60px -18px rgba(237,28,36,0.4)" } : undefined}
+            style={plan.is_popular ? { borderColor: accent ?? "var(--primary)", boxShadow: `0 24px 60px -18px ${accent ? accent + "66" : "rgba(237,28,36,0.4)"}` } : undefined}
           >
             {plan.is_popular && (
               <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                 <span
                   className="flex items-center gap-1 text-xs font-semibold px-3 py-1 rounded-full"
-                  style={{ background: "var(--primary)", color: "#fff" }}
+                  style={{ background: accent ?? "var(--primary)", color: "#fff" }}
                 >
                   <Zap size={11} /> Most Popular
                 </span>
@@ -121,11 +137,11 @@ export default function PricingClient() {
                   const isCustom = formatted === "Custom Quote";
                   return (
                     <>
-                      <span className={isCustom ? "text-2xl font-bold" : "text-4xl font-bold gradient-text"}>
+                      <span className={isCustom ? "text-2xl font-bold" : `${plans.length >= 4 ? "text-3xl" : "text-4xl"} font-bold gradient-text`}>
                         {formatted}
                       </span>
                       {!isCustom && (
-                        <span className="text-sm ml-2" style={{ color: "var(--text-muted)" }}>
+                        <span className="text-sm ml-2 whitespace-nowrap" style={{ color: "var(--text-muted)" }}>
                           / {billingLabel[plan.billing_cycle] ?? plan.billing_cycle}
                         </span>
                       )}
@@ -161,6 +177,7 @@ export default function PricingClient() {
                   onClick={() =>
                     trackEvent("select_pricing_package", {
                       package_name: plan.title,
+                      source: service ?? "pricing",
                       price_usd: plan.price,
                       price_bdt: plan.bdt_price,
                       billing_cycle: plan.billing_cycle,

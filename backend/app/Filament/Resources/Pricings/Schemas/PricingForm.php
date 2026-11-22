@@ -44,6 +44,12 @@ class PricingForm
                             ->default('once')
                             ->required(),
 
+                        Select::make('services')
+                            ->label('Show on service pages')
+                            ->multiple()
+                            ->options(fn () => \App\Models\Service::orderBy('order')->pluck('title', 'slug')->all())
+                            ->helperText('The package appears in the price table on these service pages. The Pricing page always lists every active package.'),
+
                         TextInput::make('order')->numeric()->default(0),
                         Toggle::make('is_popular')->label('Mark as Popular')->default(false),
                         Toggle::make('is_active')->label('Active')->default(true),

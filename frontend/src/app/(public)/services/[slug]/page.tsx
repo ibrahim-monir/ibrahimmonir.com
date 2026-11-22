@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { serviceImage } from "@/lib/services";
+import ServicePackages from "@/components/ServicePackages";
 import {
   ArrowLeft, ArrowRight, Check, Calendar,
   Layers, ListChecks, Workflow, Briefcase, HelpCircle, Newspaper,
@@ -34,6 +35,14 @@ interface WorkItem {
   technologies: string[];
   url: string | null;
   thumbnail: string | null;
+}
+
+interface Plan {
+  id: number;
+  price: string;
+  bdt_price: string | null;
+  billing_cycle: string;
+  services?: string[] | null;
 }
 
 interface BlogPost {
@@ -96,12 +105,26 @@ const PROCESS_STEPS = [
   { title: "Launch & Support", desc: "Deployment, a handover walkthrough, and post-launch support to fix anything that comes up." },
 ];
 
+const PAYMENT_FAQS = [
+  { q: "How do I order and pay?", a: "Pick a package above and click Order Now. You pay an advance by bKash, Nagad or bank transfer, enter the transaction ID, and I confirm the payment — usually within a few hours. The rest is due on delivery." },
+  { q: "Is there a charge for paying by bKash or Nagad?", a: "Yes, the mobile banking cash-out charge is added to the advance at checkout so the exact amount is shown before you pay. Bank transfer has no extra charge." },
+];
+
 const FAQS: Record<string, { q: string; a: string }[]> = {
   default: [
-    { q: "How do we get started?", a: "Reach out via the contact form with a short description of what you need. I'll reply within 24 hours with questions or a scoped proposal." },
-    { q: "How is pricing determined?", a: "Pricing depends on scope and complexity — the price shown is a starting point. You'll get a firm quote after we've discussed the actual requirements." },
+    { q: "How do we get started?", a: "Order a package online, or reach out via the contact form with a short description of what you need. I'll reply within 24 hours." },
+    { q: "How is pricing determined?", a: "Packages have fixed prices for clearly defined work. If your project needs something outside a package, you'll get a firm custom quote after we've discussed the requirements." },
+    ...PAYMENT_FAQS,
     { q: "Do you offer support after launch?", a: "Yes. Every project includes a post-launch support window, and ongoing maintenance can be arranged separately if you need it." },
     { q: "Can you work with my existing site or codebase?", a: "In most cases, yes — I regularly take over and extend existing WordPress and Laravel projects rather than starting from scratch." },
+  ],
+  "wordpress-development": [
+    { q: "Which package is right for me?", a: "A single page to collect leads or sell one product → Landing Page. A full company, agency or portfolio site → Business Website. An existing site that's slow or dated → Redesign & Optimization. Already live and need someone to look after it → Support & Maintenance." },
+    { q: "Elementor or a custom theme?", a: "Either. Elementor (or Bricks/Divi) is great when you want to edit pages yourself; a hand-coded theme is faster and leaner. I'll recommend one based on how you plan to manage the site." },
+    ...PAYMENT_FAQS,
+    { q: "How long does a WordPress site take?", a: "A landing page is usually ready in 3–5 days and a business website in 1–2 weeks, depending on content readiness and revisions. You'll get a timeline when the order is confirmed." },
+    { q: "Do prices include hosting and a domain?", a: "No — those are paid to the provider in your name so you own them. I can recommend a host and set everything up for you." },
+    { q: "Can I update the site myself after launch?", a: "Yes. Every site is handed over with a walkthrough so you can edit pages, posts and products without touching code." },
   ],
 };
 
@@ -151,6 +174,30 @@ async function getRelatedPosts(slug: string): Promise<BlogPost[]> {
   } catch {
     return [];
   }
+}
+
+async function getPlans(slug: string): Promise<Plan[]> {
+  try {
+    const res = await fetch(`${API}/pricing`, { next: { revalidate: 60 } });
+    if (!res.ok) return [];
+    const plans: Plan[] = await res.json();
+    return plans.filter((p) => (p.services ?? []).includes(slug));
+  } catch {
+    return [];
+  }
+}
+
+/** "From ৳8,000 · $87" for the cheapest one-time package (monthly plans only if there are no others), or null. */
+function startingFrom(all: Plan[]): string | null {
+  const once = all.filter((p) => p.billing_cycle === "once");
+  const plans = once.length ? once : all;
+  const bdt = plans.map((p) => parseFloat(p.bdt_price ?? "")).filter((n) => n > 0);
+  const usd = plans.map((p) => parseFloat(p.price)).filter((n) => n > 0);
+  const parts = [
+    bdt.length ? "৳" + Math.min(...bdt).toLocaleString("en-BD") : null,
+    usd.length ? "$" + Math.min(...usd).toLocaleString("en-US") : null,
+  ].filter(Boolean);
+  return parts.length ? parts.join(" · ") : null;
 }
 
 // Same reasoning as blog/[slug]: static export needs every slug enumerated
@@ -405,9 +452,10 @@ function BackLink() {
 /* Next.js/API/Plugins & Themes.                                          */
 /* ────────────────────────────────────────────────────────────────────── */
 
-function TechnicalLayout({ service, color, heroImg, technologies, faqs, relatedWork, relatedPosts }: {
+function TechnicalLayout({ service, color, heroImg, technologies, faqs, relatedWork, relatedPosts, hasPackages, fromPrice }: {
   service: Service; color: string; heroImg: string | null; technologies: string[];
   faqs: { q: string; a: string }[]; relatedWork: WorkItem[]; relatedPosts: BlogPost[];
+  hasPackages: boolean; fromPrice: string | null;
 }) {
   const topFeatures = (service.features ?? []).slice(0, 3);
 
@@ -442,13 +490,31 @@ function TechnicalLayout({ service, color, heroImg, technologies, faqs, relatedW
                   ))}
                 </div>
               )}
+              {fromPrice && (
+                <p className="text-sm mb-5" style={{ color: "var(--text-muted)" }}>
+                  Packages from <strong className="text-lg" style={{ color: "var(--text)" }}>{fromPrice}</strong>
+                </p>
+              )}
               <div className="flex flex-wrap gap-3">
-                <Link href="/contact" className="btn-primary py-3 px-7">
-                  Get a Free Quote <ArrowRight size={16} />
-                </Link>
-                <Link href="/pricing" className="btn-outline py-3 px-7">
-                  View Pricing
-                </Link>
+                {hasPackages ? (
+                  <>
+                    <a href="#packages" className="btn-primary py-3 px-7">
+                      See Packages &amp; Order <ArrowRight size={16} />
+                    </a>
+                    <Link href="/contact" className="btn-outline py-3 px-7">
+                      Get a Free Quote
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/contact" className="btn-primary py-3 px-7">
+                      Get a Free Quote <ArrowRight size={16} />
+                    </Link>
+                    <Link href="/pricing" className="btn-outline py-3 px-7">
+                      View Pricing
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
 
@@ -469,7 +535,9 @@ function TechnicalLayout({ service, color, heroImg, technologies, faqs, relatedW
         </div>
       </section>
 
-      <div className="container max-w-3xl py-4">
+      <ServicePackages slug={service.slug} title={service.title} color={color} />
+
+      <div className="container max-w-3xl" style={{ paddingTop: "3.5rem", paddingBottom: "1rem" }}>
         <Overview service={service} color={color} />
         <TechStack technologies={technologies} color={color} />
         <WhatYouGet features={service.features ?? []} color={color} />
@@ -504,11 +572,12 @@ function StatPill({ icon: Icon, label, value, color }: { icon: React.ComponentTy
   );
 }
 
-function BusinessLayout({ service, color, heroImg, technologies, faqs, relatedWork, relatedPosts }: {
+function BusinessLayout({ service, color, heroImg, technologies, faqs, relatedWork, relatedPosts, hasPackages, fromPrice }: {
   service: Service; color: string; heroImg: string | null; technologies: string[];
   faqs: { q: string; a: string }[]; relatedWork: WorkItem[]; relatedPosts: BlogPost[];
+  hasPackages: boolean; fromPrice: string | null;
 }) {
-  const price = fmtPrice(service.price);
+  const price = fromPrice ?? fmtPrice(service.price);
   const featureCount = service.features?.length ?? 0;
 
   return (
@@ -544,13 +613,19 @@ function BusinessLayout({ service, color, heroImg, technologies, faqs, relatedWo
               </p>
             )}
             <div className="flex flex-wrap gap-3">
-              <Link href="/contact" className="btn-primary py-3 px-7">
-                Get a Free Quote <ArrowRight size={16} />
-              </Link>
-              <Link href="/pricing"
+              {hasPackages ? (
+                <a href="#packages" className="btn-primary py-3 px-7">
+                  See Packages &amp; Order <ArrowRight size={16} />
+                </a>
+              ) : (
+                <Link href="/contact" className="btn-primary py-3 px-7">
+                  Get a Free Quote <ArrowRight size={16} />
+                </Link>
+              )}
+              <Link href={hasPackages ? "/contact" : "/pricing"}
                 className="inline-flex items-center gap-2 py-3 px-7 rounded-xl font-semibold text-sm transition-colors"
                 style={{ background: "rgba(255,255,255,0.1)", color: "#fff", border: "1px solid rgba(255,255,255,0.3)" }}>
-                View Pricing
+                {hasPackages ? "Get a Free Quote" : "View Pricing"}
               </Link>
             </div>
           </div>
@@ -560,7 +635,7 @@ function BusinessLayout({ service, color, heroImg, technologies, faqs, relatedWo
       {/* Stats bar */}
       <section className="container -mt-8 relative z-10 mb-6">
         <div className="flex flex-wrap gap-4">
-          <StatPill icon={DollarSign} label="Starting at" value={price ?? "Custom Quote"} color={color} />
+          <StatPill icon={DollarSign} label={fromPrice ? "Packages from" : "Starting at"} value={price ?? "Custom Quote"} color={color} />
           {featureCount > 0 && (
             <StatPill icon={PackageCheck} label="Included" value={`${featureCount} Deliverables`} color={color} />
           )}
@@ -568,7 +643,9 @@ function BusinessLayout({ service, color, heroImg, technologies, faqs, relatedWo
         </div>
       </section>
 
-      <div className="container max-w-3xl py-8">
+      <ServicePackages slug={service.slug} title={service.title} color={color} />
+
+      <div className="container max-w-3xl" style={{ paddingTop: "3.5rem", paddingBottom: "1rem" }}>
         <Overview service={service} color={color} />
         <WhatYouGet features={service.features ?? []} color={color} />
         <RelatedProjects relatedWork={relatedWork} color={color} />
@@ -590,9 +667,10 @@ export default async function ServiceDetailPage({ params }: PageProps) {
   const service = await getService(slug);
   if (!service) notFound();
 
-  const [relatedWork, relatedPosts] = await Promise.all([
+  const [relatedWork, relatedPosts, plans] = await Promise.all([
     getRelatedWork(slug),
     getRelatedPosts(slug),
+    getPlans(slug),
   ]);
 
   const color = service.color || "#ED1C24";
@@ -600,7 +678,11 @@ export default async function ServiceDetailPage({ params }: PageProps) {
   const faqs = FAQS[slug] ?? FAQS.default;
   const heroImg = serviceImage(slug, service.image) ?? null;
 
-  const props = { service, color, heroImg, technologies, faqs, relatedWork, relatedPosts };
+  const props = {
+    service, color, heroImg, technologies, faqs, relatedWork, relatedPosts,
+    hasPackages: plans.length > 0,
+    fromPrice: startingFrom(plans),
+  };
 
   return BUSINESS_SLUGS.has(slug)
     ? <BusinessLayout {...props} />

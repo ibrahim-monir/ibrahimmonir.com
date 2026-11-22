@@ -11,7 +11,7 @@ class PricingController extends Controller
     {
         $plans = Pricing::where('is_active', true)
             ->orderBy('order')
-            ->get(['id', 'title', 'description', 'price', 'bdt_price', 'billing_cycle', 'features', 'is_popular']);
+            ->get(['id', 'title', 'description', 'price', 'bdt_price', 'billing_cycle', 'features', 'services', 'is_popular']);
 
         return response()->json($plans);
     }
