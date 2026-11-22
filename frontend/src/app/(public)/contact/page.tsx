@@ -8,7 +8,7 @@ import { fetchSocialLinks, socialMeta, type SocialLink } from "@/lib/socialIcons
 import WhatsappIcon from "@/components/WhatsappIcon";
 
 const baseContactInfo = [
-  { Icon: Mail, label: "Email", value: "ibrahimkhalilmp@gmail.com", href: "mailto:ibrahimkhalilmp@gmail.com" },
+  { Icon: Mail, label: "Email", value: "hello@ibrahimmonir.com", href: "mailto:hello@ibrahimmonir.com" },
   { Icon: MapPin, label: "Location", value: "Bangladesh (Remote Worldwide)", href: null },
   { Icon: MessageCircle, label: "Response Time", value: "Within 24 hours", href: null },
 ];

@@ -61,11 +61,11 @@ export default function Footer() {
                 Dhaka, Bangladesh
               </li>
               <li>
-                <a href="mailto:ibrahimkhalilmp@gmail.com"
+                <a href="mailto:hello@ibrahimmonir.com"
                   className="flex items-center gap-2.5 text-sm transition-colors hover:text-[var(--primary)]"
                   style={{ color: "var(--text-muted)" }}>
                   <Mail size={14} style={{ color: "var(--primary)", flexShrink: 0 }} />
-                  ibrahimkhalilmp@gmail.com
+                  hello@ibrahimmonir.com
                 </a>
               </li>
             </ul>

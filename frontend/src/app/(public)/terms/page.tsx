@@ -44,7 +44,7 @@ const sections = [
   },
   {
     heading: "10. Contact",
-    body: `Questions about these Terms can be sent to ibrahimkhalilmp@gmail.com.`,
+    body: `Questions about these Terms can be sent to hello@ibrahimmonir.com.`,
   },
 ];
 

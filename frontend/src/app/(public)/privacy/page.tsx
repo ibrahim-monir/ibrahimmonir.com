@@ -50,7 +50,7 @@ I also collect limited technical information automatically, such as your approxi
   },
   {
     heading: "11. Contact",
-    body: `Questions about this Privacy Policy can be sent to ibrahimkhalilmp@gmail.com.`,
+    body: `Questions about this Privacy Policy can be sent to hello@ibrahimmonir.com.`,
   },
 ];
 
