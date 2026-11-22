@@ -52,6 +52,10 @@ export default async function HomePage() {
   const testimonials: TestimonialItem[] = testimonialsRaw;
   const recentWorks: WorkItem[] = Array.isArray(worksRaw) && worksRaw.length ? worksRaw.slice(0, 8) : FALLBACK_WORKS;
 
+  // The CV button only shows once a resume is uploaded in Admin → Settings
+  // (hero_resume is a public-disk path); there is no /resume.pdf fallback.
+  const resumePath = str(settings.hero_resume_url) || str(settings.hero_resume);
+  const resumeUrl = !resumePath ? "" : /^(https?:)?\//.test(resumePath) ? resumePath : `/storage/${resumePath}`;
   const expYears = yearsOfExperience(parseInt(str(settings.experience_start_year, String(EXPERIENCE_START_YEAR))));
 
   const statsData = [
@@ -119,14 +123,16 @@ export default async function HomePage() {
                   >
                     {str(settings.hero_cta_primary, "View My Work")} <ArrowRight size={18} />
                   </Link>
-                  <a
-                    href={str(settings.hero_resume_url, "/resume.pdf")}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-glow text-base py-3 px-7"
-                  >
-                    Download CV <Download size={16} />
-                  </a>
+                  {resumeUrl && (
+                    <a
+                      href={resumeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-glow text-base py-3 px-7"
+                    >
+                      Download CV <Download size={16} />
+                    </a>
+                  )}
                 </div>
 
                 {/* Contact info */}
