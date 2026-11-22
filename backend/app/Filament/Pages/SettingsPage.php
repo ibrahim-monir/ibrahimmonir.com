@@ -154,6 +154,34 @@ class SettingsPage extends Page implements HasSchemas
                     ]),
 
                     Tab::make('Invoicing')->icon('heroicon-o-banknotes')->schema([
+                        Section::make('Online Orders (Pricing page checkout)')
+                            ->description('Clients pay the advance by bKash, Nagad or bank transfer and submit the transaction ID. A method only appears at checkout once its number is filled in. Bank transfer uses the bank details below.')
+                            ->schema([
+                                TextInput::make('payment_bkash_number')
+                                    ->label('bKash Number')
+                                    ->placeholder('01XXXXXXXXX'),
+                                \Filament\Forms\Components\Select::make('payment_bkash_type')
+                                    ->label('bKash Account Type')
+                                    ->options(['Personal' => 'Personal (Send Money)', 'Merchant' => 'Merchant (Payment)', 'Agent' => 'Agent (Cash Out)'])
+                                    ->default('Personal'),
+                                TextInput::make('payment_nagad_number')
+                                    ->label('Nagad Number')
+                                    ->placeholder('01XXXXXXXXX'),
+                                \Filament\Forms\Components\Select::make('payment_nagad_type')
+                                    ->label('Nagad Account Type')
+                                    ->options(['Personal' => 'Personal (Send Money)', 'Merchant' => 'Merchant (Payment)', 'Agent' => 'Agent (Cash Out)'])
+                                    ->default('Personal'),
+                                TextInput::make('payment_advance_percent')
+                                    ->label('Advance Payment (%)')
+                                    ->numeric()->minValue(1)->maxValue(100)
+                                    ->placeholder('50')
+                                    ->helperText('Share of the package price paid at checkout. The rest is invoiced later.'),
+                                Textarea::make('payment_instructions')
+                                    ->label('Extra Instructions (optional)')
+                                    ->rows(2)
+                                    ->placeholder('e.g. Use your order name as the bank transfer reference.'),
+                            ])->columns(2),
+
                         Section::make('Bank / Payment Details')->schema([
                             TextInput::make('bank_name')
                                 ->label('Bank Name')

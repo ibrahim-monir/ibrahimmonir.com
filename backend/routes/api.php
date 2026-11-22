@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\TestimonialController;
 use App\Http\Controllers\Api\FileController;
 use App\Http\Controllers\Api\InvoiceController;
 use App\Http\Controllers\Api\MessageController;
+use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\ServiceController;
@@ -40,6 +41,7 @@ Route::get('/blog',             [BlogController::class, 'index']);
 Route::get('/blog/{slug}',      [BlogController::class, 'show']);
 
 Route::post('/contact',         [ContactController::class, 'store']);
+Route::post('/orders',          [OrderController::class, 'store'])->middleware('throttle:6,1');
 
 Route::get('/settings',         [SettingsController::class, 'index']);
 Route::get('/social-links',     [SocialLinkController::class, 'index']);

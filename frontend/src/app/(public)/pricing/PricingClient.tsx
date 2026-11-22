@@ -149,26 +149,35 @@ export default function PricingClient() {
                 </li>
               ))}
             </ul>
-            <Link
-              href={`/contact?package=${encodeURIComponent(plan.title)}`}
-              onClick={() =>
-                trackEvent("select_pricing_package", {
-                  package_name: plan.title,
-                  price_usd: plan.price,
-                  price_bdt: plan.bdt_price,
-                  billing_cycle: plan.billing_cycle,
-                })
-              }
-              className={plan.is_popular ? "btn-primary justify-center" : "btn-outline justify-center"}
-            >
-              Get Started <ArrowRight size={16} />
-            </Link>
+            {(() => {
+              // Priced packages go to checkout; "Custom Quote" ones to the contact form.
+              const priced = currency === "usd" ? parseFloat(plan.price) > 0 : parseFloat(plan.bdt_price ?? "") > 0;
+              const href = priced
+                ? `/checkout?plan=${plan.id}&currency=${currency}`
+                : `/contact?package=${encodeURIComponent(plan.title)}`;
+              return (
+                <Link
+                  href={href}
+                  onClick={() =>
+                    trackEvent("select_pricing_package", {
+                      package_name: plan.title,
+                      price_usd: plan.price,
+                      price_bdt: plan.bdt_price,
+                      billing_cycle: plan.billing_cycle,
+                    })
+                  }
+                  className={plan.is_popular ? "btn-primary justify-center" : "btn-outline justify-center"}
+                >
+                  {priced ? "Order Now" : "Get a Quote"} <ArrowRight size={16} />
+                </Link>
+              );
+            })()}
           </div>
         ))}
       </div>
 
       <p className="text-center mt-10 mb-6 text-sm" style={{ color: "var(--text-muted)" }}>
-        Need something specific?{" "}
+        Book with an advance by bKash, Nagad or bank transfer. Need something specific?{" "}
         <Link href="/contact" style={{ color: "var(--primary)" }} className="hover:underline">
           Let&apos;s talk
         </Link>

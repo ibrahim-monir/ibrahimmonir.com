@@ -7,7 +7,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/login", "/register", "/forgot-password", "/reset-password", "/portal", "/portal/*"],
+      disallow: ["/login", "/register", "/forgot-password", "/reset-password", "/portal", "/portal/*", "/checkout"],
     },
     sitemap: "https://ibrahimmonir.com/sitemap.xml",
   };
