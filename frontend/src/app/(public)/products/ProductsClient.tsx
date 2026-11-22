@@ -51,7 +51,8 @@ export default function ProductsClient() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={p.image} alt={p.title} loading="lazy"
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-              <span className="badge absolute top-3 left-3">{p.category}</span>
+              <span className="absolute top-3 left-3 text-[11px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-md shadow-sm"
+                style={{ background: "rgba(255,255,255,0.95)", color: "#111" }}>{p.category}</span>
             </div>
             <div className="p-6">
               <div className="flex items-start justify-between gap-2 mb-2">
