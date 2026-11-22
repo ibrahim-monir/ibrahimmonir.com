@@ -186,6 +186,15 @@ class SettingsPage extends Page implements HasSchemas
                                     ->numeric()->minValue(1)->maxValue(100)
                                     ->placeholder('50')
                                     ->helperText('Share of the package price paid at checkout. The rest is invoiced later.'),
+                                MediaSelect::make('payment_bkash_logo')
+                                    ->label('bKash Logo')
+                                    ->helperText('Official bKash logo, shown on the checkout button. PNG/SVG with a transparent or white background works best.'),
+                                MediaSelect::make('payment_nagad_logo')
+                                    ->label('Nagad Logo')
+                                    ->helperText('Official Nagad logo, shown on the checkout button.'),
+                                MediaSelect::make('payment_bank_logo')
+                                    ->label('Bank Logo (optional)')
+                                    ->helperText('e.g. your bank\'s logo. Without one, a bank icon is shown.'),
                                 Textarea::make('payment_instructions')
                                     ->label('Extra Instructions (optional)')
                                     ->rows(2)

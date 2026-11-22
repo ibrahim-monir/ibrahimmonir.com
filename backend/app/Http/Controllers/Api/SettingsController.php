@@ -13,7 +13,7 @@ class SettingsController extends Controller
         $settings = SiteSetting::getAll();
 
         // Resolve storage URLs for file fields
-        $fileKeys = ['site_logo', 'site_favicon', 'hero_photo', 'seo_og_image', 'hero_resume'];
+        $fileKeys = ['site_logo', 'site_favicon', 'hero_photo', 'seo_og_image', 'hero_resume', 'payment_bkash_logo', 'payment_nagad_logo', 'payment_bank_logo'];
         foreach ($fileKeys as $key) {
             if (!empty($settings[$key])) {
                 $settings[$key . '_url'] = asset('storage/' . $settings[$key]);

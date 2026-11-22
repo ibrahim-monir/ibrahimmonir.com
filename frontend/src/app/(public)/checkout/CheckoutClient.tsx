@@ -296,15 +296,24 @@ export default function CheckoutClient() {
               {usable.map((m) => {
                 const { label, color, Icon } = METHOD_META[m];
                 const active = method === m;
+                // Official logo uploaded in Admin → Settings → Invoicing; icon + name as fallback.
+                const logo = s(settings[`payment_${m}_logo_url`]);
                 return (
-                  <button key={m} type="button" onClick={() => setMethod(m)}
-                    className="flex flex-col items-center gap-1.5 py-3.5 rounded-xl text-sm font-semibold transition-all"
+                  <button key={m} type="button" onClick={() => setMethod(m)} aria-label={label} aria-pressed={active}
+                    className="flex flex-col items-center justify-center gap-1.5 h-[84px] px-2 rounded-xl text-sm font-semibold transition-all"
                     style={{
                       border: `2px solid ${active ? color : "var(--border)"}`,
-                      background: active ? `${color}14` : "transparent",
+                      background: logo ? "#fff" : active ? `${color}14` : "transparent",
                       color: active ? color : "var(--text-muted)",
+                      boxShadow: active ? `0 0 0 3px ${color}22` : undefined,
                     }}>
-                    <Icon size={20} /> {label}
+                    {logo ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={logo} alt={label} className="max-h-10 max-w-[85%] object-contain"
+                        style={{ filter: active ? "none" : "grayscale(35%)", opacity: active ? 1 : 0.85 }} />
+                    ) : (
+                      <><Icon size={20} /> {label}</>
+                    )}
                   </button>
                 );
               })}
