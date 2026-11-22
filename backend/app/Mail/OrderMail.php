@@ -30,7 +30,7 @@ class OrderMail extends Mailable
         $o = $this->order;
 
         $subject = match (true) {
-            $this->forAdmin                => "New order {$o->order_number}: {$o->package_title} ({$o->formattedAmount()} via {$o->methodLabel()})",
+            $this->forAdmin                => "New order {$o->order_number}: {$o->package_title} ({$o->formattedAmount($o->total())} via {$o->methodLabel()})",
             $this->event === 'confirmed'   => "Payment confirmed: order {$o->order_number}",
             $this->event === 'rejected'    => "About your order {$o->order_number}",
             default                        => "We received your order {$o->order_number}",

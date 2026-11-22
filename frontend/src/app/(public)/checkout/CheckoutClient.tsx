@@ -38,6 +38,9 @@ const METHOD_META: Record<Method, { label: string; color: string; Icon: typeof S
   bank:  { label: "Bank Transfer", color: "#2563eb", Icon: Landmark },
 };
 
+// Must match OrderController::DEFAULT_CHARGES (cash-out charges, Nov 2026).
+const DEFAULT_CHARGE: Record<Method, number> = { bkash: 1.85, nagad: 1.25, bank: 0 };
+
 const inputCls = "w-full px-4 py-2.5 rounded-lg text-sm outline-none transition-colors focus:border-[var(--primary)]";
 const inputStyle = { background: "var(--bg-muted)", border: "1px solid var(--border)", color: "var(--text)" };
 
@@ -129,6 +132,17 @@ export default function CheckoutClient() {
   const advance = currency === "BDT" ? Math.round((price * percent) / 100) : Math.round(price * percent) / 100;
   const remaining = price - advance;
 
+  // MFS charge on top of the advance, rounded up so the full advance arrives.
+  const chargePct = (() => {
+    if (!method || method === "bank") return 0;
+    const raw = s(settings[`payment_${method}_charge`]);
+    const p = raw === "" ? DEFAULT_CHARGE[method] : parseFloat(raw);
+    return Number.isFinite(p) ? Math.min(Math.max(p, 0), 10) : DEFAULT_CHARGE[method];
+  })();
+  const charge = chargePct > 0 ? Math.ceil((advance * chargePct) / 100) : 0;
+  const total = advance + charge;
+  const pctLabel = `${+chargePct.toFixed(2)}%`;
+
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
 
@@ -146,7 +160,7 @@ export default function CheckoutClient() {
       const data = await res.json().catch(() => ({}));
       if (res.ok) {
         setDone({ order_number: data.order_number, amount: data.amount, account: data.account });
-        trackEvent("purchase_submitted", { package_name: plan.title, method, currency, value: advance });
+        trackEvent("purchase_submitted", { package_name: plan.title, method, currency, value: total });
         window.scrollTo({ top: 0, behavior: "smooth" });
       } else if (res.status === 422 && data.errors) {
         const flat: Record<string, string> = {};
@@ -308,10 +322,16 @@ export default function CheckoutClient() {
                     <span>{METHOD_META[method].label} number ({type})</span>
                     <span className="flex items-center gap-2 font-mono font-bold text-base">{number} <CopyButton text={number} /></span>
                   </div>
+                  {charge > 0 && (
+                    <div className="flex items-center justify-between gap-3" style={{ color: "var(--text-muted)" }}>
+                      <span>Advance {money(advance, "BDT")} + {METHOD_META[method].label} charge {pctLabel}</span>
+                      <span>{money(charge, "BDT")}</span>
+                    </div>
+                  )}
                   <div className="flex items-center justify-between gap-3">
-                    <span>Amount</span>
+                    <span>Amount to send</span>
                     <span className="flex items-center gap-2 font-bold text-base" style={{ color: "var(--primary)" }}>
-                      {money(advance, "BDT")} <CopyButton text={String(Math.round(advance))} />
+                      {money(total, "BDT")} <CopyButton text={String(total)} />
                     </span>
                   </div>
                   <p style={{ color: "var(--text-muted)" }}>After paying, copy the <strong>Transaction ID (TrxID)</strong> from the confirmation SMS and paste it below.</p>
@@ -370,14 +390,14 @@ export default function CheckoutClient() {
             <label className="flex items-start gap-3 mt-6 text-sm cursor-pointer">
               <input type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} className="mt-0.5 accent-[var(--primary)]" required />
               <span style={{ color: "var(--text-muted)" }}>
-                I&apos;ve sent {money(advance, currency)} and agree to the <Link href="/terms" className="underline" target="_blank">Terms of Service</Link>.
+                I&apos;ve sent {money(total, currency)} and agree to the <Link href="/terms" className="underline" target="_blank">Terms of Service</Link>.
               </span>
             </label>
             {(errors._ || errors.pricing_id || errors.currency) && (
               <p className="text-sm mt-4" style={{ color: "var(--danger)" }}>{errors._ || errors.pricing_id || errors.currency}</p>
             )}
             <button type="submit" disabled={submitting || !agree} className="btn-primary w-full justify-center py-3 mt-6 disabled:opacity-60">
-              {submitting ? <><Loader2 size={16} className="animate-spin" /> Submitting…</> : <>Place order · {money(advance, currency)}</>}
+              {submitting ? <><Loader2 size={16} className="animate-spin" /> Submitting…</> : <>Place order · {money(total, currency)}</>}
             </button>
           </section>
         </div>
@@ -394,7 +414,9 @@ export default function CheckoutClient() {
           </ul>
           <div className="space-y-2.5 text-sm pt-5" style={{ borderTop: "1px solid var(--border)" }}>
             <Row k="Package price" v={money(price, currency)} />
-            <Row k={`Advance (${percent}%)`} v={money(advance, currency)} strong />
+            <Row k={`Advance (${percent}%)`} v={money(advance, currency)} strong={charge === 0} />
+            {charge > 0 && method && <Row k={`${METHOD_META[method].label} charge (${pctLabel})`} v={money(charge, currency)} />}
+            {charge > 0 && <Row k="Total to send now" v={money(total, currency)} strong />}
             {remaining > 0 && <Row k="Due on delivery" v={money(remaining, currency)} muted />}
           </div>
           <p className="flex gap-2 items-start text-xs mt-6" style={{ color: "var(--text-muted)" }}>

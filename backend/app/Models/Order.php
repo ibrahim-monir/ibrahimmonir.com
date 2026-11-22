@@ -23,7 +23,7 @@ class Order extends Model
     protected $fillable = [
         'order_number', 'pricing_id', 'client_id', 'package_title', 'billing_cycle',
         'name', 'email', 'phone', 'company', 'project_details',
-        'currency', 'package_price', 'advance_percent', 'amount',
+        'currency', 'package_price', 'advance_percent', 'amount', 'charge_percent', 'charge',
         'payment_method', 'payer_account', 'transaction_id',
         'status', 'admin_note', 'confirmed_at', 'ip',
     ];
@@ -31,6 +31,8 @@ class Order extends Model
     protected $casts = [
         'package_price' => 'decimal:2',
         'amount'        => 'decimal:2',
+        'charge'        => 'decimal:2',
+        'charge_percent'=> 'decimal:2',
         'confirmed_at'  => 'datetime',
     ];
 
@@ -66,6 +68,12 @@ class Order extends Model
     public static function phoneDigits(string $phone): string
     {
         return preg_replace('/\D+/', '', $phone);
+    }
+
+    /** What the customer actually sends: advance + MFS charge. */
+    public function total(): float
+    {
+        return (float) $this->amount + (float) $this->charge;
     }
 
     public function methodLabel(): string

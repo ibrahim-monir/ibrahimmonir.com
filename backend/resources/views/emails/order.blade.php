@@ -49,7 +49,11 @@
         <table>
             <tr><td class="k">Package</td><td>{{ $o->package_title }}</td></tr>
             <tr><td class="k">Package price</td><td>{{ $o->formattedAmount($o->package_price) }}</td></tr>
-            <tr><td class="k">Advance paid ({{ $o->advance_percent }}%)</td><td class="amount">{{ $o->formattedAmount() }}</td></tr>
+            <tr><td class="k">Advance ({{ $o->advance_percent }}%)</td><td>{{ $o->formattedAmount() }}</td></tr>
+            @if((float) $o->charge > 0)
+                <tr><td class="k">{{ $o->methodLabel() }} charge ({{ rtrim(rtrim(number_format($o->charge_percent, 2), '0'), '.') }}%)</td><td>{{ $o->formattedAmount($o->charge) }}</td></tr>
+            @endif
+            <tr><td class="k">Total sent</td><td class="amount">{{ $o->formattedAmount($o->total()) }}</td></tr>
             @if($o->advance_percent < 100)
                 <tr><td class="k">Remaining</td><td>{{ $o->formattedAmount($o->package_price - $o->amount) }} — invoiced on delivery</td></tr>
             @endif

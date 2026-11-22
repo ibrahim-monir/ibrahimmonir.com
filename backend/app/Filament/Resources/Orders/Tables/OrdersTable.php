@@ -25,7 +25,8 @@ class OrdersTable
                 TextColumn::make('order_number')->label('Order')->searchable()->weight('bold')->copyable(),
                 TextColumn::make('name')->searchable()->description(fn (Order $r) => $r->phone),
                 TextColumn::make('package_title')->label('Package')->searchable(),
-                TextColumn::make('amount')->label('Advance')->formatStateUsing(fn ($state, Order $r) => $r->formattedAmount()),
+                TextColumn::make('amount')->label('Total')->formatStateUsing(fn ($state, Order $r) => $r->formattedAmount($r->total()))
+                    ->description(fn (Order $r) => (float) $r->charge > 0 ? 'incl. ' . $r->formattedAmount($r->charge) . ' charge' : null),
                 TextColumn::make('payment_method')->label('Method')->badge()->formatStateUsing(fn ($state) => Order::METHODS[$state] ?? $state),
                 TextColumn::make('transaction_id')->label('Trx ID')->searchable()->copyable(),
                 TextColumn::make('status')->badge()
@@ -59,7 +60,7 @@ class OrdersTable
             ->color('success')
             ->visible(fn (Order $record) => $record->status === 'pending')
             ->requiresConfirmation()
-            ->modalDescription(fn (Order $record) => "Only confirm after you've found {$record->formattedAmount()} with transaction ID {$record->transaction_id} in your {$record->methodLabel()} account. The customer will be emailed.")
+            ->modalDescription(fn (Order $record) => "Only confirm after you've found {$record->formattedAmount($record->total())} with transaction ID {$record->transaction_id} in your {$record->methodLabel()} account. The customer will be emailed.")
             ->action(function (Order $record) {
                 $record->update(['status' => 'confirmed', 'confirmed_at' => now()]);
                 self::notifyCustomer($record, 'confirmed');

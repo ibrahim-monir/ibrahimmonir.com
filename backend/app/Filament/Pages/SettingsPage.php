@@ -171,6 +171,16 @@ class SettingsPage extends Page implements HasSchemas
                                     ->label('Nagad Account Type')
                                     ->options(['Personal' => 'Personal (Send Money)', 'Merchant' => 'Merchant (Payment)', 'Agent' => 'Agent (Cash Out)'])
                                     ->default('Personal'),
+                                TextInput::make('payment_bkash_charge')
+                                    ->label('bKash Charge (%)')
+                                    ->numeric()->minValue(0)->maxValue(10)->step(0.01)
+                                    ->placeholder('1.85')
+                                    ->helperText('Added on top of the advance. Empty = 1.85% (cash out, Tk 18.50/1000). 0 = no charge.'),
+                                TextInput::make('payment_nagad_charge')
+                                    ->label('Nagad Charge (%)')
+                                    ->numeric()->minValue(0)->maxValue(10)->step(0.01)
+                                    ->placeholder('1.25')
+                                    ->helperText('Empty = 1.25% (app cash out, Tk 12.50/1000). 0 = no charge.'),
                                 TextInput::make('payment_advance_percent')
                                     ->label('Advance Payment (%)')
                                     ->numeric()->minValue(1)->maxValue(100)

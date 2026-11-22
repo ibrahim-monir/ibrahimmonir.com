@@ -53,6 +53,22 @@ class OrderController extends Controller
         return $p >= 1 && $p <= 100 ? $p : 50;
     }
 
+    /** Default cash-out charges (Nov 2026): bKash regular agent Tk 18.50/1000, Nagad app Tk 12.50/1000. */
+    public const DEFAULT_CHARGES = ['bkash' => 1.85, 'nagad' => 1.25];
+
+    /** MFS charge % for a method; Settings can override it (0 turns it off). Bank transfer has none. */
+    public static function chargePercent(string $method): float
+    {
+        if (! isset(self::DEFAULT_CHARGES[$method])) {
+            return 0.0;
+        }
+
+        $raw = SiteSetting::get("payment_{$method}_charge");
+        $p = ($raw === null || $raw === '') ? self::DEFAULT_CHARGES[$method] : (float) $raw;
+
+        return max(0.0, min(10.0, $p));
+    }
+
     public function store(Request $request): JsonResponse
     {
         // Honeypot: real visitors never see or fill this field.
@@ -109,7 +125,11 @@ class OrderController extends Controller
             ? round($price * $percent / 100)
             : round($price * $percent / 100, 2);
 
-        [$order, $account] = DB::transaction(function () use ($data, $plan, $currency, $price, $percent, $amount, $trx, $request) {
+        // Charge is rounded up to the next taka so the full advance always arrives.
+        $chargePercent = self::chargePercent($data['payment_method']);
+        $charge = $chargePercent > 0 ? ceil($amount * $chargePercent / 100) : 0;
+
+        [$order, $account] = DB::transaction(function () use ($data, $plan, $currency, $price, $percent, $amount, $chargePercent, $charge, $trx, $request) {
             $account = $this->clientAccount($data);
 
             $order = Order::create([
@@ -127,6 +147,8 @@ class OrderController extends Controller
                 'package_price'   => $price,
                 'advance_percent' => $percent,
                 'amount'          => $amount,
+                'charge_percent'  => $chargePercent,
+                'charge'          => $charge,
                 'payment_method'  => $data['payment_method'],
                 'payer_account'   => $data['payer_account'] ?? null,
                 'transaction_id'  => $trx,
@@ -150,7 +172,7 @@ class OrderController extends Controller
         return response()->json([
             'message'      => 'Order received.',
             'order_number' => $order->order_number,
-            'amount'       => $order->formattedAmount(),
+            'amount'       => $order->formattedAmount($order->total()),
             'status'       => $order->status,
             'account'      => $account['status'], // created | existing | none
         ], 201);
